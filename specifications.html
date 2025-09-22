@@ -7,12 +7,15 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Header / Nav -->
   <header class="site-header">
     <div class="container">
       <nav class="nav">
         <a href="home.html" class="nav__brand">Hopkinton Fire Department</a>
         <ul class="nav__links">
           <li><a href="home.html">Home</a></li>
+
+          <!-- Apparatus (with nested submenu for Engine 1) -->
           <li class="dropdown">
             <a href="apparatus.html" class="dropbtn">Apparatus ▾</a>
             <ul class="dropdown-content">
@@ -26,6 +29,8 @@
                   <li><a href="foam-operations.html">Foam Operations</a></li>
                 </ul>
               </li>
+
+              <!-- Other apparatus placeholders -->
               <li><a href="engine2.html">Engine 2</a></li>
               <li><a href="ladder1.html">Ladder 1</a></li>
               <li><a href="tanker3.html">Tanker 3</a></li>
@@ -38,6 +43,8 @@
               <li><a href="ambulance2.html">Ambulance 2</a></li>
             </ul>
           </li>
+
+          <!-- Maps -->
           <li class="dropdown">
             <a href="maps.html" class="dropbtn">Maps ▾</a>
             <ul class="dropdown-content">
@@ -46,6 +53,7 @@
               <li><a href="trail-maps.html">Trail Maps</a></li>
             </ul>
           </li>
+
           <li><a href="run-cards.html">Run Cards</a></li>
           <li><a href="erg.html">ERG</a></li>
           <li><a href="administrative.html">Administrative</a></li>
@@ -54,17 +62,37 @@
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <img src="images/specifications.jpg" alt="Engine 1 Specifications" class="hero__image" />
-    </section>
 
-    <section class="container">
-      <h1>Engine 1 Specifications</h1>
-      <p>Specifications content goes here. Replace this text with technical details, engine specs, and other information.</p>
-    </section>
+  <!-- Main -->
+  <main class="container">
+    <h2 class="section-title">Engine 1 — Specifications</h2>
+
+    <table class="info-table">
+      <tbody>
+        <tr><td><strong>Delivery Date</strong></td><td>February 29, 2024</td></tr>
+        <tr><td><strong>Chassis</strong></td><td>Enforcer</td></tr>
+        <tr><td><strong>Body</strong></td><td>Pumper</td></tr>
+        <tr><td><strong>Engine</strong></td><td>Cummins L9</td></tr>
+        <tr><td><strong>Horsepower</strong></td><td>450 hp</td></tr>
+        <tr><td><strong>Front Suspension</strong></td><td>Tak-4®️ Independent Front Suspension</td></tr>
+        <tr><td><strong>Rear Suspension</strong></td><td>Spring</td></tr>
+        <tr><td><strong>Foam System</strong></td><td>Husky™️ 3</td></tr>
+        <tr><td><strong>Pump</strong></td><td>Waterous Midship</td></tr>
+        <tr><td><strong>Pump Capacity</strong></td><td>1500</td></tr>
+        <tr><td><strong>Water Capacity</strong></td><td>730 Gallons</td></tr>
+        <tr><td><strong>Foam Capacity</strong></td><td>20 Gallon</td></tr>
+        <tr><td><strong>Fuel Tank</strong></td><td>65 Gallons</td></tr>
+        <tr><td><strong>DEF Tank</strong></td><td>4.5 Gallons</td></tr>
+        <tr><td><strong>Height</strong></td><td>9'5"</td></tr>
+        <tr><td><strong>Length</strong></td><td>30'1"</td></tr>
+        <tr><td><strong>Width</strong></td><td>8'0"</td></tr>
+        <tr><td><strong>Width (Mirror-Mirror)</strong></td><td>9'8"</td></tr>
+      </tbody>
+    </table>
+
   </main>
 
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="container">
       <p><strong>© Hopkinton Fire Department</strong></p>

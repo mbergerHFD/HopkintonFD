@@ -82,8 +82,22 @@ img { max-width: 100%; height: auto; display: block; }
 .comp-photo img { width: 100%; height: auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.1); }
 .comp-photo figcaption { font-size: .9rem; color: #444; margin-top: .4rem; }
 
-.section-title { text-align: center; margin: 12px 0 4px; }
-.subheading { margin: 18px 0 8px; }
+.section-title {
+  text-align: center;
+  margin: 12px 0 8px;
+  font-size: 1.6rem;              /* larger for main sections */
+  font-weight: 700;
+  text-decoration: underline;  
+  text-underline-offset: 6px;  
+}
+
+.subheading {
+  margin: 18px 0 8px;
+  font-size: 1.2rem;              /* smaller than section titles */
+  font-weight: 600;
+  text-decoration: underline;     /* give it the underline too */
+  text-underline-offset: 6px;  
+}
 
 /* Make photo align to bottom of section title */
 .comp-content { position: relative; }
