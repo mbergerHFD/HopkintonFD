@@ -325,3 +325,11 @@ img { max-width: 100%; height: auto; display: block; }
 @media (max-width: 700px) {
   .nav__links { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 8px 10px; }
 }
+
+/* White underline under the site title */
+.nav__brand {
+  display: inline-block;         /* allow a bottom border that hugs the text */
+  padding-bottom: 6px;           /* space between text and underline */
+  border-bottom: 2px solid #fff; /* white underline */
+}
+
