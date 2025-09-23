@@ -333,3 +333,39 @@ img { max-width: 100%; height: auto; display: block; }
   border-bottom: 2px solid #fff; /* white underline */
 }
 
+/* Home: center cards on the last row when fewer than 3 remain */
+.page-home .landing-grid {
+  display: flex;            /* override grid on home only */
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;  /* centers the final row */
+}
+.page-home .landing-card {
+  flex: 1 1 calc(33.333% - 12px);
+  max-width: 420px;
+}
+@media (max-width: 900px) {
+  .page-home .landing-card { flex-basis: calc(50% - 12px); }
+}
+@media (max-width: 600px) {
+  .page-home .landing-card { flex-basis: 100%; }
+}
+
+/* Maps: center cards on the last row when fewer than 3 remain (match home layout) */
+.page-maps .landing-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+}
+.page-maps .landing-card {
+  flex: 1 1 calc(33.333% - 12px);
+  max-width: 420px;
+}
+@media (max-width: 900px) {
+  .page-maps .landing-card { flex-basis: calc(50% - 12px); }
+}
+@media (max-width: 600px) {
+  .page-maps .landing-card { flex-basis: 100%; }
+}
+
