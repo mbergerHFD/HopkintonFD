@@ -69,7 +69,7 @@
               Driver's Side ▾
             </button>
             <ul class="comp-menu">
-              <li><a href="#" data-target="PumpPanel">Pump Panel</a></li>
+              <li><a href="#" data-target="DriverPumpPanel">Pump Panel</a></li>
               <li><a href="#" data-target="D1">D1</a></li>
               <li><a href="#" data-target="D2">D2</a></li>
               <li><a href="#" data-target="D3">D3</a></li>
@@ -84,6 +84,7 @@
               Officer's Side ▾
             </button>
             <ul class="comp-menu">
+              <li><a href="#" data-target="OfficerPumpPanel">Pump Panel</a></li>
               <li><a href="#" data-target="O1">O1</a></li>
               <li><a href="#" data-target="O2">O2</a></li>
               <li><a href="#" data-target="O3">O3</a></li>
@@ -155,6 +156,9 @@
             <figure class="comp-photo">
               <img src="images/compartments/d2a.jpg" alt="D2 compartment (Front view)">
               <figcaption>D2 Compartment — Front</figcaption>
+              <br>
+			  <img src="images/compartments/d2b.jpg" alt="D2 compartment (Front view)">
+              <figcaption>D2 Compartment — Rear</figcaption>
             </figure>
             <div class="comp-content">
               <h2 class="section-title">Driver’s Side — D2</h2>
@@ -490,10 +494,6 @@
         <!-- Cab -->
         <section class="comp-section" id="Cab" hidden>
           <div class="comp-layout">
-            <figure class="comp-photo">
-              <img src="images/compartments/cab.jpg" alt="Cab area">
-              <figcaption>Cab</figcaption>
-            </figure>
             <div class="comp-content">
               <h2 class="section-title">Cab</h2>
               <table class="info-table"><tbody>
@@ -540,7 +540,7 @@
               <h2 class="section-title">Top</h2>
               <table class="info-table"><tbody>
                 <tr><td>5 Gallon Bucket Speedy Dry (2)</td><td class="img-cell"><img src="images/whitebucket.jpg" alt="5 Gallon Speedy Dry"></td></tr>
-                <tr><td>Orange Traffic Cones (5)</td><td class="img-cell"><img src="images/trafficcone.jpg" alt="Orange Traffic Cones"></td></tr>
+                <tr><td>Orange Traffic Cones<br>Quantity: 5</td><td class="img-cell"><img src="images/trafficcone.jpg" alt="Orange Traffic Cones"></td></tr>
                 <tr><td>4' A-Frame Ladder</td><td class="img-cell"><img src="images/aframeladder.jpg" alt="4 foot A-Frame Ladder"></td></tr>
                 <tr><td>Self Leveling Floating Strainer</td><td class="img-cell"><img src="images/floatingstrainer.jpg" alt="Floating Strainer"></td></tr>
                 <tr><td>Barrel Strainer</td><td class="img-cell"><img src="images/barrelstrainer.jpg" alt="Barrel Strainer"></td></tr>
@@ -583,24 +583,37 @@
           </div>
         </section>
 
-        <!-- Pump Panel (placeholder) -->
-        <section class="comp-section" id="PumpPanel" hidden>
+        <!-- Driver Pump Panel -->
+        <section class="comp-section" id="DriverPumpPanel" hidden>
           <div class="comp-layout">
             <figure class="comp-photo">
-              <img src="images/compartments/pumppanel.jpg" alt="Pump Panel">
-              <figcaption>Pump Panel</figcaption>
+              <img src="images/compartments/driverpumppanel.jpg" alt="Pump Panel">
+              <figcaption>Driver's Side Pump Panel</figcaption>
             </figure>
             <div class="comp-content">
               <h2 class="section-title">Driver’s Side — Pump Panel</h2>
               <table class="info-table"><tbody>
-                <tr><td>—</td><td class="img-cell"></td></tr>
+                <tr><td>-</td><td class="img-cell"><img src="images/noimage.jpg" alt="noimage"></td></tr>
               </tbody></table>
             </div>
           </div>
         </section>
-
-      </div>
-    </section>
+        
+        <!-- Officer Pump Panel -->
+        <section class="comp-section" id="OfficerPumpPanel" hidden>
+          <div class="comp-layout">
+            <figure class="comp-photo">
+              <img src="images/compartments/officerpumppanel.jpg" alt="Pump Panel">
+              <figcaption>Officer's Side Pump Panel</figcaption>
+            </figure>
+            <div class="comp-content">
+              <h2 class="section-title">Officer's Side — Pump Panel</h2>
+              <table class="info-table"><tbody>
+                <tr><td>-</td><td class="img-cell"><img src="images/noimage.jpg" alt="noimage"></td></tr>
+              </tbody></table>
+            </div>
+          </div>
+        </section>
   </main>
 
   <!-- Footer -->
@@ -698,5 +711,35 @@
       }
     });
   </script>
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Look only at the first column "title" cells
+  const titleCells = document.querySelectorAll('.info-table tbody tr td:first-child');
+
+  titleCells.forEach(td => {
+    // Skip if already converted
+    if (td.innerHTML.includes('Quantity:')) return;
+
+    let html = td.innerHTML;
+
+    // Collect quantities that are purely numbers, optionally prefixed by x (e.g. (2), (x3), ( X 5 ))
+    const qtyParen = /\(\s*(?:x\s*)?(\d+)\s*\)\s*/gi;
+    let lastQty = null;
+
+    html = html.replace(qtyParen, (m, n) => {
+      lastQty = n;               // remember the last quantity-only match
+      return '';                 // strip it out of the title text
+    });
+
+    // If we found a quantity, append it neatly at the end on its own line
+    if (lastQty !== null) {
+      // Trim leftover spaces and add the Quantity line
+      html = html.trim() + '<br>Quantity: ' + lastQty;
+      td.innerHTML = html;
+    }
+  });
+});
+</script>
+
 </body>
 </html>
