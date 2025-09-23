@@ -278,44 +278,37 @@ img { max-width: 100%; height: auto; display: block; }
 /* Normalize Driver's/Officer's dropdown button text to match other items (Top, Cab, etc.) */
 .comp-btn { font-size: 1rem; }
 
-/* Mobile: let header dropdowns wrap instead of stretching horizontally */
+/* Mobile: spread top-level nav items (Home, Apparatus, Maps, etc.) across and allow wrapping */
 @media (max-width: 700px) {
-  header { overflow: visible; }
-  .dropdown { position: static; }
-  .dropdown-content {
-    position: static;              /* stack under the button */
-    display: grid;                 /* wrap items neatly */
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 8px;
+  .nav { flex-wrap: wrap; }
+  .nav__links { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 8px 10px; 
+    align-items: center;
+  }
+  .nav__links > li { display: flex; }
+  /* Top-level links/buttons should size to content, not full width */
+  .nav__links > li > a,
+  .nav__links > li > .dropbtn {
+    display: inline-flex;
+    width: auto;
+    white-space: nowrap;
+    padding: 8px 10px;
+  }
+  /* Keep dropdown menus usable on mobile, stacked under their button */
+  .dropdown > .dropdown-content {
+    position: static;
     width: 100%;
     max-width: 100%;
-    box-shadow: none;              /* avoid giant overlay shadow on mobile */
-    background: transparent;       /* blend into header on mobile */
-    padding: 8px 0;
+    box-shadow: none;
+    margin-top: 6px;
   }
-  .dropdown-content > li,
-  .dropdown-content > a {
-    margin: 0;
-    white-space: normal;           /* allow text to wrap */
-  }
-  .dropbtn,
-  .submenu-btn {
+  .dropdown-content > li > a,
+  .dropdown-content > li > .submenu-btn {
     display: block;
     width: 100%;
-    font-size: 1rem;               /* match other items */
-    line-height: 1.25;
-    padding: 8px 10px;
     white-space: normal;
-  }
-  /* Submenu lists also wrap/stack cleanly */
-  .dropdown-submenu { position: static; width: 100%; }
-  .dropdown-submenu .submenu {
-    position: static;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding-left: 8px;
-    background: transparent;
-    box-shadow: none;
+    padding: 10px 12px;
   }
 }
