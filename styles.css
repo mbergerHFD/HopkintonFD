@@ -277,3 +277,45 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* Normalize Driver's/Officer's dropdown button text to match other items (Top, Cab, etc.) */
 .comp-btn { font-size: 1rem; }
+
+/* Mobile: let header dropdowns wrap instead of stretching horizontally */
+@media (max-width: 700px) {
+  header { overflow: visible; }
+  .dropdown { position: static; }
+  .dropdown-content {
+    position: static;              /* stack under the button */
+    display: grid;                 /* wrap items neatly */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: none;              /* avoid giant overlay shadow on mobile */
+    background: transparent;       /* blend into header on mobile */
+    padding: 8px 0;
+  }
+  .dropdown-content > li,
+  .dropdown-content > a {
+    margin: 0;
+    white-space: normal;           /* allow text to wrap */
+  }
+  .dropbtn,
+  .submenu-btn {
+    display: block;
+    width: 100%;
+    font-size: 1rem;               /* match other items */
+    line-height: 1.25;
+    padding: 8px 10px;
+    white-space: normal;
+  }
+  /* Submenu lists also wrap/stack cleanly */
+  .dropdown-submenu { position: static; width: 100%; }
+  .dropdown-submenu .submenu {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding-left: 8px;
+    background: transparent;
+    box-shadow: none;
+  }
+}
