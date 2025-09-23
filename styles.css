@@ -274,3 +274,6 @@ img { max-width: 100%; height: auto; display: block; }
     display: none !important;
   }
 }
+
+/* Normalize Driver's/Officer's dropdown button text to match other items (Top, Cab, etc.) */
+.comp-btn { font-size: 1rem; }
