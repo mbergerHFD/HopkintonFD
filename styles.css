@@ -161,8 +161,9 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* Photo: row 2, column 1 — aligns with top of the table */
 .comp-photo {
+  margin-top: 0;
   grid-column: 1;
-  grid-row: 2;
+  grid-row: auto;
   align-self: start;
   margin: 6px 0 0;       /* small top margin for balance */
   text-align: center;
@@ -369,3 +370,44 @@ img { max-width: 100%; height: auto; display: block; }
   .page-maps .landing-card { flex-basis: 100%; }
 }
 
+
+
+
+/* ===== D2 second image alignment (top aligned with "Rear" title) ===== */
+#D2 .comp-photo img:nth-of-type(2) {
+  grid-column: 1;
+  grid-row: 6;        /* ensures it aligns with the first row, same as Rear title */
+  align-self: start;  /* align photo top to the row top */
+  margin-top: 0;      /* remove extra spacing */
+}
+
+
+
+/* === D2 Front alignment: match photo and caption top === */
+#D2 .comp-photo { margin-top: 0; }
+#D2 .info-table caption { margin-top: 0; }
+
+
+
+/* === O5 alignment fixes === */
+#O5 .comp-photo {
+  margin-top: 0;   /* remove gap above Chimney Bucket */
+}
+#O5 .section-title {
+  margin-bottom: 0.25rem; /* tighten spacing under the title */
+}
+
+
+
+/* === O5: tighten vertical spacing above "Chimney Bucket" === */
+#O5 .comp-layout { row-gap: 8px; }             /* reduce default gap (was 20px) */
+#O5 .info-table { margin-top: 0; }             /* ensure tables don’t add extra top margin */
+#O5 .comp-photo { margin-top: 0; }             /* already zeroed, keep explicit */
+
+
+
+/* === O5 section title spacing fix === */
+#O5 .section-title {
+  margin-top: 0;
+  padding-top: 0;
+}
