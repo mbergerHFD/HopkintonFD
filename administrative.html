@@ -1,27 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrative - Hopkinton Fire Department</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
-        header.header_container { text-align: center; }
-        .header_image { width: 100%; height: auto; display: block; }
-        main.content_container { flex: 1; display: grid; place-items: center; padding: 2rem; text-align: center; }
-        .soon { font-size: 2rem; margin: 0.25rem 0; }
-        .sub { color: #555; }
-        footer { text-align: center; padding: 1rem; border-top: 1px solid #eee; font-size: 0.9rem; }
-        .back { margin-top: 1rem; display: inline-block; }
-        @media (prefers-color-scheme: dark) {
-            body { background: #0b0b0b; color: #eaeaea; }
-            .sub { color: #c2c2c2; }
-            footer { border-top-color: #222; }
-        }
-    </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Administrative — Hopkinton Fire Department</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
+  
 <header class="site-header">
 			<div class="container">
 				<nav class="nav">
@@ -120,20 +106,22 @@
 				</nav>
 			</div>
 		</header>
-    <header class="header_container">
-        <img src="images/header.jpg" alt="Hopkinton Fire Department" class="header_image">
-        <h2>Hopkinton Fire Department</h2>
-        <p>Administrative</p>
-    </header>
-    <main class="content_container">
-        <div>
-            <h3 class="soon">Coming Soon</h3>
-            <p class="sub">Content for <strong>Administrative</strong> will be added here.</p>
-            <a class="back" href="home.html">← Back</a>
-        </div>
-    </main>
-    <footer>
-        &copy; 2025 Hopkinton Fire Department
-    </footer>
+
+  <main>
+    
+    <section class="container">
+      <div class="coming-soon">
+        <h2 class="section-title">Administrative</h2>
+        <p>Coming Soon</p>
+        <p><a href="home.html">← Back</a></p>
+      </div>
+    </section>
+    
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>© 2025 Hopkinton Fire Department</strong></p>
+    </div>
+  </footer>
 </body>
 </html>
