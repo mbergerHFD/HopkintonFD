@@ -1,41 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ladder 1 - Hopkinton Fire Department</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
-        header.header_container { text-align: center; }
-        .header_image { width: 100%; height: auto; display: block; }
-        main.content_container { flex: 1; display: grid; place-items: center; padding: 2rem; text-align: center; }
-        .soon { font-size: 2rem; margin: 0.25rem 0; }
-        .sub { color: #555; }
-        footer { text-align: center; padding: 1rem; border-top: 1px solid #eee; font-size: 0.9rem; }
-        .back { margin-top: 1rem; display: inline-block; }
-        @media (prefers-color-scheme: dark) {
-            body { background: #0b0b0b; color: #eaeaea; }
-            .sub { color: #c2c2c2; }
-            footer { border-top-color: #222; }
-        }
-    </style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ladder 1 — Hopkinton Fire Department</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-    <header class="header_container">
-        <img src="images/header.jpg" alt="Hopkinton Fire Department" class="header_image">
-        <h2>Hopkinton Fire Department</h2>
-        <p>Ladder 1</p>
-    </header>
-    <main class="content_container">
-        <div>
-            <h3 class="soon">Coming Soon</h3>
-            <p class="sub">Content for <strong>Ladder 1</strong> will be added here.</p>
-            <a class="back" href="apparatus.html">← Back</a>
-        </div>
-    </main>
-    <footer>
-        &copy; 2025 Hopkinton Fire Department
-    </footer>
+  
+<header class="site-header">
+  <div class="container">
+    <nav class="nav">
+      <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
+      <ul class="nav__links">
+        <li><a href="home.html">Home</a></li>
+        <li class="dropdown">
+          <a class="dropbtn" href="apparatus.html">Apparatus ▾</a>
+          <ul class="dropdown-content">
+            
+            <li class="dropdown-submenu">
+                <a class="submenu-btn" href="engine1.html">Engine 1 ▸</a>
+                <ul class="submenu">
+                    <li><a class="" href="engine1.html">Overview</a></li>
+                    <li><a href="engine1-specifications.html">Specifications</a></li>
+                    <li><a href="engine1-hose.html">Hose</a></li>
+                    <li><a href="engine1-equipment.html">Equipment</a></li>
+                    <li><a href="engine1-foam.html">Foam Operations</a></li>
+                </ul>
+            </li>
+        
+
+            <li class="dropdown-submenu">
+                <a class="submenu-btn" href="engine2.html">Engine 2 ▸</a>
+                <ul class="submenu">
+                    <li><a class="" href="engine2.html">Overview</a></li>
+                    <li><a href="engine2-specifications.html">Specifications</a></li>
+                    <li><a href="engine2-hose.html">Hose</a></li>
+                    <li><a href="engine2-equipment.html">Equipment</a></li>
+                    <li><a href="engine2-foam.html">Foam Operations</a></li>
+                </ul>
+            </li>
+        
+
+            <li class="dropdown-submenu">
+                <a class="submenu-btn" href="ladder1.html">Ladder 1 ▸</a>
+                <ul class="submenu">
+                    <li><a class="active" href="ladder1.html">Overview</a></li>
+                    <li><a href="ladder1-specifications.html">Specifications</a></li>
+                    <li><a href="ladder1-hose.html">Hose</a></li>
+                    <li><a href="ladder1-equipment.html">Equipment</a></li>
+                    <li><a href="ladder1-foam.html">Foam Operations</a></li>
+                </ul>
+            </li>
+        
+
+            <li class="dropdown-submenu">
+                <a class="submenu-btn" href="tanker3.html">Tanker 3 ▸</a>
+                <ul class="submenu">
+                    <li><a class="" href="tanker3.html">Overview</a></li>
+                    <li><a href="tanker3-specifications.html">Specifications</a></li>
+                    <li><a href="tanker3-hose.html">Hose</a></li>
+                    <li><a href="tanker3-equipment.html">Equipment</a></li>
+                    <li><a href="tanker3-foam.html">Foam Operations</a></li>
+                </ul>
+            </li>
+        
+
+            <li class="dropdown-submenu">
+                <a class="submenu-btn" href="rescue1.html">Rescue 1 ▸</a>
+                <ul class="submenu">
+                    <li><a class="" href="rescue1.html">Overview</a></li>
+                    <li><a href="rescue1-specifications.html">Specifications</a></li>
+                    <li><a href="rescue1-hose.html">Hose</a></li>
+                    <li><a href="rescue1-equipment.html">Equipment</a></li>
+                    <li><a href="rescue1-foam.html">Foam Operations</a></li>
+                </ul>
+            </li>
+        
+
+            <li class="dropdown-submenu">
+                <a class="submenu-btn" href="brush11.html">Brush 11 ▸</a>
+                <ul class="submenu">
+                    <li><a class="" href="brush11.html">Overview</a></li>
+                    <li><a href="brush11-specifications.html">Specifications</a></li>
+                    <li><a href="brush11-hose.html">Hose</a></li>
+                    <li><a href="brush11-equipment.html">Equipment</a></li>
+                    <li><a href="brush11-foam.html">Foam Operations</a></li>
+                </ul>
+            </li>
+        
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a class="dropbtn" href="maps.html">Maps ▾</a>
+          <ul class="dropdown-content">
+            <li><a href="water-maps.html">Water Maps</a></li>
+            <li><a href="highway-map.html">Highway Map</a></li>
+            <li><a href="trail-maps.html">Trail Maps</a></li>
+          </ul>
+        </li>
+        <li><a href="run-cards.html">Run Cards</a></li>
+        <li><a href="erg.html">ERG</a></li>
+        <li><a href="administrative.html">Administrative</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+  <main>
+    
+    <section class="hero">
+      <h2 class="section-title">Ladder 1</h2>
+    </section>
+    <section class="container">
+      <section class="landing-grid" id="quick-links">
+        <a class="landing-card" href="ladder1-specifications.html">
+          <img src="images/specifications.jpg" alt="Open Specifications page"/>
+          <span class="label">Specifications</span>
+        </a>
+        <a class="landing-card" href="ladder1-hose.html">
+          <img src="images/hose.jpg" alt="Open Hose page"/>
+          <span class="label">Hose</span>
+        </a>
+        <a class="landing-card" href="ladder1-equipment.html">
+          <img src="images/equipment.jpg" alt="Open Equipment page"/>
+          <span class="label">Equipment</span>
+        </a>
+        <a class="landing-card" href="ladder1-foam.html">
+          <img src="images/foam-operations.jpg" alt="Open Foam Operations page"/>
+          <span class="label">Foam Operations</span>
+        </a>
+      </section>
+    </section>
+    
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>© 2025 Hopkinton Fire Department</strong></p>
+    </div>
+  </footer>
 </body>
 </html>
