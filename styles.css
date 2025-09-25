@@ -525,13 +525,13 @@ img { max-width: 100%; height: auto; display: block; }
 /* ==== Run Cards mobile image scaling ==== */
 @media (max-width: 768px) {
   .rc-images {
-    width: 100%;
-    max-width: 50% !important;
+    width: 50%;
+    max-width: 100% !important;
     margin: 0;
   }
   .rc-images img {
     display: block;
-    width: 50% !important;
+    width: 100% !important;
     height: auto;
   }
 }
