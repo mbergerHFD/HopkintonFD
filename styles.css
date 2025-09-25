@@ -521,3 +521,27 @@ img { max-width: 100%; height: auto; display: block; }
   .town-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ==== Run Cards: Ashland page helpers ==== */
+.rc-images {
+  max-width: 900px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.rc-images img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.rc-link {
+  margin: 40px auto 20px;
+  text-align: center;
+}
+.rc-link a {
+  font-weight: 700;
+  text-decoration: none;
+  color: #0f172a;
+}
+.rc-link a:hover { text-decoration: underline; }

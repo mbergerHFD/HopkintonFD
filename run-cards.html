@@ -5,27 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Run Cards — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
-  <style>
-    .grid-wrap { margin-top: 24px; }
-    .town-grid-top { display: grid; grid-template-columns: repeat(2, minmax(0, 400px)); justify-content: center; gap: 20px; margin-bottom: 28px; }
-    .town-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
-    .town-card { display: flex; flex-direction: column; background: #f7f7f7; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
-    .town-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.10); }
-    .town-card__media { position: relative; width: 100%; aspect-ratio: 4 / 3; background: #e9eef3; overflow: hidden; }
-    .town-card__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .town-card__label { padding: 14px 16px; font-weight: 700; color: #222; text-align: center; }
-
-    .modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); z-index: 1000; }
-    .modal.is-open { display: flex; }
-    .modal__dialog { width: min(1000px, 92vw); height: min(700px, 82vh); background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.35); display: flex; flex-direction: column; }
-    .modal__bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #0f172a; color: #fff; font-weight: 600; }
-    .modal__title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
-    .modal__close { border: none; background: #e11d48; color: #fff; padding: 6px 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-    .modal__body { flex: 1; background: #111; }
-    .modal__iframe { width: 100%; height: 100%; border: 0; background: #fff; }
-    @media (max-width: 1100px) { .town-grid { grid-template-columns: repeat(4, 1fr); } }
-    @media (max-width: 900px)  { .town-grid-top { grid-template-columns: 1fr; } .town-grid { grid-template-columns: repeat(2, 1fr); } }
-  </style>
 </head>
 <body>
   <header class="site-header">
@@ -48,200 +27,203 @@
     <section class="container">
       <h2 class="section-title">Run Cards</h2>
       <div class="grid-wrap">
+        <!-- Top 2-column row -->
         <div class="town-grid-top">
 
-          <div class="town-card" data-href="run-cards/Hopkinton Hydrant District/index.html" data-title="Hopkinton Hydrant District">
+          <a class="town-card" href="run-cards/Hopkinton Hydrant District/index.html" data-title="Hopkinton Hydrant District" role="button">
             <div class="town-card__media">
               <img src="run-cards/Hopkinton Hydrant District/station.jpg" alt="Hopkinton Hydrant District"/>
             </div>
             <div class="town-card__label">Hopkinton Hydrant District</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Hopkinton Non-Hydrant District/index.html" data-title="Hopkinton Non-Hydrant District">
+          <a class="town-card" href="run-cards/Hopkinton Non-Hydrant District/index.html" data-title="Hopkinton Non-Hydrant District" role="button">
             <div class="town-card__media">
               <img src="run-cards/Hopkinton Non-Hydrant District/station.jpg" alt="Hopkinton Non-Hydrant District"/>
             </div>
             <div class="town-card__label">Hopkinton Non-Hydrant District</div>
-          </div>
+          </a>
         </div>
+        <!-- 5 × 6 grid -->
         <div class="town-grid">
 
-          <div class="town-card" data-href="run-cards/Ashland/index.html" data-title="Ashland">
+          <a class="town-card" href="run-cards/Ashland/index.html" data-title="Ashland" role="button">
             <div class="town-card__media">
               <img src="run-cards/Ashland/station.jpg" alt="Ashland"/>
             </div>
             <div class="town-card__label">Ashland</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Bellingham/index.html" data-title="Bellingham">
+          <a class="town-card" href="run-cards/Bellingham/index.html" data-title="Bellingham" role="button">
             <div class="town-card__media">
               <img src="run-cards/Bellingham/station.jpg" alt="Bellingham"/>
             </div>
             <div class="town-card__label">Bellingham</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Blackstone/index.html" data-title="Blackstone">
+          <a class="town-card" href="run-cards/Blackstone/index.html" data-title="Blackstone" role="button">
             <div class="town-card__media">
               <img src="run-cards/Blackstone/station.jpg" alt="Blackstone"/>
             </div>
             <div class="town-card__label">Blackstone</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Boxborough/index.html" data-title="Boxborough">
+          <a class="town-card" href="run-cards/Boxborough/index.html" data-title="Boxborough" role="button">
             <div class="town-card__media">
               <img src="run-cards/Boxborough/station.jpg" alt="Boxborough"/>
             </div>
             <div class="town-card__label">Boxborough</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Framingham/index.html" data-title="Framingham">
+          <a class="town-card" href="run-cards/Framingham/index.html" data-title="Framingham" role="button">
             <div class="town-card__media">
               <img src="run-cards/Framingham/station.jpg" alt="Framingham"/>
             </div>
             <div class="town-card__label">Framingham</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Franklin/index.html" data-title="Franklin">
+          <a class="town-card" href="run-cards/Franklin/index.html" data-title="Franklin" role="button">
             <div class="town-card__media">
               <img src="run-cards/Franklin/station.jpg" alt="Franklin"/>
             </div>
             <div class="town-card__label">Franklin</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Grafton/index.html" data-title="Grafton">
+          <a class="town-card" href="run-cards/Grafton/index.html" data-title="Grafton" role="button">
             <div class="town-card__media">
               <img src="run-cards/Grafton/station.jpg" alt="Grafton"/>
             </div>
             <div class="town-card__label">Grafton</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Holliston/index.html" data-title="Holliston">
+          <a class="town-card" href="run-cards/Holliston/index.html" data-title="Holliston" role="button">
             <div class="town-card__media">
               <img src="run-cards/Holliston/station.jpg" alt="Holliston"/>
             </div>
             <div class="town-card__label">Holliston</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Hopedale/index.html" data-title="Hopedale">
+          <a class="town-card" href="run-cards/Hopedale/index.html" data-title="Hopedale" role="button">
             <div class="town-card__media">
               <img src="run-cards/Hopedale/station.jpg" alt="Hopedale"/>
             </div>
             <div class="town-card__label">Hopedale</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Marlborough/index.html" data-title="Marlborough">
+          <a class="town-card" href="run-cards/Marlborough/index.html" data-title="Marlborough" role="button">
             <div class="town-card__media">
               <img src="run-cards/Marlborough/station.jpg" alt="Marlborough"/>
             </div>
             <div class="town-card__label">Marlborough</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Maynard/index.html" data-title="Maynard">
+          <a class="town-card" href="run-cards/Maynard/index.html" data-title="Maynard" role="button">
             <div class="town-card__media">
               <img src="run-cards/Maynard/station.jpg" alt="Maynard"/>
             </div>
             <div class="town-card__label">Maynard</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Medway/index.html" data-title="Medway">
+          <a class="town-card" href="run-cards/Medway/index.html" data-title="Medway" role="button">
             <div class="town-card__media">
               <img src="run-cards/Medway/station.jpg" alt="Medway"/>
             </div>
             <div class="town-card__label">Medway</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Mendon/index.html" data-title="Mendon">
+          <a class="town-card" href="run-cards/Mendon/index.html" data-title="Mendon" role="button">
             <div class="town-card__media">
               <img src="run-cards/Mendon/station.jpg" alt="Mendon"/>
             </div>
             <div class="town-card__label">Mendon</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Milford/index.html" data-title="Milford">
+          <a class="town-card" href="run-cards/Milford/index.html" data-title="Milford" role="button">
             <div class="town-card__media">
               <img src="run-cards/Milford/station.jpg" alt="Milford"/>
             </div>
             <div class="town-card__label">Milford</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Millville/index.html" data-title="Millville">
+          <a class="town-card" href="run-cards/Millville/index.html" data-title="Millville" role="button">
             <div class="town-card__media">
               <img src="run-cards/Millville/station.jpg" alt="Millville"/>
             </div>
             <div class="town-card__label">Millville</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Natick/index.html" data-title="Natick">
+          <a class="town-card" href="run-cards/Natick/index.html" data-title="Natick" role="button">
             <div class="town-card__media">
               <img src="run-cards/Natick/station.jpg" alt="Natick"/>
             </div>
             <div class="town-card__label">Natick</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Northborough/index.html" data-title="Northborough">
+          <a class="town-card" href="run-cards/Northborough/index.html" data-title="Northborough" role="button">
             <div class="town-card__media">
               <img src="run-cards/Northborough/station.jpg" alt="Northborough"/>
             </div>
             <div class="town-card__label">Northborough</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Northbridge/index.html" data-title="Northbridge">
+          <a class="town-card" href="run-cards/Northbridge/index.html" data-title="Northbridge" role="button">
             <div class="town-card__media">
               <img src="run-cards/Northbridge/station.jpg" alt="Northbridge"/>
             </div>
             <div class="town-card__label">Northbridge</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Sherborn/index.html" data-title="Sherborn">
+          <a class="town-card" href="run-cards/Sherborn/index.html" data-title="Sherborn" role="button">
             <div class="town-card__media">
               <img src="run-cards/Sherborn/station.jpg" alt="Sherborn"/>
             </div>
             <div class="town-card__label">Sherborn</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Shrewsbury/index.html" data-title="Shrewsbury">
+          <a class="town-card" href="run-cards/Shrewsbury/index.html" data-title="Shrewsbury" role="button">
             <div class="town-card__media">
               <img src="run-cards/Shrewsbury/station.jpg" alt="Shrewsbury"/>
             </div>
             <div class="town-card__label">Shrewsbury</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Southborough/index.html" data-title="Southborough">
+          <a class="town-card" href="run-cards/Southborough/index.html" data-title="Southborough" role="button">
             <div class="town-card__media">
               <img src="run-cards/Southborough/station.jpg" alt="Southborough"/>
             </div>
             <div class="town-card__label">Southborough</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Sudbury/index.html" data-title="Sudbury">
+          <a class="town-card" href="run-cards/Sudbury/index.html" data-title="Sudbury" role="button">
             <div class="town-card__media">
               <img src="run-cards/Sudbury/station.jpg" alt="Sudbury"/>
             </div>
             <div class="town-card__label">Sudbury</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Upton/index.html" data-title="Upton">
+          <a class="town-card" href="run-cards/Upton/index.html" data-title="Upton" role="button">
             <div class="town-card__media">
               <img src="run-cards/Upton/station.jpg" alt="Upton"/>
             </div>
             <div class="town-card__label">Upton</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Wayland/index.html" data-title="Wayland">
+          <a class="town-card" href="run-cards/Wayland/index.html" data-title="Wayland" role="button">
             <div class="town-card__media">
               <img src="run-cards/Wayland/station.jpg" alt="Wayland"/>
             </div>
             <div class="town-card__label">Wayland</div>
-          </div>
+          </a>
 
-          <div class="town-card" data-href="run-cards/Westborough/index.html" data-title="Westborough">
+          <a class="town-card" href="run-cards/Westborough/index.html" data-title="Westborough" role="button">
             <div class="town-card__media">
               <img src="run-cards/Westborough/station.jpg" alt="Westborough"/>
             </div>
             <div class="town-card__label">Westborough</div>
-          </div>
+          </a>
         </div>
       </div>
+
       <p style="margin-top:20px;"><a href="apparatus.html">← Back</a></p>
     </section>
   </main>
@@ -252,6 +234,7 @@
     </div>
   </footer>
 
+  <!-- Modal -->
   <div class="modal" id="rc-modal" aria-hidden="true" role="dialog" aria-label="Run Cards Viewer">
     <div class="modal__dialog">
       <div class="modal__bar">
@@ -271,36 +254,34 @@
       const titleEl = document.getElementById('rc-modal-title');
       const btnClose = document.getElementById('rc-modal-close');
 
+      // iOS detection (covers iPhone, iPad, and iPadOS Safari)
+      const isIOS = /iP(hone|od|ad)/.test(navigator.platform) ||
+                    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+
       function withBase(html, baseHref) {
-        // Inject a <base> so relative URLs in the loaded HTML resolve to the town folder.
         const headClose = html.indexOf('</head>');
         const baseTag = '<base href="' + baseHref + '">';
-        if (headClose !== -1) {
-          return html.slice(0, headClose) + baseTag + html.slice(headClose);
-        }
-        // If there's no head tag, prepend one
+        if (headClose !== -1) return html.slice(0, headClose) + baseTag + html.slice(headClose);
         return '<head>' + baseTag + '</head>' + html;
       }
 
-      async function openModalSrcdoc(href, label) {
+      async function openModalIOS(href, label) {
         try {
-          const cacheBuster = (href.includes('?') ? '&' : '?') + 'v=' + Date.now();
-          const url = href + cacheBuster;
+          let url = encodeURI(href);
+          url += (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
           const res = await fetch(url, { credentials: 'same-origin' });
           const text = await res.text();
-          // Compute base href from the href (directory part)
-          const baseHref = href.replace(/[^/]+$/,''); // strip file name (index.html)
-          const htmlWithBase = withBase(text, baseHref);
-          titleEl.textContent = label || 'Run Cards';
+          const baseHref = href.replace(/[^/]+$/,''); // folder path
           iframe.removeAttribute('src');
-          iframe.srcdoc = htmlWithBase;
+          iframe.srcdoc = withBase(text, baseHref);
+          titleEl.textContent = label || 'Run Cards';
           modal.classList.add('is-open');
           modal.setAttribute('aria-hidden', 'false');
           document.body.style.overflow = 'hidden';
-        } catch (err) {
-          // Fallback: navigate to the page (new tab) if fetch fails
+        } catch (e) {
+          // Fallback: open in a new tab if fetch is blocked
           const a = document.createElement('a');
-          a.href = href;
+          a.href = encodeURI(href);
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
           document.body.appendChild(a);
@@ -309,22 +290,34 @@
         }
       }
 
+      function openModalDesktop(href, label) {
+        let url = encodeURI(href);
+        url += (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
+        iframe.removeAttribute('srcdoc');
+        iframe.src = url;
+        titleEl.textContent = label || 'Run Cards';
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
       function closeModal() {
         modal.classList.remove('is-open');
         modal.setAttribute('aria-hidden', 'true');
-        iframe.removeAttribute('srcdoc');
         iframe.removeAttribute('src');
+        iframe.removeAttribute('srcdoc');
         document.body.style.overflow = '';
       }
 
+      // Intercept clicks on town cards
       document.addEventListener('click', (e) => {
-        const card = e.target.closest('.town-card');
-        if (!card) return;
+        const link = e.target.closest('a.town-card');
+        if (!link) return;
         e.preventDefault();
-        const href = card.getAttribute('data-href');
-        const label = card.getAttribute('data-title');
-        if (!href) return;
-        openModalSrcdoc(href, label);
+        const href = link.getAttribute('href');
+        const label = link.getAttribute('data-title') || 'Run Cards';
+        if (isIOS) openModalIOS(href, label);
+        else openModalDesktop(href, label);
       });
 
       btnClose.addEventListener('click', closeModal);
