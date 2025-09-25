@@ -6,7 +6,6 @@
   <title>Run Cards — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
   <style>
-    /* ==== Run Cards Grid & Modal (inline to guarantee formatting) ==== */
     .grid-wrap { margin-top: 24px; }
 
     .town-grid-top {
@@ -65,6 +64,8 @@
       justify-content: center;
       background: rgba(0,0,0,0.6);
       z-index: 1000;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
     }
     .modal.is-open { display: flex; }
 
@@ -77,6 +78,7 @@
       box-shadow: 0 20px 50px rgba(0,0,0,0.35);
       display: flex;
       flex-direction: column;
+      transform: translateZ(0);
     }
     .modal__bar {
       display: flex;
@@ -103,9 +105,18 @@
       cursor: pointer;
     }
     .modal__body { flex: 1; background: #111; }
-    .modal__iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+    .modal__iframe {
+      width: 100%;
+      height: 100%;
+      min-height: 60vh;
+      border: 0;
+      background: #fff;
+      display: block;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+      -webkit-overflow-scrolling: touch;
+    }
 
-    /* Responsive */
     @media (max-width: 1100px) {
       .town-grid { grid-template-columns: repeat(4, 1fr); }
     }
@@ -137,7 +148,6 @@
       <h2 class="section-title">Run Cards</h2>
 
       <div class="grid-wrap">
-        <!-- Top 2-column row -->
         <div class="town-grid-top">
 
           <div class="town-card" data-href="run-cards/Hopkinton Hydrant District/index.html" data-title="Hopkinton Hydrant District">
@@ -155,7 +165,6 @@
           </div>
         </div>
 
-        <!-- 5 × 6 grid -->
         <div class="town-grid">
 
           <div class="town-card" data-href="run-cards/Ashland/index.html" data-title="Ashland">
@@ -345,7 +354,6 @@
     </div>
   </footer>
 
-  <!-- Modal -->
   <div class="modal" id="rc-modal" aria-hidden="true" role="dialog" aria-label="Run Cards Viewer">
     <div class="modal__dialog">
       <div class="modal__bar">
@@ -365,8 +373,10 @@
       const title = document.getElementById('rc-modal-title');
       const btnClose = document.getElementById('rc-modal-close');
 
+      const isIOS = /iP(hone|od|ad)/.test(navigator.platform) ||
+                    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+
       function openModal(href, label) {
-        // Encode and cache-bust for iOS reliability
         let url = encodeURI(href);
         url += (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
         title.textContent = label || 'Run Cards';
@@ -374,6 +384,16 @@
         modal.classList.add('is-open');
         modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
+      }
+
+      function openNewTab(href) {
+        const a = document.createElement('a');
+        a.href = encodeURI(href) + (href.includes('?') ? '&' : '?') + 'v=' + Date.now();
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       }
 
       function closeModal() {
@@ -388,8 +408,12 @@
         if (!card) return;
         const href = card.getAttribute('data-href');
         const label = card.getAttribute('data-title');
-        if (href) {
-          e.preventDefault();
+        if (!href) return;
+        e.preventDefault();
+
+        if (isIOS) {
+          openNewTab(href);
+        } else {
           openModal(href, label);
         }
       });
