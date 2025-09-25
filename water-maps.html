@@ -5,55 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Water Maps — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
-  <!-- Inline fallback CSP to help when server CSP is too strict (server header wins if present) -->
+  <!-- Use LOCAL Leaflet assets (no CDN) -->
+  <link rel="stylesheet" href="leaflet.min.css"/>
+  <!-- Fallback CSP (server header wins if present) -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self';
                  img-src 'self' data: https://*.tile.openstreetmap.org;
-                 style-src 'self' 'unsafe-inline' https://unpkg.com;
-                 script-src 'self' 'unsafe-inline' https://unpkg.com;
+                 style-src 'self' 'unsafe-inline';
+                 script-src 'self' 'unsafe-inline';
                  connect-src 'self' https://nominatim.openstreetmap.org;">
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <style>
-    /* Ensure our UI is always above Leaflet panes */
     .map-shell { position: relative; border-radius: 12px; overflow: visible; }
     #map { width: 100%; height: 70vh; min-height: 420px; z-index: 1; }
     .leaflet-container { z-index: 1; }
 
     .map-search, .map-layers, .map-legend {
-      position: absolute;
-      z-index: 10000; /* sit above map tiles and vectors */
+      position: absolute; z-index: 10000;
       background: rgba(255,255,255,0.96);
       border-radius: 10px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.14);
     }
+    .map-search { top: 12px; left: 12px; right: 12px; display: flex; gap: 8px; align-items: center; padding: 8px; }
+    .map-search input[type="text"] { flex: 1 1 auto; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db; font-size: 16px; outline: none; }
+    .map-search button, .map-search select { flex: 0 0 auto; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db; background: #fff; cursor: pointer; }
 
-    .map-search {
-      top: 12px; left: 12px; right: 12px;
-      display: flex; gap: 8px; align-items: center;
-      padding: 8px;
-    }
-    .map-search input[type="text"] {
-      flex: 1 1 auto; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db;
-      font-size: 16px; outline: none;
-    }
-    .map-search button, .map-search select {
-      flex: 0 0 auto; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db;
-      background: #fff; cursor: pointer;
-    }
-
-    .map-layers {
-      bottom: 12px; left: 12px;
-      padding: 10px 12px;
-      display: grid; grid-auto-rows: minmax(28px, auto); gap: 6px;
-      font-size: 14px;
-    }
+    .map-layers { bottom: 12px; left: 12px; padding: 10px 12px; display: grid; grid-auto-rows: minmax(28px, auto); gap: 6px; font-size: 14px; }
     .layer-toggle { user-select: none; }
 
-    .map-legend {
-      bottom: 12px; right: 12px;
-      padding: 10px 12px; font-size: 14px; min-width: 180px;
-    }
+    .map-legend { bottom: 12px; right: 12px; padding: 10px 12px; font-size: 14px; min-width: 180px; }
     .legend-title { font-weight: 700; margin-bottom: 6px; }
     .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
     .legend-swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
@@ -145,7 +124,7 @@
           <li class="dropdown">
             <a class="dropbtn" href="maps.html">Maps ▾</a>
             <ul class="dropdown-content">
-              <li><a class="active" href="water-maps-leaflet-enhanced.html">Water Maps</a></li>
+              <li><a class="active" href="water-maps.html">Water Maps</a></li>
               <li><a href="highway-map.html">Highway Map</a></li>
               <li><a href="trail-maps.html">Trail Maps</a></li>
             </ul>
@@ -161,9 +140,7 @@
   <main>
     <section class="container">
       <h2 class="section-title">Water Maps</h2>
-
       <div class="map-shell">
-        <!-- Controls are siblings of the map so z-index works across panes -->
         <div class="map-search">
           <input id="map-search-input" type="text" placeholder="Search address, intersection, place…" aria-label="Search address"/>
           <button id="map-search-btn" type="button">Search</button>
@@ -203,9 +180,10 @@
     </div>
   </footer>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <!-- Use LOCAL Leaflet assets -->
+  <script src="leaflet.min.js"></script>
   <script>
+    if (!window.L) { alert('Leaflet failed to load. Make sure leaflet.min.js is present next to this HTML.'); }
     const layerInfo = {
       "Hydrants": {"id":"hydrants","file":"hopkinton_fire_department___hydrants.geojson","color":"#e11d48"},
       "Cisterns": {"id":"cisterns","file":"hopkinton_fire_department___cisterns.geojson","color":"#059669"},
@@ -213,7 +191,6 @@
       "All HFD Layers": {"id":"hfd","file":"hopkinton_fire_department.geojson","color":"#7c3aed"}
     };
 
-    // Map
     const map = L.map('map').setView([42.228534, -71.533708], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
@@ -229,90 +206,57 @@
         </svg>`;
       return L.icon({
         iconUrl: 'data:image/svg+xml;utf8,' + svg,
-        iconSize: [20,20],
-        iconAnchor: [10,10],
-        popupAnchor: [0,-10]
+        iconSize: [20,20], iconAnchor: [10,10], popupAnchor: [0,-10]
       });
     }
 
     function pointStyleFactory(hex, useMarker=false) {
-      if (useMarker) {
-        const icon = svgIcon(hex);
-        return (feature, latlng) => L.marker(latlng, { icon });
-      }
-      return (feature, latlng) => L.circleMarker(latlng, {
-        radius: 5, weight: 1, color: hex, fillColor: hex, fillOpacity: 0.85
-      });
+      if (useMarker) { const icon = svgIcon(hex); return (f, latlng) => L.marker(latlng, { icon }); }
+      return (f, latlng) => L.circleMarker(latlng, { radius: 5, weight: 1, color: hex, fillColor: hex, fillOpacity: 0.85 });
     }
 
     function defaultPopup(feature, layer) {
       const p = feature.properties||{};
       const name = p.name ? `<strong>${p.name}</strong>` : '';
       const desc = p.description ? `<div>${p.description}</div>` : '';
-      const rest = Object.entries(p).filter(([k])=>k!=='name'&&k!=='description')
-                    .map(([k,v])=>`<div><em>${k}</em>: ${v}</div>`).join('');
+      const rest = Object.entries(p).filter(([k])=>k!=='name'&&k!=='description').map(([k,v])=>`<div><em>${k}</em>: ${v}</div>`).join('');
       const html = name + desc + (rest?`<div style="margin-top:6px">${rest}</div>`:'');
       if (html) layer.bindPopup(html);
     }
 
-    // Load GeoJSON layers
     Object.entries(layerInfo).forEach(([label, cfg]) => {
       fetch(cfg.file).then(r => r.json()).then(geo => {
         const isPoints = geo.features && geo.features.some(f => f.geometry && f.geometry.type === 'Point');
         const styleFn = (f) => ({ color: cfg.color, weight: 2, fillOpacity: 0.08 });
-        const layer = L.geoJSON(geo, {
-          pointToLayer: isPoints ? pointStyleFactory(cfg.color, false) : undefined,
-          style: styleFn,
-          onEachFeature: defaultPopup
-        });
-
+        const layer = L.geoJSON(geo, { pointToLayer: isPoints ? pointStyleFactory(cfg.color, false) : undefined, style: styleFn, onEachFeature: defaultPopup });
         layers[cfg.id] = layer.addTo(map);
 
-        // compute and store bounds
         const b = L.latLngBounds([]);
-        layer.getLayers().forEach(l => {
-          if (l.getLatLng) b.extend(l.getLatLng());
-          else if (l.getBounds) b.extend(l.getBounds());
-        });
-        if (b.isValid()) {
-          layerBounds[cfg.id] = b;
-          allBounds.extend(b);
-        }
+        layer.getLayers().forEach(l => { if (l.getLatLng) b.extend(l.getLatLng()); else if (l.getBounds) b.extend(l.getBounds()); });
+        if (b.isValid()) { layerBounds[cfg.id] = b; allBounds.extend(b); }
 
         const cb = document.getElementById('layer-' + cfg.id);
-        if (cb) cb.addEventListener('change', (e) => {
-          if (e.target.checked) layers[cfg.id].addTo(map); else map.removeLayer(layers[cfg.id]);
-        });
+        if (cb) cb.addEventListener('change', (e) => { if (e.target.checked) layers[cfg.id].addTo(map); else map.removeLayer(layers[cfg.id]); });
       });
     });
 
-    // Free address search via Nominatim
     function doSearch(q) {
       if (!q) return;
       const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`;
       fetch(url, { headers: {'Accept': 'application/json'}, referrerPolicy: 'no-referrer' }).then(r => r.json()).then(arr => {
         if (!arr || !arr.length) { alert('Address not found'); return; }
-        const r0 = arr[0];
-        const lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
+        const r0 = arr[0]; const lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
         map.setView([lat, lon], 16);
         L.marker([lat, lon]).addTo(map).bindPopup(r0.display_name).openPopup();
       }).catch(()=>alert('Search failed'));
     }
     document.getElementById('map-search-btn').addEventListener('click', () => doSearch(document.getElementById('map-search-input').value.trim()));
-    document.getElementById('map-search-input').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); doSearch(e.target.value.trim()); }
-    });
+    document.getElementById('map-search-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); doSearch(e.target.value.trim()); } });
 
-    // Zoom-select behavior
     document.getElementById('zoom-select').addEventListener('change', (e) => {
-      const val = e.target.value;
-      if (!val) return;
-      if (val === 'all') {
-        if (allBounds.isValid()) map.fitBounds(allBounds.pad(0.05));
-        return;
-      }
-      const b = layerBounds[val];
-      if (b && b.isValid()) map.fitBounds(b.pad(0.05));
+      const val = e.target.value; if (!val) return;
+      if (val === 'all') { if (allBounds.isValid()) map.fitBounds(allBounds.pad(0.05)); return; }
+      const b = layerBounds[val]; if (b && b.isValid()) map.fitBounds(b.pad(0.05));
     });
   </script>
 </body>
