@@ -526,7 +526,7 @@ img { max-width: 100%; height: auto; display: block; }
 @media (max-width: 768px) {
   .rc-images {
     width: 100%;
-    max-width: 100% !important;
+    max-width: 50% !important;
     margin: 0;
   }
   .rc-images img {
