@@ -253,11 +253,32 @@
       const isIOS = /iP(hone|od|ad)/.test(navigator.platform) ||
                     (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
 
-      function withBase(html, baseHref) {
-        const headClose = html.indexOf('</head>');
+      function ensureViewport(html) {
+        // If there's no viewport meta, add one
+        if (!/name=["']viewport["']/i.test(html)) {
+          const insert = '<meta name="viewport" content="width=device-width, initial-scale=1">';
+          const headClose = html.indexOf('</head>');
+          if (headClose !== -1) return html.slice(0, headClose) + insert + html.slice(headClose);
+          return '<head>' + insert + '</head>' + html;
+        }
+        return html;
+      }
+
+      function withBaseAndMobileCSS(html, baseHref) {
+        // Inject <base> + small CSS to force images to shrink within the popup on iOS
+        const fixCSS = `
+          <style id="ios-srcdoc-fix">
+            html, body { margin: 0; padding: 0; }
+            .rc-images { max-width: 100% !important; width: 100% !important; margin: 0 auto; }
+            .rc-images img, img { max-width: 100% !important; height: auto !important; display: block; }
+            .rc-link { display:flex; justify-content:center; align-items:center; width:100%; text-align:center; }
+          </style>
+        `;
         const baseTag = '<base href="' + baseHref + '">';
-        if (headClose !== -1) return html.slice(0, headClose) + baseTag + html.slice(headClose);
-        return '<head>' + baseTag + '</head>' + html;
+        let out = ensureViewport(html);
+        const headClose = out.indexOf('</head>');
+        if (headClose !== -1) return out.slice(0, headClose) + baseTag + fixCSS + out.slice(headClose);
+        return '<head>' + baseTag + fixCSS + '</head>' + out;
       }
 
       async function openModalIOS(href, label) {
@@ -267,13 +288,15 @@
           const res = await fetch(url, { credentials: 'same-origin' });
           const text = await res.text();
           const baseHref = href.replace(/[^/]+$/,''); // folder path
+          const htmlWithFix = withBaseAndMobileCSS(text, baseHref);
           iframe.removeAttribute('src');
-          iframe.srcdoc = withBase(text, baseHref);
+          iframe.srcdoc = htmlWithFix;
           titleEl.textContent = label || 'Run Cards';
           modal.classList.add('is-open');
           modal.setAttribute('aria-hidden', 'false');
           document.body.style.overflow = 'hidden';
         } catch (e) {
+          // Fallback: open in a new tab if fetch is blocked
           const a = document.createElement('a');
           a.href = encodeURI(href);
           a.target = '_blank';
