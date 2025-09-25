@@ -1,4 +1,4 @@
-/* Water Maps JS (externalized for CSP) */
+/* Water Maps JS — enhanced diagnostics & robust GeoJSON handling */
 
 const LAYER_INFO = {
   "Hydrants": { id: "hydrants", file: "hopkinton_fire_department___hydrants.geojson", color: "#e11d48", checked: true },
@@ -7,8 +7,8 @@ const LAYER_INFO = {
   "All HFD Layers (optional)": { id: "hfd", file: "hopkinton_fire_department.geojson", color: "#7c3aed", checked: false }
 };
 
-// Try these prefixes in order; prioritize 'data/' for your structure
-const CANDIDATE_PREFIXES = ['data/', '', 'maps/data/', 'assets/data/', 'geojson/', 'data/geojson/'];
+/* Force a single known folder to simplify: set to 'data/' for your site. */
+const PATH_PREFIX = 'data/';
 
 const map = L.map('map').setView([42.228534, -71.533708], 12);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
@@ -19,7 +19,7 @@ const allBounds = L.latLngBounds([]);
 
 function toast(msg) {
   const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 3500);
+  setTimeout(() => t.style.display = 'none', 4000);
 }
 
 // DivIcon SVG pin (no data: URLs)
@@ -43,6 +43,55 @@ function pointToDivPin(hex) {
   return (feature, latlng) => L.marker(latlng, { icon, riseOnHover: true });
 }
 
+/* -------- Robust GeoJSON normalization ---------- */
+function normalizeGeoJSON(input) {
+  try {
+    if (!input) return { type: 'FeatureCollection', features: [] };
+
+    // Already FeatureCollection
+    if (input.type === 'FeatureCollection' && Array.isArray(input.features)) return input;
+
+    // Single Feature
+    if (input.type === 'Feature') return { type: 'FeatureCollection', features: [input] };
+
+    // Array of features/geometries
+    if (Array.isArray(input)) {
+      // If array of Features
+      if (input.length && input[0] && input[0].type === 'Feature') {
+        return { type: 'FeatureCollection', features: input };
+      }
+      // If array of coordinates/objects – try to wrap as points if lon/lat present
+      const feats = input.map((v, i) => {
+        if (v && typeof v === 'object' && 'lon' in v && 'lat' in v) {
+          return { type: 'Feature', geometry: { type: 'Point', coordinates: [Number(v.lon), Number(v.lat)] }, properties: { index: i, ...v } };
+        }
+        return null;
+      }).filter(Boolean);
+      return { type: 'FeatureCollection', features: feats };
+    }
+
+    // GeometryCollection
+    if (input.type === 'GeometryCollection' && Array.isArray(input.geometries)) {
+      const feats = input.geometries.map(g => ({ type: 'Feature', geometry: g, properties: {} }));
+      return { type: 'FeatureCollection', features: feats };
+    }
+
+    // TopoJSON is unsupported here; detect and inform
+    if (input.type === 'Topology' && input.objects) {
+      throw new Error('This file is TopoJSON. Please convert to GeoJSON.');
+    }
+
+    // Some exports put data under input.data
+    if (input.data) return normalizeGeoJSON(input.data);
+
+    // Fallback: no features
+    return { type: 'FeatureCollection', features: [] };
+  } catch (e) {
+    console.warn('normalizeGeoJSON error:', e);
+    return { type: 'FeatureCollection', features: [] };
+  }
+}
+
 function defaultPopup(feature, layer) {
   const p = feature.properties||{};
   const name = p.name ? `<strong>${p.name}</strong>` : '';
@@ -52,40 +101,36 @@ function defaultPopup(feature, layer) {
   if (html) layer.bindPopup(html);
 }
 
-function tryFetchSequential(urls) {
-  return new Promise((resolve, reject) => {
-    const tryNext = (i) => {
-      if (i >= urls.length) return reject(new Error('All paths failed'));
-      fetch(urls[i]).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-        .then(data => resolve({ data, used: urls[i] }))
-        .catch(() => tryNext(i+1));
-    };
-    tryNext(0);
-  });
-}
-
 function loadLayer(label, cfg) {
-  const urls = CANDIDATE_PREFIXES.map(p => p + cfg.file + '?v=' + Date.now());
-  tryFetchSequential(urls).then(({data, used}) => {
+  const url = PATH_PREFIX + cfg.file + '?v=' + Date.now();
+  fetch(url).then(r => {
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + cfg.file);
+    return r.json();
+  }).then(raw => {
+    const data = normalizeGeoJSON(raw);
     const feats = Array.isArray(data.features) ? data.features : [];
-    const isPoints = feats.some(f => f.geometry && f.geometry.type === 'Point');
+    const hasAny = feats.length > 0;
+    const isPoints = hasAny && feats.every(f => f.geometry && f.geometry.type === 'Point');
+
     const layer = L.geoJSON(data, {
       pointToLayer: isPoints ? pointToDivPin(cfg.color) : undefined,
       style: () => ({ color: cfg.color, weight: 2, fillOpacity: 0.1 }),
       onEachFeature: defaultPopup
     });
     layers[cfg.id] = layer;
+
     const checkbox = document.getElementById('layer-' + cfg.id);
-    if (cfg.checked && checkbox && checkbox.checked) layer.addTo(map);
+    if (checkbox && checkbox.checked) layer.addTo(map);
 
     const b = L.latLngBounds([]);
     layer.getLayers().forEach(l => { if (l.getLatLng) b.extend(l.getLatLng()); else if (l.getBounds) b.extend(l.getBounds()); });
     if (b.isValid()) { layerBounds[cfg.id] = b; allBounds.extend(b); }
 
-    console.log('Loaded', label, 'from', used, 'features:', feats.length);
+    console.log(`Loaded ${label} from ${url} — features: ${feats.length}, pointsOnly: ${isPoints}`);
+    if (!hasAny) toast(`Loaded ${label}, but found 0 features. Check the GeoJSON contents.`);
   }).catch(err => {
-    const isOptional = label.includes('(optional)');
-    const msg = isOptional ? ('Optional layer skipped: ' + label) : ('Failed to load ' + label + ' from all known paths');
+    const optional = label.includes('(optional)');
+    const msg = optional ? ('Optional layer skipped: ' + label) : ('Failed to load ' + label + ': ' + err.message);
     toast(msg);
     console.warn('Layer load error for', label, cfg.file, err);
   });
