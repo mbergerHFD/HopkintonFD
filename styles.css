@@ -571,3 +571,40 @@ img { max-width: 100%; height: auto; display: block; }
   }
 }
 
+/* Keep header menu horizontal at all widths (until your hamburger kicks in) */
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.nav__links {
+  display: flex;
+  flex-direction: row;   /* ensure row, not column */
+  flex-wrap: wrap;     /* stay on one line; change to wrap if you prefer 2 lines */
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: 0;          /* avoid weird flex overflow */
+}
+
+.nav__links > li {
+  display: inline-flex;  /* avoid li becoming block-fullwidth */
+  flex: 0 0 auto;        /* prevent stretching */
+}
+
+.nav__links a {
+  white-space: nowrap;   /* prevent a single item from breaking onto 2 lines */
+}
+
+/* Kill any mid-breakpoint column overrides */
+@media (max-width: 1200px) {
+  .nav__links { flex-direction: row !important; display: flex !important; }
+  .nav__links > li { display: inline-flex !important; }
+}
+
+/* Optional: compress spacing & text just before mobile/hamburger */
+@media (max-width: 980px) {
+  .nav__links { gap: 8px; }
+  .nav__links a { font-size: 0.95rem; }
+}
