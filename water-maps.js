@@ -1,4 +1,4 @@
-/* Water Maps JS — enhanced diagnostics & robust GeoJSON handling */
+/* Water Maps JS — auto-zoom + file:// warning */
 
 const LAYER_INFO = {
   "Hydrants": { id: "hydrants", file: "hopkinton_fire_department___hydrants.geojson", color: "#e11d48", checked: true },
@@ -7,7 +7,7 @@ const LAYER_INFO = {
   "All HFD Layers (optional)": { id: "hfd", file: "hopkinton_fire_department.geojson", color: "#7c3aed", checked: false }
 };
 
-/* Force a single known folder to simplify: set to 'data/' for your site. */
+/* Force known folder to simplify. Your files live under data/ */
 const PATH_PREFIX = 'data/';
 
 const map = L.map('map').setView([42.228534, -71.533708], 12);
@@ -19,7 +19,14 @@ const allBounds = L.latLngBounds([]);
 
 function toast(msg) {
   const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 4000);
+  clearTimeout(toast._tid);
+  toast._tid = setTimeout(() => t.style.display = 'none', 4500);
+}
+
+// Warn if user opens this via file:// (fetch() for local files is blocked)
+if (location.protocol === 'file:') {
+  toast('Open this page via a local web server (e.g., python3 -m http.server). Browsers block data/*.geojson over file://.');
+  console.warn('file:// detected — use a local server so fetch() can read GeoJSON.');
 }
 
 // DivIcon SVG pin (no data: URLs)
@@ -47,20 +54,12 @@ function pointToDivPin(hex) {
 function normalizeGeoJSON(input) {
   try {
     if (!input) return { type: 'FeatureCollection', features: [] };
-
-    // Already FeatureCollection
     if (input.type === 'FeatureCollection' && Array.isArray(input.features)) return input;
-
-    // Single Feature
     if (input.type === 'Feature') return { type: 'FeatureCollection', features: [input] };
-
-    // Array of features/geometries
     if (Array.isArray(input)) {
-      // If array of Features
       if (input.length && input[0] && input[0].type === 'Feature') {
         return { type: 'FeatureCollection', features: input };
       }
-      // If array of coordinates/objects – try to wrap as points if lon/lat present
       const feats = input.map((v, i) => {
         if (v && typeof v === 'object' && 'lon' in v && 'lat' in v) {
           return { type: 'Feature', geometry: { type: 'Point', coordinates: [Number(v.lon), Number(v.lat)] }, properties: { index: i, ...v } };
@@ -69,22 +68,14 @@ function normalizeGeoJSON(input) {
       }).filter(Boolean);
       return { type: 'FeatureCollection', features: feats };
     }
-
-    // GeometryCollection
     if (input.type === 'GeometryCollection' && Array.isArray(input.geometries)) {
       const feats = input.geometries.map(g => ({ type: 'Feature', geometry: g, properties: {} }));
       return { type: 'FeatureCollection', features: feats };
     }
-
-    // TopoJSON is unsupported here; detect and inform
     if (input.type === 'Topology' && input.objects) {
       throw new Error('This file is TopoJSON. Please convert to GeoJSON.');
     }
-
-    // Some exports put data under input.data
     if (input.data) return normalizeGeoJSON(input.data);
-
-    // Fallback: no features
     return { type: 'FeatureCollection', features: [] };
   } catch (e) {
     console.warn('normalizeGeoJSON error:', e);
@@ -100,6 +91,8 @@ function defaultPopup(feature, layer) {
   const html = name + desc + (rest?`<div style="margin-top:6px">${rest}</div>`:'');
   if (html) layer.bindPopup(html);
 }
+
+let didAutoZoom = false; // ensure we only auto-zoom once
 
 function loadLayer(label, cfg) {
   const url = PATH_PREFIX + cfg.file + '?v=' + Date.now();
@@ -120,7 +113,8 @@ function loadLayer(label, cfg) {
     layers[cfg.id] = layer;
 
     const checkbox = document.getElementById('layer-' + cfg.id);
-    if (checkbox && checkbox.checked) layer.addTo(map);
+    const shouldShow = checkbox ? checkbox.checked : cfg.checked;
+    if (shouldShow) layer.addTo(map);
 
     const b = L.latLngBounds([]);
     layer.getLayers().forEach(l => { if (l.getLatLng) b.extend(l.getLatLng()); else if (l.getBounds) b.extend(l.getBounds()); });
@@ -128,6 +122,12 @@ function loadLayer(label, cfg) {
 
     console.log(`Loaded ${label} from ${url} — features: ${feats.length}, pointsOnly: ${isPoints}`);
     if (!hasAny) toast(`Loaded ${label}, but found 0 features. Check the GeoJSON contents.`);
+
+    // Auto-zoom to Hydrants the first time it successfully loads
+    if (!didAutoZoom && cfg.id === 'hydrants' && b && b.isValid()) {
+      didAutoZoom = true;
+      map.fitBounds(b.pad(0.05));
+    }
   }).catch(err => {
     const optional = label.includes('(optional)');
     const msg = optional ? ('Optional layer skipped: ' + label) : ('Failed to load ' + label + ': ' + err.message);
