@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Water Maps — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
   <style>
     .map-shell { position: relative; border-radius: 12px; overflow: hidden; }
     #map { width: 100%; height: 70vh; min-height: 420px; }
     .map-search {
-      position: absolute; z-index: 6; top: 12px; left: 12px; right: 12px;
+      position: absolute; z-index: 7; top: 12px; left: 12px; right: 12px;
       display: flex; gap: 8px; align-items: center;
       background: rgba(255,255,255,0.95); padding: 8px; border-radius: 10px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.12);
@@ -21,19 +19,32 @@
       flex: 1 1 auto; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db;
       font-size: 16px; outline: none;
     }
-    .map-search button {
-      flex: 0 0 auto; padding: 10px 14px; border: 0; border-radius: 8px;
-      background: #0f172a; color: #fff; font-weight: 700; cursor: pointer;
+    .map-search button, .map-search select {
+      flex: 0 0 auto; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db;
+      background: #fff; cursor: pointer;
     }
     .map-layers {
-      position: absolute; z-index: 5; bottom: 12px; left: 12px;
+      position: absolute; z-index: 6; bottom: 12px; left: 12px;
       background: rgba(255,255,255,0.95); padding: 10px 12px; border-radius: 10px;
       box-shadow: 0 6px 18px rgba(0,0,0,0.12);
       display: grid; grid-auto-rows: minmax(28px, auto); gap: 6px;
       font-size: 14px;
     }
     .layer-toggle { user-select: none; }
-    @media (max-width: 640px) { #map { height: 60vh; min-height: 360px; } }
+    .map-legend {
+      position: absolute; z-index: 6; bottom: 12px; right: 12px;
+      background: rgba(255,255,255,0.95); padding: 10px 12px; border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      font-size: 14px; min-width: 180px;
+    }
+    .legend-title { font-weight: 700; margin-bottom: 6px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+    .legend-swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+    @media (max-width: 640px) {
+      #map { height: 60vh; min-height: 360px; }
+      .map-search { right: auto; max-width: calc(100% - 24px); }
+      .map-layers, .map-legend { font-size: 13px; }
+    }
   </style>
 </head>
 <body>
@@ -116,7 +127,7 @@
           <li class="dropdown">
             <a class="dropbtn" href="maps.html">Maps ▾</a>
             <ul class="dropdown-content">
-              <li><a class="active" href="water-maps.html">Water Maps</a></li>
+              <li><a class="active" href="water-maps-leaflet-enhanced.html">Water Maps</a></li>
               <li><a href="highway-map.html">Highway Map</a></li>
               <li><a href="trail-maps.html">Trail Maps</a></li>
             </ul>
@@ -137,6 +148,14 @@
         <div class="map-search">
           <input id="map-search-input" type="text" placeholder="Search address, intersection, place…" aria-label="Search address"/>
           <button id="map-search-btn" type="button">Search</button>
+          <select id="zoom-select" title="Zoom to layer">
+            <option value="">Zoom to…</option>
+            <option value="hydrants">Hydrants</option>
+            <option value="cisterns">Cisterns</option>
+            <option value="outdistrict">Out of Hydrant District</option>
+            <option value="hfd">All HFD Layers</option>
+            <option value="all">Entire Map</option>
+          </select>
         </div>
         <div id="map" role="region" aria-label="Interactive water map"></div>
         <div class="map-layers">
@@ -144,6 +163,13 @@
 <label class="layer-toggle"><input type="checkbox" id="layer-cisterns" checked> Cisterns</label>
 <label class="layer-toggle"><input type="checkbox" id="layer-outdistrict" checked> Out of Hydrant District</label>
 <label class="layer-toggle"><input type="checkbox" id="layer-hfd" checked> All HFD Layers</label>
+        </div>
+        <div class="map-legend">
+          <div class="legend-title">Legend</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#e11d48;"></span>Hydrants</div>
+<div class="legend-item"><span class="legend-swatch" style="background:#059669;"></span>Cisterns</div>
+<div class="legend-item"><span class="legend-swatch" style="background:#b91c1c;"></span>Out of Hydrant District</div>
+<div class="legend-item"><span class="legend-swatch" style="background:#7c3aed;"></span>All HFD Layers</div>
         </div>
       </div>
     </section>
@@ -155,27 +181,41 @@
     </div>
   </footer>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script>
-    const layerInfo = {"Hydrants": {"id": "hydrants", "file": "hopkinton_fire_department___hydrants.geojson", "color": "#1d4ed8"}, "Cisterns": {"id": "cisterns", "file": "hopkinton_fire_department___cisterns.geojson", "color": "#059669"}, "Out of Hydrant District": {"id": "outdistrict", "file": "out_of_hydrant_district.geojson", "color": "#b91c1c"}, "All HFD Layers": {"id": "hfd", "file": "hopkinton_fire_department.geojson", "color": "#7c3aed"}};
+    const layerInfo = {"Hydrants": {"id": "hydrants", "file": "hopkinton_fire_department___hydrants.geojson", "color": "#e11d48"}, "Cisterns": {"id": "cisterns", "file": "hopkinton_fire_department___cisterns.geojson", "color": "#059669"}, "Out of Hydrant District": {"id": "outdistrict", "file": "out_of_hydrant_district.geojson", "color": "#b91c1c"}, "All HFD Layers": {"id": "hfd", "file": "hopkinton_fire_department.geojson", "color": "#7c3aed"}};
 
-    // Map
     const map = L.map('map').setView([42.228534, -71.533708], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    // Layers store
     const layers = {};
+    const layerBounds = {};
+    const allBounds = L.latLngBounds([]);
 
-    // Load GeoJSON layers
-    function pointStyleFactory(color) {
-      return (feature, latlng) => L.circleMarker(latlng, {
-        radius: 5, weight: 1, color: color, fillColor: color, fillOpacity: 0.8
+    function svgIcon(hex) {
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'>
+          <circle cx='12' cy='12' r='7' fill='${hex}' stroke='white' stroke-width='2'/>
+        </svg>`;
+      return L.icon({
+        iconUrl: 'data:image/svg+xml;utf8,' + svg,
+        iconSize: [20,20],
+        iconAnchor: [10,10],
+        popupAnchor: [0,-10]
       });
     }
+
+    function pointStyleFactory(hex, useMarker=false) {
+      if (useMarker) {
+        const icon = svgIcon(hex);
+        return (feature, latlng) => L.marker(latlng, { icon });
+      }
+      return (feature, latlng) => L.circleMarker(latlng, {
+        radius: 5, weight: 1, color: hex, fillColor: hex, fillOpacity: 0.85
+      });
+    }
+
     function defaultPopup(feature, layer) {
       const p = feature.properties||{};
       const name = p.name ? `<strong>${p.name}</strong>` : '';
@@ -186,28 +226,28 @@
       if (html) layer.bindPopup(html);
     }
 
-    const bounds = L.latLngBounds([]);
-
     Object.entries(layerInfo).forEach(([label, cfg]) => {
       fetch(cfg.file).then(r => r.json()).then(geo => {
         const isPoints = geo.features && geo.features.some(f => f.geometry && f.geometry.type === 'Point');
+        const styleFn = (f) => ({ color: cfg.color, weight: 2, fillOpacity: 0.08 });
         const layer = L.geoJSON(geo, {
-          pointToLayer: isPoints ? pointStyleFactory(cfg.color) : undefined,
-          style: () => ({ color: cfg.color, weight: 2, fillOpacity: 0.1 }),
+          pointToLayer: isPoints ? pointStyleFactory(cfg.color, false) : undefined,
+          style: styleFn,
           onEachFeature: defaultPopup
         });
+
         layers[cfg.id] = layer.addTo(map);
 
-        // expand bounds
-        try {
-          layer.getLayers().forEach(l => {
-            if (l.getLatLng) bounds.extend(l.getLatLng());
-            else if (l.getBounds) bounds.extend(l.getBounds());
-          });
-          if (bounds.isValid()) map.fitBounds(bounds.pad(0.05));
-        } catch (e) { /* ignore */ }
+        const b = L.latLngBounds([]);
+        layer.getLayers().forEach(l => {
+          if (l.getLatLng) b.extend(l.getLatLng());
+          else if (l.getBounds) b.extend(l.getBounds());
+        });
+        if (b.isValid()) {
+          layerBounds[cfg.id] = b;
+          allBounds.extend(b);
+        }
 
-        // checkbox wiring
         const cb = document.getElementById('layer-' + cfg.id);
         if (cb) cb.addEventListener('change', (e) => {
           if (e.target.checked) layers[cfg.id].addTo(map); else map.removeLayer(layers[cfg.id]);
@@ -219,7 +259,7 @@
     function doSearch(q) {
       if (!q) return;
       const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`;
-      fetch(url, { headers: {'Accept': 'application/json'} }).then(r => r.json()).then(arr => {
+      fetch(url, { headers: {'Accept': 'application/json'}, referrerPolicy: 'no-referrer' }).then(r => r.json()).then(arr => {
         if (!arr || !arr.length) { alert('Address not found'); return; }
         const r0 = arr[0];
         const lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
@@ -230,6 +270,17 @@
     document.getElementById('map-search-btn').addEventListener('click', () => doSearch(document.getElementById('map-search-input').value.trim()));
     document.getElementById('map-search-input').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); doSearch(e.target.value.trim()); }
+    });
+
+    document.getElementById('zoom-select').addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (!val) return;
+      if (val === 'all') {
+        if (allBounds.isValid()) map.fitBounds(allBounds.pad(0.05));
+        return;
+      }
+      const b = layerBounds[val];
+      if (b && b.isValid()) map.fitBounds(b.pad(0.05));
     });
   </script>
 </body>
