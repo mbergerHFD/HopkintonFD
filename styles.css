@@ -521,27 +521,38 @@ img { max-width: 100%; height: auto; display: block; }
   .town-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ==== Run Cards: Ashland page helpers ==== */
-.rc-images {
-  max-width: 900px;
-  margin: 20px auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+
+/* ==== Run Cards mobile image scaling ==== */
+@media (max-width: 768px) {
+  .rc-images {
+    width: 100%;
+    max-width: 100% !important;
+    margin: 0;
+  }
+  .rc-images img {
+    display: block;
+    width: 100% !important;
+    height: auto;
+  }
 }
-.rc-images img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+
+
+/* ==== Run Cards rc-link centering ==== */
 .rc-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 40px auto 20px;
   text-align: center;
 }
+
 .rc-link a {
   font-weight: 700;
   text-decoration: none;
   color: #0f172a;
 }
-.rc-link a:hover { text-decoration: underline; }
+
+.rc-link a:hover {
+  text-decoration: underline;
+}
+
