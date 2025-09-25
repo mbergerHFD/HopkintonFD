@@ -531,7 +531,7 @@ img { max-width: 100%; height: auto; display: block; }
   }
   .rc-images img {
     display: block;
-    width: 100% !important;
+    width: 50% !important;
     height: auto;
   }
 }
