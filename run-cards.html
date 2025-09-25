@@ -22,7 +22,7 @@
     .modal__title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px; }
     .modal__close { border: none; background: #e11d48; color: #fff; padding: 6px 10px; border-radius: 8px; font-weight: 700; cursor: pointer; }
     .modal__body { flex: 1; background: #111; }
-    .modal__iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+    .modal__iframe { width: 100%; height: 100%; border: 0; background: #fff; display: block; }
     @media (max-width: 1100px) { .town-grid { grid-template-columns: repeat(4, 1fr); } }
     @media (max-width: 900px)  { .town-grid-top { grid-template-columns: 1fr; } .town-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
@@ -271,49 +271,50 @@
       const titleEl = document.getElementById('rc-modal-title');
       const btnClose = document.getElementById('rc-modal-close');
 
-      function withBase(html, baseHref) {
-        // Inject a <base> so relative URLs in the loaded HTML resolve to the town folder.
-        const headClose = html.indexOf('</head>');
-        const baseTag = '<base href="' + baseHref + '">';
-        if (headClose !== -1) {
-          return html.slice(0, headClose) + baseTag + html.slice(headClose);
-        }
-        // If there's no head tag, prepend one
-        return '<head>' + baseTag + '</head>' + html;
+      const isIOS = /iP(hone|od|ad)/.test(navigator.platform) ||
+                    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+
+      function openModal(href, label) {
+        let url = encodeURI(href);
+        url += (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
+        titleEl.textContent = label || 'Run Cards';
+        iframe.removeAttribute('srcdoc');
+        iframe.src = url;
+
+        // If the iframe stays blank on iOS/Safari, fall back to a new tab.
+        const fallbackTimer = setTimeout(() => {
+          try {
+            const doc = iframe.contentDocument || iframe.contentWindow?.document;
+            const looksBlank = !doc || !doc.body || !doc.body.innerHTML.trim();
+            if (looksBlank) openNewTab(href);
+          } catch (e) {
+            // Cross-origin or inaccessible; open new tab
+            openNewTab(href);
+          }
+        }, 1800);
+
+        iframe.onload = () => clearTimeout(fallbackTimer);
+
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
       }
 
-      async function openModalSrcdoc(href, label) {
-        try {
-          const cacheBuster = (href.includes('?') ? '&' : '?') + 'v=' + Date.now();
-          const url = href + cacheBuster;
-          const res = await fetch(url, { credentials: 'same-origin' });
-          const text = await res.text();
-          // Compute base href from the href (directory part)
-          const baseHref = href.replace(/[^/]+$/,''); // strip file name (index.html)
-          const htmlWithBase = withBase(text, baseHref);
-          titleEl.textContent = label || 'Run Cards';
-          iframe.removeAttribute('src');
-          iframe.srcdoc = htmlWithBase;
-          modal.classList.add('is-open');
-          modal.setAttribute('aria-hidden', 'false');
-          document.body.style.overflow = 'hidden';
-        } catch (err) {
-          // Fallback: navigate to the page (new tab) if fetch fails
-          const a = document.createElement('a');
-          a.href = href;
-          a.target = '_blank';
-          a.rel = 'noopener noreferrer';
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-        }
+      function openNewTab(href) {
+        const a = document.createElement('a');
+        a.href = encodeURI(href) + (href.includes('?') ? '&' : '?') + 'v=' + Date.now();
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
       }
 
       function closeModal() {
         modal.classList.remove('is-open');
         modal.setAttribute('aria-hidden', 'true');
-        iframe.removeAttribute('srcdoc');
         iframe.removeAttribute('src');
+        iframe.removeAttribute('srcdoc');
         document.body.style.overflow = '';
       }
 
@@ -324,7 +325,8 @@
         const href = card.getAttribute('data-href');
         const label = card.getAttribute('data-title');
         if (!href) return;
-        openModalSrcdoc(href, label);
+        // Desktop works with iframe; iOS sometimes blanks -> we auto-fallback if blank
+        openModal(href, label);
       });
 
       btnClose.addEventListener('click', closeModal);
