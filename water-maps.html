@@ -6,31 +6,21 @@
   <title>Water Maps — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
   <style>
-    .map-shell { position: relative; border-radius: 12px; overflow: hidden; }
-    #map { width: 100%; height: 70vh; min-height: 420px; }
-    .map-search {
-      position: absolute; z-index: 6; top: 12px; left: 12px; right: 12px;
-      display: flex; gap: 8px; align-items: center;
-      background: rgba(255,255,255,0.95); padding: 8px; border-radius: 10px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    .map-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 ratio */
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
-    .map-search input[type="text"] {
-      flex: 1 1 auto; padding: 10px 12px; border-radius: 8px; border: 1px solid #d1d5db;
-      font-size: 16px; outline: none;
+    .map-container iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
     }
-    .map-search button {
-      flex: 0 0 auto; padding: 10px 14px; border: 0; border-radius: 8px;
-      background: #0f172a; color: #fff; font-weight: 700; cursor: pointer;
-    }
-    .map-layers {
-      position: absolute; z-index: 5; bottom: 12px; left: 12px;
-      background: rgba(255,255,255,0.95); padding: 10px 12px; border-radius: 10px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-      display: grid; grid-auto-rows: minmax(28px, auto); gap: 6px;
-      font-size: 14px;
-    }
-    .layer-toggle { user-select: none; }
-    @media (max-width: 640px) { #map { height: 60vh; min-height: 360px; } }
   </style>
 </head>
 <body>
@@ -56,7 +46,7 @@
               <li class="dropdown-submenu">
                 <a class="submenu-btn" href="engine2.html">Engine 2 ▸</a>
                 <ul class="submenu">
-                  <li><a class="" href="engine2.html">Overview</a></li>
+                  <li><a href="engine2.html">Overview</a></li>
                   <li><a href="engine2-specifications.html">Specifications</a></li>
                   <li><a href="engine2-hose.html">Hose</a></li>
                   <li><a href="engine2-equipment.html">Equipment</a></li>
@@ -66,7 +56,7 @@
               <li class="dropdown-submenu">
                 <a class="submenu-btn" href="ladder1.html">Ladder 1 ▸</a>
                 <ul class="submenu">
-                  <li><a class="" href="ladder1.html">Overview</a></li>
+                  <li><a href="ladder1.html">Overview</a></li>
                   <li><a href="ladder1-specifications.html">Specifications</a></li>
                   <li><a href="ladder1-hose.html">Hose</a></li>
                   <li><a href="ladder1-equipment.html">Equipment</a></li>
@@ -76,7 +66,7 @@
               <li class="dropdown-submenu">
                 <a class="submenu-btn" href="tanker3.html">Tanker 3 ▸</a>
                 <ul class="submenu">
-                  <li><a class="" href="tanker3.html">Overview</a></li>
+                  <li><a href="tanker3.html">Overview</a></li>
                   <li><a href="tanker3-specifications.html">Specifications</a></li>
                   <li><a href="tanker3-hose.html">Hose</a></li>
                   <li><a href="tanker3-equipment.html">Equipment</a></li>
@@ -86,7 +76,7 @@
               <li class="dropdown-submenu">
                 <a class="submenu-btn" href="rescue1.html">Rescue 1 ▸</a>
                 <ul class="submenu">
-                  <li><a class="" href="rescue1.html">Overview</a></li>
+                  <li><a href="rescue1.html">Overview</a></li>
                   <li><a href="rescue1-specifications.html">Specifications</a></li>
                   <li><a href="rescue1-hose.html">Hose</a></li>
                   <li><a href="rescue1-equipment.html">Equipment</a></li>
@@ -96,7 +86,7 @@
               <li class="dropdown-submenu">
                 <a class="submenu-btn" href="brush11.html">Brush 11 ▸</a>
                 <ul class="submenu">
-                  <li><a class="" href="brush11.html">Overview</a></li>
+                  <li><a href="brush11.html">Overview</a></li>
                   <li><a href="brush11-specifications.html">Specifications</a></li>
                   <li><a href="brush11-hose.html">Hose</a></li>
                   <li><a href="brush11-equipment.html">Equipment</a></li>
@@ -130,22 +120,14 @@
     <section class="container">
       <h2 class="section-title">Water Maps</h2>
 
-      <div class="map-shell">
-        <div class="map-search">
-          <input id="map-search-input" type="text" placeholder="Search address, intersection, place…" aria-label="Search address"/>
-          <button id="map-search-btn" type="button">Search</button>
-        </div>
-        <div id="map" role="region" aria-label="Interactive water map"></div>
-        <div class="map-layers">
-          <label class="layer-toggle"><input type="checkbox" id="layer-hydrants" checked> Hydrants</label>
-<label class="layer-toggle"><input type="checkbox" id="layer-cisterns" checked> Cisterns</label>
-<label class="layer-toggle"><input type="checkbox" id="layer-outdistrict" checked> Out of Hydrant District</label>
-<label class="layer-toggle"><input type="checkbox" id="layer-hfd" checked> Hopkinton Fire Department (All Layers)</label>
-        </div>
+      <div class="map-container">
+<iframe src="https://www.google.com/maps/d/u/0/embed?mid=1ILI8BFqIHgub-ePAD84cVfGmdEId4Pc&ehbc=2E312F&noprof=1" width="640" height="480">
+          allowfullscreen
+        ></iframe>
       </div>
 
       <p style="margin-top:12px; font-size:14px; color:#374151;">
-        Tip: Use the search box to jump to an address. Toggle layers (hydrants, cisterns, districts) using the checkboxes.
+        Embedded District 14 Water Supply Map (hydrants, cisterns, and out-of-district areas).
       </p>
     </section>
   </main>
@@ -155,63 +137,5 @@
       <p><strong>© 2025 Hopkinton Fire Department</strong></p>
     </div>
   </footer>
-
-  <script>
-    let map, marker, geocoder, autocomplete;
-    const layers = {}
-
-    function initMap() {
-      const start = { lat: 42.22853392970727, lng: -71.53370814215272 };
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: start, zoom: 12, streetViewControl: false, fullscreenControl: true
-      });
-      geocoder = new google.maps.Geocoder();
-
-      // Build KML Layers for each KMZ (served from your site)
-      const layerDefs = [{'id': 'hydrants', 'name': 'Hydrants', 'file': 'Hopkinton Fire Department - Hydrants.kmz'}, {'id': 'cisterns', 'name': 'Cisterns', 'file': 'Hopkinton Fire Department - Cisterns.kmz'}, {'id': 'outdistrict', 'name': 'Out of Hydrant District', 'file': 'Out of Hydrant District.kmz'}, {'id': 'hfd', 'name': 'Hopkinton Fire Department (All Layers)', 'file': 'Hopkinton Fire Department.kmz'}];
-      layerDefs.forEach(ld => {
-        layers[ld.id] = new google.maps.KmlLayer({
-          url: ld.file, map: map, preserveViewport: true, suppressInfoWindows: false
-        });
-        const cb = document.getElementById('layer-' + ld.id);
-        if (cb) {
-          cb.addEventListener('change', (e) => {
-            layers[ld.id].setMap(e.target.checked ? map : null);
-          });
-        }
-      });
-
-      marker = new google.maps.Marker({ map, draggable: false });
-      const input = document.getElementById('map-search-input');
-      autocomplete = new google.maps.places.Autocomplete(input, { fields: ['geometry','name','formatted_address'] });
-      autocomplete.bindTo('bounds', map);
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        if (!place || !place.geometry) { doGeocode(input.value); return; }
-        panToResult(place.geometry.location, place.name || place.formatted_address);
-      });
-      document.getElementById('map-search-btn').addEventListener('click', () => doGeocode(input.value));
-      input.addEventListener('keydown', (e) => { if (e.key==='Enter') { e.preventDefault(); doGeocode(input.value); } });
-    }
-
-    function doGeocode(query) {
-      const q = (query||'').trim(); if (!q) return;
-      geocoder.geocode({ address: q }, (results, status) => {
-        if (status === 'OK' && results && results[0]) {
-          panToResult(results[0].geometry.location, results[0].formatted_address);
-        } else { alert('Address not found: ' + status); }
-      });
-    }
-    function panToResult(latlng, label) {
-      map.panTo(latlng); map.setZoom(Math.max(map.getZoom(), 16));
-      marker.setPosition(latlng);
-      const infowin = new google.maps.InfoWindow({ content: `<div style="font-weight:700;">${label}</div>` });
-      infowin.open({ map, anchor: marker });
-      setTimeout(() => infowin.close(), 4000);
-    }
-  </script>
-
-  <!-- Replace YOUR_API_KEY with your key (with Places API enabled) -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap"></script>
 </body>
 </html>
