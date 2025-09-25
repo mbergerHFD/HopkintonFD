@@ -5,123 +5,364 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Run Cards — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
+
+  <style>
+    /* ==== Grid cards with images ==== */
+    .grid-wrap { margin-top: 24px; }
+
+    .town-grid-top {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 400px));
+      justify-content: center; /* center the two tiles */
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .town-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    .town-card {
+      display: flex;
+      flex-direction: column;
+      background: #f7f7f7;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .town-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.10); }
+
+    .town-card__media {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;           /* keep a nice card ratio */
+      background: #e9eef3;
+      overflow: hidden;
+    }
+    .town-card__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .town-card__label {
+      padding: 14px 16px;
+      font-weight: 700;
+      color: #222;
+      text-align: center;
+    }
+
+    /* ==== Modal / Lightbox ==== */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none; /* toggled via JS */
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+    }
+    .modal.is-open { display: flex; }
+
+    .modal__dialog {
+      width: min(1000px, 92vw);
+      height: min(700px, 82vh);
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      display: flex;
+      flex-direction: column;
+    }
+    .modal__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #0f172a; /* slate-900 */
+      color: #fff;
+      font-weight: 600;
+    }
+    .modal__title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 8px;
+    }
+    .modal__close {
+      border: none;
+      background: #e11d48; /* rose-600 */
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .modal__body {
+      flex: 1;
+      background: #111;
+    }
+    .modal__iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+    }
+
+    /* ==== Responsive tweaks ==== */
+    @media (max-width: 1100px) {
+      .town-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    @media (max-width: 900px) {
+      .town-grid-top { grid-template-columns: 1fr; }
+      .town-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
 <body>
-  
-<header class="site-header">
-			<div class="container">
-				<nav class="nav">
-					<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
-					<ul class="nav__links">
-						<li><a href="home.html">Home</a></li>
-						<li class="dropdown">
-							<a class="dropbtn" href="apparatus.html">Apparatus ▾</a>
-							<ul class="dropdown-content">
-								<!-- Nested submenu for Engine 1) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="engine1.html">Engine 1 ▸</a>
-									<ul class="submenu">
-										<li><a class="active" href="engine1.html">Overview</a></li>
-										<li><a href="engine1-specifications.html">Specifications</a></li>
-										<li><a href="engine1-hose.html">Hose</a></li>
-										<li><a href="engine1-equipment.html">Equipment</a></li>
-										<li><a href="engine1-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Engine 2) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="engine2.html">Engine 2 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="engine2.html">Overview</a></li>
-										<li><a href="engine2-specifications.html">Specifications</a></li>
-										<li><a href="engine2-hose.html">Hose</a></li>
-										<li><a href="engine2-equipment.html">Equipment</a></li>
-										<li><a href="engine2-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Ladder 1) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="ladder1.html">Ladder 1 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="ladder1.html">Overview</a></li>
-										<li><a href="ladder1-specifications.html">Specifications</a></li>
-										<li><a href="ladder1-hose.html">Hose</a></li>
-										<li><a href="ladder1-equipment.html">Equipment</a></li>
-										<li><a href="ladder1-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Tanker 3) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="tanker3.html">Tanker 3 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="tanker3.html">Overview</a></li>
-										<li><a href="tanker3-specifications.html">Specifications</a></li>
-										<li><a href="tanker3-hose.html">Hose</a></li>
-										<li><a href="tanker3-equipment.html">Equipment</a></li>
-										<li><a href="tanker3-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Rescue 1) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="rescue1.html">Rescue 1 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="rescue1.html">Overview</a></li>
-										<li><a href="rescue1-specifications.html">Specifications</a></li>
-										<li><a href="rescue1-hose.html">Hose</a></li>
-										<li><a href="rescue1-equipment.html">Equipment</a></li>
-										<li><a href="rescue1-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Brush 11) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="brush11.html">Brush 11 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="brush11.html">Overview</a></li>
-										<li><a href="brush11-specifications.html">Specifications</a></li>
-										<li><a href="brush11-hose.html">Hose</a></li>
-										<li><a href="brush11-equipment.html">Equipment</a></li>
-										<li><a href="brush11-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Other apparatus -->
-								<li><a href="brush6.html">Brush 6</a></li>
-								<li><a href="squad1.html">Squad 1</a></li>
-								<li><a href="boats.html">Boats</a></li>
-								<li><a href="ambulance1.html">Ambulance 1</a></li>
-								<li><a href="ambulance2.html">Ambulance 2</a></li>
-							</ul>
-						</li>
-						<li class="dropdown">
-							<a class="dropbtn" href="maps.html">Maps ▾</a>
-							<ul class="dropdown-content">
-								<li><a href="water-maps.html">Water Maps</a></li>
-								<li><a href="highway-map.html">Highway Map</a></li>
-								<li><a href="trail-maps.html">Trail Maps</a></li>
-							</ul>
-						</li>
-						<li><a href="run-cards.html">Run Cards</a></li>
-						<li><a href="erg.html">ERG</a></li>
-						<li><a href="administrative.html">Administrative</a></li>
-					</ul>
-				</nav>
-			</div>
-		</header>
+
+  <!-- Header (kept minimal here; keep your full dropdown header if you prefer) -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav">
+        <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
+        <ul class="nav__links">
+          <li><a href="home.html">Home</a></li>
+          <li><a href="apparatus.html">Apparatus</a></li>
+          <li><a href="maps.html">Maps</a></li>
+          <li><a class="active" href="run-cards.html">Run Cards</a></li>
+          <li><a href="erg.html">ERG</a></li>
+          <li><a href="administrative.html">Administrative</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
   <main>
-    
     <section class="container">
-      <div class="coming-soon">
-        <h2 class="section-title">Run Cards</h2>
-        <p>Coming Soon</p>
-        <p><a href="apparatus.html">← Back</a></p>
+      <h2 class="section-title">Run Cards</h2>
+
+      <div class="grid-wrap">
+        <!-- Top 2-column row, centered -->
+        <div class="town-grid-top">
+          <div class="town-card" data-href="hopkinton-hydrant.html" data-title="Hopkinton Hydrant District">
+            <div class="town-card__media">
+              <img src="images/run-cards/hopkinton-hydrant.jpg" alt="Hopkinton Hydrant District"/>
+            </div>
+            <div class="town-card__label">Hopkinton Hydrant District</div>
+          </div>
+
+          <div class="town-card" data-href="hopkinton-non-hydrant.html" data-title="Hopkinton Non-Hydrant District">
+            <div class="town-card__media">
+              <img src="images/run-cards/hopkinton-non-hydrant.jpg" alt="Hopkinton Non-Hydrant District"/>
+            </div>
+            <div class="town-card__label">Hopkinton Non-Hydrant District</div>
+          </div>
+        </div>
+
+        <!-- 5 × 6 grid -->
+        <div class="town-grid">
+          <!-- Replace any data-href with your PDF/URL if needed -->
+          <div class="town-card" data-href="pdf/run-cards/ashland.pdf" data-title="Ashland">
+            <div class="town-card__media"><img src="images/run-cards/ashland.jpg" alt="Ashland"></div>
+            <div class="town-card__label">Ashland</div>
+          </div>
+
+          <div class="town-card" data-href="bellingham.html" data-title="Bellingham">
+            <div class="town-card__media"><img src="images/run-cards/bellingham.jpg" alt="Bellingham"></div>
+            <div class="town-card__label">Bellingham</div>
+          </div>
+
+          <div class="town-card" data-href="blackstone.html" data-title="Blackstone">
+            <div class="town-card__media"><img src="images/run-cards/blackstone.jpg" alt="Blackstone"></div>
+            <div class="town-card__label">Blackstone</div>
+          </div>
+
+          <div class="town-card" data-href="boxborough.html" data-title="Boxborough">
+            <div class="town-card__media"><img src="images/run-cards/boxborough.jpg" alt="Boxborough"></div>
+            <div class="town-card__label">Boxborough</div>
+          </div>
+
+          <div class="town-card" data-href="framingham.html" data-title="Framingham">
+            <div class="town-card__media"><img src="images/run-cards/framingham.jpg" alt="Framingham"></div>
+            <div class="town-card__label">Framingham</div>
+          </div>
+
+          <div class="town-card" data-href="franklin.html" data-title="Franklin">
+            <div class="town-card__media"><img src="images/run-cards/franklin.jpg" alt="Franklin"></div>
+            <div class="town-card__label">Franklin</div>
+          </div>
+
+          <div class="town-card" data-href="grafto.html" data-title="Grafto">
+            <div class="town-card__media"><img src="images/run-cards/grafto.jpg" alt="Grafto"></div>
+            <div class="town-card__label">Grafto</div>
+          </div>
+
+          <div class="town-card" data-href="holliston.html" data-title="Holliston">
+            <div class="town-card__media"><img src="images/run-cards/holliston.jpg" alt="Holliston"></div>
+            <div class="town-card__label">Holliston</div>
+          </div>
+
+          <div class="town-card" data-href="hopedale.html" data-title="Hopedale">
+            <div class="town-card__media"><img src="images/run-cards/hopedale.jpg" alt="Hopedale"></div>
+            <div class="town-card__label">Hopedale</div>
+          </div>
+
+          <div class="town-card" data-href="marlborough.html" data-title="Marlborough">
+            <div class="town-card__media"><img src="images/run-cards/marlborough.jpg" alt="Marlborough"></div>
+            <div class="town-card__label">Marlborough</div>
+          </div>
+
+          <div class="town-card" data-href="maynard.html" data-title="Maynard">
+            <div class="town-card__media"><img src="images/run-cards/maynard.jpg" alt="Maynard"></div>
+            <div class="town-card__label">Maynard</div>
+          </div>
+
+          <div class="town-card" data-href="medway.html" data-title="Medway">
+            <div class="town-card__media"><img src="images/run-cards/medway.jpg" alt="Medway"></div>
+            <div class="town-card__label">Medway</div>
+          </div>
+
+          <div class="town-card" data-href="medon.html" data-title="Medon">
+            <div class="town-card__media"><img src="images/run-cards/medon.jpg" alt="Medon"></div>
+            <div class="town-card__label">Medon</div>
+          </div>
+
+          <div class="town-card" data-href="milford.html" data-title="Milford">
+            <div class="town-card__media"><img src="images/run-cards/milford.jpg" alt="Milford"></div>
+            <div class="town-card__label">Milford</div>
+          </div>
+
+          <div class="town-card" data-href="millville.html" data-title="Millville">
+            <div class="town-card__media"><img src="images/run-cards/millville.jpg" alt="Millville"></div>
+            <div class="town-card__label">Millville</div>
+          </div>
+
+          <div class="town-card" data-href="natick.html" data-title="Natick">
+            <div class="town-card__media"><img src="images/run-cards/natick.jpg" alt="Natick"></div>
+            <div class="town-card__label">Natick</div>
+          </div>
+
+          <div class="town-card" data-href="northborough.html" data-title="Northborough">
+            <div class="town-card__media"><img src="images/run-cards/northborough.jpg" alt="Northborough"></div>
+            <div class="town-card__label">Northborough</div>
+          </div>
+
+          <div class="town-card" data-href="northbridge.html" data-title="Northbridge">
+            <div class="town-card__media"><img src="images/run-cards/northbridge.jpg" alt="Northbridge"></div>
+            <div class="town-card__label">Northbridge</div>
+          </div>
+
+          <div class="town-card" data-href="sherborn.html" data-title="Sherborn">
+            <div class="town-card__media"><img src="images/run-cards/sherborn.jpg" alt="Sherborn"></div>
+            <div class="town-card__label">Sherborn</div>
+          </div>
+
+          <div class="town-card" data-href="shrewsbury.html" data-title="Shrewsbury">
+            <div class="town-card__media"><img src="images/run-cards/shrewsbury.jpg" alt="Shrewsbury"></div>
+            <div class="town-card__label">Shrewsbury</div>
+          </div>
+
+          <div class="town-card" data-href="southborough.html" data-title="Southborough">
+            <div class="town-card__media"><img src="images/run-cards/southborough.jpg" alt="Southborough"></div>
+            <div class="town-card__label">Southborough</div>
+          </div>
+
+          <div class="town-card" data-href="sudbury.html" data-title="Sudbury">
+            <div class="town-card__media"><img src="images/run-cards/sudbury.jpg" alt="Sudbury"></div>
+            <div class="town-card__label">Sudbury</div>
+          </div>
+
+          <div class="town-card" data-href="upton.html" data-title="Upton">
+            <div class="town-card__media"><img src="images/run-cards/upton.jpg" alt="Upton"></div>
+            <div class="town-card__label">Upton</div>
+          </div>
+
+          <div class="town-card" data-href="wayland.html" data-title="Wayland">
+            <div class="town-card__media"><img src="images/run-cards/wayland.jpg" alt="Wayland"></div>
+            <div class="town-card__label">Wayland</div>
+          </div>
+
+          <div class="town-card" data-href="westborough.html" data-title="Westborough">
+            <div class="town-card__media"><img src="images/run-cards/westborough.jpg" alt="Westborough"></div>
+            <div class="town-card__label">Westborough</div>
+          </div>
+        </div>
       </div>
+
+      <p style="margin-top:20px;"><a href="apparatus.html">← Back</a></p>
     </section>
-    
   </main>
+
   <footer class="site-footer">
     <div class="container">
       <p><strong>© 2025 Hopkinton Fire Department</strong></p>
     </div>
   </footer>
+
+  <!-- Modal -->
+  <div class="modal" id="rc-modal" aria-hidden="true" role="dialog" aria-label="Run Cards Viewer">
+    <div class="modal__dialog">
+      <div class="modal__bar">
+        <div class="modal__title" id="rc-modal-title">Run Cards</div>
+        <button class="modal__close" id="rc-modal-close" type="button" aria-label="Close">Close ✕</button>
+      </div>
+      <div class="modal__body">
+        <iframe id="rc-modal-iframe" class="modal__iframe" src="" title="Run Cards Content"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Lightbox behavior (similar to your image popups)
+    (function() {
+      const modal = document.getElementById('rc-modal');
+      const iframe = document.getElementById('rc-modal-iframe');
+      const title = document.getElementById('rc-modal-title');
+      const btnClose = document.getElementById('rc-modal-close');
+
+      function openModal(href, label) {
+        title.textContent = label || 'Run Cards';
+        iframe.src = href;
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        // prevent background scroll
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        iframe.src = '';
+        document.body.style.overflow = '';
+      }
+
+      // Open on card click
+      document.addEventListener('click', (e) => {
+        const card = e.target.closest('.town-card');
+        if (!card) return;
+        const href = card.getAttribute('data-href');
+        const label = card.getAttribute('data-title');
+        if (href) {
+          e.preventDefault();
+          openModal(href, label);
+        }
+      });
+
+      // Close actions
+      btnClose.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+    })();
+  </script>
 </body>
 </html>
