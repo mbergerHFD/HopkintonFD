@@ -1,4 +1,4 @@
-/* maps-shared.css — base map styling + mobile popup fixes */
+/* maps-shared.css — base map styling + mobile popup fixes (v2) */
 
 /* Map viewport container */
 .map-viewport {
@@ -8,14 +8,28 @@
   overflow: visible; /* allow popups to extend beyond container */
 }
 
+/* Also ensure the default #map element has height in case .map-viewport isn't used */
+#map {
+  width: 100%;
+  height: 70vh;
+  min-height: 420px;
+}
+
 /* Mobile-safe height */
 @supports (height: 100svh) {
   .map-viewport { height: 70svh; }
+  #map { height: 70svh; }
 }
 
 /* Leaflet container touch handling */
 .leaflet-container {
   touch-action: pan-x pan-y;
+}
+
+/* Ensure custom divIcons are visible and not boxed */
+.leaflet-div-icon {
+  background: transparent;
+  border: 0;
 }
 
 /* Popup content sizing */
@@ -66,6 +80,15 @@
 }
 
 /* Custom icons (hydrant, cistern, landing zone) */
-.hydrant-pin svg { display:block; }
-.cistern-pin svg { display:block; }
+.hydrant-pin svg,
+.cistern-pin svg,
 .lz-pin svg { display:block; }
+
+/* Give the pin a hit area and make sure it's above tiles */
+.hydrant-pin,
+.cistern-pin,
+.lz-pin {
+  width: 18px; height: 18px;
+}
+.leaflet-marker-icon { z-index: 500; }
+.leaflet-popup { z-index: 600; }
