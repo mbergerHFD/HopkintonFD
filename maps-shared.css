@@ -1,45 +1,36 @@
-/* maps-shared.css — base map styling + mobile popup fixes (v2) */
+/* maps-shared.css — v3: stronger mobile defaults */
 
-/* Map viewport container */
+/* Ensure the map host element is a real block with height */
+#map,
 .map-viewport {
+  position: relative;
+  display: block;
   width: 100%;
+  /* Use small-viewport units when available, otherwise vh */
   height: 70vh;
   min-height: 420px;
-  overflow: visible; /* allow popups to extend beyond container */
+  overflow: visible; /* allow popups outside container */
 }
 
-/* Also ensure the default #map element has height in case .map-viewport isn't used */
-#map {
-  width: 100%;
-  height: 70vh;
-  min-height: 420px;
-}
-
-/* Mobile-safe height */
 @supports (height: 100svh) {
+  #map,
   .map-viewport { height: 70svh; }
-  #map { height: 70svh; }
 }
 
-/* Leaflet container touch handling */
+/* Leaflet container should fill host height */
 .leaflet-container {
+  height: 100%;
   touch-action: pan-x pan-y;
 }
 
-/* Ensure custom divIcons are visible and not boxed */
-.leaflet-div-icon {
-  background: transparent;
-  border: 0;
-}
-
-/* Popup content sizing */
+/* Popups stay within small screens */
 .leaflet-popup-content {
   max-width: min(92vw, 420px);
   max-height: 70vh;
   overflow: auto;
 }
 
-/* Toolbar/search bar at top of map */
+/* Toolbar pinned within the map box */
 #mapToolbar {
   position: absolute;
   top: 10px;
@@ -52,11 +43,8 @@
   z-index: 1000;
 }
 
-#mapSearchForm {
-  display: flex;
-  gap: 6px;
-}
-
+/* Search controls */
+#mapSearchForm { display: flex; gap: 6px; }
 #mapSearchInput {
   flex: 1;
   padding: 4px 6px;
@@ -64,7 +52,6 @@
   border-radius: 4px;
   font-size: 14px;
 }
-
 #mapSearchForm button {
   padding: 4px 10px;
   background: #2563eb;
@@ -74,21 +61,10 @@
   font-size: 14px;
   cursor: pointer;
 }
+#mapSearchForm button:hover { background: #1e40af; }
 
-#mapSearchForm button:hover {
-  background: #1e40af;
-}
-
-/* Custom icons (hydrant, cistern, landing zone) */
-.hydrant-pin svg,
-.cistern-pin svg,
-.lz-pin svg { display:block; }
-
-/* Give the pin a hit area and make sure it's above tiles */
-.hydrant-pin,
-.cistern-pin,
-.lz-pin {
-  width: 18px; height: 18px;
-}
+/* Custom markers */
+.leaflet-div-icon { background: transparent; border: 0; }
+.hydrant-pin svg, .cistern-pin svg, .lz-pin svg { display: block; }
 .leaflet-marker-icon { z-index: 500; }
 .leaflet-popup { z-index: 600; }
