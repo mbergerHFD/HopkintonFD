@@ -1,8 +1,8 @@
-// landing-zone-map.js — diagnostic build (logs + minimal fields + geometry fallback)
+// landing-zone-map.js — robust, no-filter-by-default + centroid fallback + diagnostics
 (function(){
-  const center = [42.2289, -71.5223]; let map, searchMarker;
+  const center = [42.2289, -71.5223]; let map;
   const qs = new URLSearchParams(location.search);
-  const nofilter = qs.get("nofilter") === "1";
+  const lzOnly = qs.get("lz_only") === "1";
 
   const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
@@ -15,26 +15,6 @@
       if (m){ obj[m[1].trim()] = m[2].trim(); }
     }
     return obj;
-  }
-
-  // derive centroid for non-Point geometries
-  function centroid(coords){
-    const flat = [];
-    function walk(c){
-      if (typeof c[0] === "number"){ flat.push(c); return; }
-      for (const x of c) walk(x);
-    }
-    walk(coords);
-    let sx=0, sy=0, n=0;
-    for (const [x,y] of flat){ sx+=x; sy+=y; n++; }
-    if (!n) return null;
-    return [sx/n, sy/n];
-  }
-
-  function isLZ(props){
-    if (nofilter) return true;
-    const t = JSON.stringify(props||{}).toLowerCase();
-    return /landing\s*zone|landing\s*z|\blz\b|lz\d+/.test(t);
   }
 
   function sanitizeJSONText(s){
@@ -61,12 +41,12 @@
       try{
         const absolute = new URL(path, location.href).toString();
         const r = await fetch(absolute, {cache:'no-cache'});
-        if (!r.ok){ console.warn("[landing-zone] Not found:", absolute, r.status); continue; }
+        if (!r.ok){ console.warn("[LZ] Not found:", absolute, r.status); continue; }
         const text = await r.text();
-        try{ console.log("[landing-zone] Loaded:", absolute); return JSON.parse(text); }
-        catch(e){ console.warn("[landing-zone] Parse failed; sanitizing:", absolute, e.message);
+        try{ console.log("[LZ] Loaded:", absolute); return JSON.parse(text); }
+        catch(e){ console.warn("[LZ] Parse failed; sanitizing:", absolute, e.message);
           return JSON.parse(sanitizeJSONText(text)); }
-      }catch(e){ console.warn("[landing-zone] Fetch failed:", path, e); }
+      }catch(e){ console.warn("[LZ] Fetch failed:", path, e); }
     }
     throw new Error("No Landing Zone GeoJSON found.");
   }
@@ -74,10 +54,56 @@
   function lzSources(){
     const urlParam = new URLSearchParams(location.search).get("lz");
     const c = []; if (urlParam) c.push(urlParam);
-    c.push("data/hopkinton_fire_department.geojson","data/landing_zones.geojson","landing_zones.geojson",
-           "../data/hopkinton_fire_department.geojson","../data/landing_zones.geojson","../landing_zones.geojson",
-           "/data/hopkinton_fire_department.geojson","/data/landing_zones.geojson","/landing_zones.geojson");
+    c.push(
+      "data/landing_zones.geojson",
+      "landing_zones.geojson",
+      "data/hopkinton_fire_department.geojson",
+      "../data/landing_zones.geojson",
+      "../landing_zones.geojson",
+      "../data/hopkinton_fire_department.geojson",
+      "/data/landing_zones.geojson",
+      "/landing_zones.geojson",
+      "/data/hopkinton_fire_department.geojson"
+    );
     return [...new Set(c)];
+  }
+
+  function flattenFeatures(data){
+    // Some exports wrap features under nested collections
+    function collect(d, bag){
+      if (!d) return;
+      if (Array.isArray(d)) { d.forEach(x=>collect(x, bag)); return; }
+      if (d.type === "FeatureCollection" && Array.isArray(d.features)){
+        d.features.forEach(f=> bag.push(f));
+      } else if (d.type === "Feature"){
+        bag.push(d);
+      } else if (typeof d === "object"){
+        for (const v of Object.values(d)) collect(v, bag);
+      }
+    }
+    const out=[]; collect(data, out); return out;
+  }
+
+  function centroid(coords){
+    // naive centroid for Polygon-like nests
+    const flat = [];
+    (function walk(c){
+      if (!Array.isArray(c)) return;
+      if (typeof c[0] === "number"){ flat.push(c); return; }
+      for (const x of c) walk(x);
+    })(coords);
+    let sx=0, sy=0, n=0;
+    for (const pair of flat){
+      const x = +pair[0], y = +pair[1];
+      if (isFinite(x) && isFinite(y)){ sx+=x; sy+=y; n++; }
+    }
+    if (!n) return null;
+    return [sx/n, sy/n];
+  }
+
+  function isLandingZoneProps(props){
+    const t = JSON.stringify(props||{}).toLowerCase();
+    return /landing\s*zone|landing\s*z|\blz\b|lz\d+/.test(t);
   }
 
   function getCoords(feature){
@@ -85,16 +111,16 @@
       if (feature.geometry){
         if (feature.geometry.type === "Point"){
           const [lon, lat] = feature.geometry.coordinates || [];
-          if (isFinite(lat) && isFinite(lon)) return {lat, lon};
+          if (isFinite(lat) && isFinite(lon)) return {lat:+lat, lon:+lon};
         } else {
           const c = centroid(feature.geometry.coordinates);
-          if (c){ const [lon, lat] = c; if (isFinite(lat)&&isFinite(lon)) return {lat, lon}; }
+          if (c){ const [lon, lat] = c; if (isFinite(lat)&&isFinite(lon)) return {lat:+lat, lon:+lon}; }
         }
       }
     }catch{}
     const p = feature.properties || {};
-    const lat = parseFloat(p.Latitude || p.latitude || p.lat || "");
-    const lon = parseFloat(p.Longitude || p.longitude || p.lon || "");
+    const lat = parseFloat(p.Latitude || p.latitude || p.lat || p.Y || p.y || "");
+    const lon = parseFloat(p.Longitude || p.longitude || p.lon || p.X || p.x || "");
     return (isFinite(lat) && isFinite(lon)) ? {lat, lon} : null;
   }
 
@@ -122,8 +148,8 @@
 
   function buildPopup(feature){
     const p = feature.properties || {};
-    const descPairs = parseDescriptionBlob(p.description || p.Description || "");
-    for (const [k,v] of Object.entries(descPairs)){
+    const parsed = parseDescriptionBlob(p.description || p.Description || "");
+    for (const [k,v] of Object.entries(parsed)){
       if (v && (p[k] == null || p[k] === "")) p[k] = v;
     }
     const idRaw   = p.lz || p.LZ || p.LZ_ID || p.lz_id || p.LZId || p.id || "";
@@ -162,20 +188,20 @@
       html:'<svg viewBox="0 0 24 24" width="18" height="18" fill="#3b82f6" stroke="#1e40af" stroke-width="1.5"><polygon points="12,3 21,21 3,21"/></svg>'
     });
 
-    fetchAny(lzSources()).then(geojson => {
-      const all = geojson.features || [];
-      console.log(`[landing-zone] total features in file: ${all.length}`);
+    fetchAny(lzSources()).then(data => {
+      const all = flattenFeatures(data);
+      console.log(`[LZ] total features found (flattened): ${all.length}`);
 
       let feats = all;
-      if (!nofilter){
-        feats = all.filter(f => isLZ(f.properties||{}));
-        console.log(`[landing-zone] after LZ filter: ${feats.length}`);
+      if (lzOnly){
+        feats = all.filter(f => isLandingZoneProps(f.properties||{}));
+        console.log(`[LZ] after lz_only filter: ${feats.length}`);
       } else {
-        console.log("[landing-zone] filter disabled via ?nofilter=1");
+        console.log("[LZ] no filtering (showing all features). Add ?lz_only=1 to filter.");
       }
 
       if (feats.length === 0){
-        console.warn("[landing-zone] No features after filter; showing ALL as circles for debug.");
+        console.warn("[LZ] No features to render. Showing ALL as circleMarkers for debug.");
         feats = all;
         const layer = L.geoJSON({type:"FeatureCollection", features:feats}, {
           pointToLayer: (feature, latlng) => L.circleMarker(latlng, {radius:5, color:"#3b82f6", weight:2, fillOpacity:0.7}),
@@ -185,19 +211,30 @@
         return;
       }
 
-      const markerFeats = feats.map(f => {
-        if (f.geometry && f.geometry.type === "Point") return f;
+      // Convert non-Point geometries to markers at centroid
+      const markers = [];
+      for (const f of feats){
         const c = getCoords(f);
-        if (c){ return { type:"Feature", geometry:{type:"Point", coordinates:[c.lon, c.lat]}, properties:f.properties }; }
-        return null;
-      }).filter(Boolean);
+        if (!c) continue;
+        markers.push({ type:"Feature", geometry:{type:"Point", coordinates:[c.lon, c.lat]}, properties: f.properties });
+      }
 
-      const layer = L.geoJSON({type:"FeatureCollection", features:markerFeats}, {
+      if (markers.length === 0){
+        console.warn("[LZ] No valid coords after processing. Falling back to raw circleMarkers where possible.");
+        const layer = L.geoJSON({type:"FeatureCollection", features:feats}, {
+          pointToLayer: (feature, latlng) => L.circleMarker(latlng, {radius:5, color:"#3b82f6", weight:2, fillOpacity:0.7}),
+          onEachFeature: (feature, lyr)=> lyr.bindPopup(buildPopup(feature))
+        }).addTo(map);
+        try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
+        return;
+      }
+
+      const layer = L.geoJSON({type:"FeatureCollection", features:markers}, {
         pointToLayer: (feature, latlng) => L.marker(latlng, {icon}),
         onEachFeature: (feature, lyr)=> lyr.bindPopup(buildPopup(feature))
       }).addTo(map);
       try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
-      console.log("[landing-zone] rendered features:", layer.getLayers().length);
+      console.log("[LZ] rendered markers:", layer.getLayers().length);
     }).catch(err => {
       console.error("Failed to load Landing Zones:", err);
       L.marker(center).addTo(map).bindPopup("Landing Zone data not found.");
