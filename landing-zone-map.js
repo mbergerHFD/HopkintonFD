@@ -1,4 +1,4 @@
-// landing-zone-map.js — robust loader + LZ-only + professional popups
+// landing-zone-map.js — LZ-only, minimal popup (Coordinates, Cautions, ID, Name/Description)
 (function(){
   const center = [42.2289, -71.5223]; // Hopkinton approx
   let map, searchMarker;
@@ -6,6 +6,7 @@
   // ---------- Helpers
   const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
+  // Parse lines like "key: value" in a description blob
   function parseDescriptionBlob(txt){
     if (!txt) return {};
     const lines = String(txt).split(/\r?\n/);
@@ -21,132 +22,71 @@
     return obj;
   }
 
-  function normalize(props){
-    const p = {...props};
+  // Landing zone detection
+  function isLandingZoneProps(props){
+    const text = JSON.stringify(props || {}).toLowerCase();
+    return /landing\s*zone|landing\s*z|\blz\b|lz\d+/.test(text);
+  }
 
-    // Merge key/value pairs parsed from description
-    const descPairs = parseDescriptionBlob(p.description || p.Description || "");
+  function getCoords(feature){
+    // Prefer geometry for precise coords
+    try{
+      if (feature.geometry && feature.geometry.type === "Point"){
+        const [lon, lat] = feature.geometry.coordinates || [];
+        if (typeof lat === "number" && typeof lon === "number") return {lat, lon};
+      }
+    }catch{}
+    const p = feature.properties || {};
+    const lat = parseFloat(p.Latitude || p.latitude || p.lat || "");
+    const lon = parseFloat(p.Longitude || p.longitude || p.lon || "");
+    return (isFinite(lat) && isFinite(lon)) ? {lat, lon} : null;
+  }
+
+  function buildPopup(feature){
+    const p = feature.properties || {};
+
+    // Merge parsed description into properties (non-destructive)
+    const descText = p.description || p.Description || "";
+    const descPairs = parseDescriptionBlob(descText);
     for (const [k,v] of Object.entries(descPairs)){
       if (v && (p[k] == null || p[k] === "")) p[k] = v;
     }
 
-    // Extract common Landing Zone fields
-    const name    = p.name || p.Name || p.title || p.Title || p.lz_name || "";
-    const lzId    = p.lz || p.LZ || p.LZ_ID || p.LZId || p.lz_id || "";
-    const address = p.street_loc || p.address || p.Address || p.location || "";
-    const surface = p.surface || p.Surface || "";
-    const size    = p.size || p.Size || p.dimensions || p.Dimensions || "";
-    const notes   = p.notes || p.Notes || p.note || p.Note || "";
-    const hazards = p.hazards || p.Hazards || p.hazard || p.Hazard || "";
-    const lighting= p.lighting || p.Lighting || p.night || p.Night || "";
-    const access  = p.access || p.Access || "";
-    const lat     = p.Latitude || p.latitude || p.lat || "";
-    const lon     = p.Longitude || p.longitude || p.lon || "";
+    // ID + Name/Description
+    const idRaw   = p.lz || p.LZ || p.LZ_ID || p.lz_id || p.LZId || "";
+    const nameRaw = p.name || p.Name || p.title || p.Title || "";
+    const descr   = p.Description || p.description || "";
+    const title   = (idRaw ? `LZ ${esc(idRaw)}` : (nameRaw ? esc(nameRaw) : "Landing Zone"));
 
-    const clean = s => (s || "").toString().replace(/\\"/g,'"').replace(/\s+/g,' ').trim();
+    // Cautions (support variants: "cautions", "caution", "hazards", "notes")
+    const cautions = p.cautions || p.Cautions || p.caution || p.Caution || p.hazards || p.Hazards || p.notes || p.Notes || "";
 
-    return {
-      name: clean(name),
-      lzId: clean(lzId),
-      address: clean(address),
-      surface: clean(surface),
-      size: clean(size),
-      notes: clean(notes),
-      hazards: clean(hazards),
-      lighting: clean(lighting),
-      access: clean(access),
-      lat: clean(lat),
-      lon: clean(lon),
-      props: p
-    };
-  }
+    // Coordinates
+    const coords = getCoords(feature);
+    const coordHtml = coords ? `${coords.lat.toFixed(6)}, ${coords.lon.toFixed(6)}` : "–";
 
-  function prettyLabel(key){
-    const map = {
-      lz: "LZ ID", LZ: "LZ ID", LZ_ID: "LZ ID", lz_id: "LZ ID",
-      street_loc: "Address / Location",
-      lighting: "Lighting", night: "Night Lighting"
-    };
-    if (map[key]) return map[key];
-    return key.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
-  }
-
-  function isLandingZoneProps(props){
-    const text = JSON.stringify(props || {}).toLowerCase();
-    // Match "landing zone", "landing z", or standalone 'lz'/'lz123'
-    return /landing\s*zone|landing\s*z|\blz\b|lz\d+/.test(text);
-  }
-
-  function buildPopup(allProps){
-    const n = normalize(allProps);
-    const title = (n.lzId ? `LZ ${esc(n.lzId)}` : (n.name ? esc(n.name) : "Landing Zone"));
-
-    const coreRows = [
-      ["Surface", n.surface || "–"],
-      ["Size/Dimensions", n.size || "–"],
-      ["Access", n.access || "–"],
-      ["Lighting", n.lighting || "–"],
-      ["Hazards", n.hazards || "–"]
-    ];
-
-    const used = new Set([
-      "name","Name","title","Title","lz","LZ","lz_id","LZ_ID","LZId",
-      "street_loc","address","Address","location",
-      "surface","Surface","size","Size","dimensions","Dimensions",
-      "notes","Notes","note","Note","hazards","Hazards","hazard","Hazard",
-      "lighting","Lighting","night","Night",
-      "Latitude","Longitude","latitude","longitude","lat","lon",
-      "description","Description"
-    ]);
-
-    const rest = [];
-    for (const [k,v] of Object.entries(n.props)){
-      if (used.has(k)) continue;
-      const val = (v == null ? "" : String(v).trim());
-      if (!val) continue;
-      rest.push([prettyLabel(k), esc(val)]);
-    }
-    rest.sort((a,b)=> a[0].localeCompare(b[0]));
-
-    const addrLine = n.address ? `<p style="margin:0 0 8px; color:#111;"><strong>${esc(n.address)}</strong></p>` : "";
-
-    const coreTable = `
-      <table style="width:100%; border-collapse: collapse; font-size:0.92rem;">
-        ${coreRows.map(([k,v]) => `
-          <tr>
-            <td style="padding:4px 6px; color:#374151; white-space:nowrap;"><strong>${esc(k)}</strong></td>
-            <td style="padding:4px 6px;">${esc(v)}</td>
-          </tr>`).join("")}
-        ${(n.lat || n.lon) ? `
-          <tr><td style="padding:4px 6px; color:#374151;"><strong>Coordinates</strong></td>
-          <td style="padding:4px 6px;">${esc(n.lat||"–")}, ${esc(n.lon||"–")}</td></tr>` : ""}
-        ${n.notes ? `
-          <tr><td style="padding:4px 6px; color:#374151;"><strong>Notes</strong></td>
-          <td style="padding:4px 6px;">${esc(n.notes)}</td></tr>` : ""}
-      </table>
-    `;
-
-    const more = rest.length ? `
-      <details style="margin-top:8px;">
-        <summary style="cursor:pointer; font-weight:700; color:#1f2937;">More details</summary>
-        <div style="margin-top:6px; max-height:220px; overflow:auto; border-top:1px solid #e5e7eb; padding-top:6px;">
-          <table style="width:100%; border-collapse: collapse; font-size:0.9rem;">
-            ${rest.map(([k,v]) => `
-              <tr>
-                <td style="padding:4px 6px; color:#374151; white-space:nowrap;"><strong>${esc(k)}</strong></td>
-                <td style="padding:4px 6px;">${v}</td>
-              </tr>`).join("")}
-          </table>
-        </div>
-      </details>
-    ` : "";
+    // Description fallback if no name
+    const nameOrDesc = nameRaw ? esc(nameRaw) : (descr ? esc(String(descr).slice(0,300)) : "");
 
     return `
-      <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; min-width:260px;">
+      <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; min-width:240px;">
         <h3 style="margin:0 0 6px; font-size:1.1rem; color:#1e3a8a;">${title}</h3>
-        ${addrLine}
-        ${coreTable}
-        ${more}
+        ${nameOrDesc ? `<p style="margin:0 0 8px; color:#111;"><strong>${nameOrDesc}</strong></p>` : ""}
+        <table style="width:100%; border-collapse: collapse; font-size:0.92rem;">
+          <tr>
+            <td style="padding:4px 6px; color:#374151; white-space:nowrap;"><strong>Coordinates</strong></td>
+            <td style="padding:4px 6px;">${coordHtml}</td>
+          </tr>
+          <tr>
+            <td style="padding:4px 6px; color:#374151; white-space:nowrap;"><strong>Cautions</strong></td>
+            <td style="padding:4px 6px;">${cautions ? esc(cautions) : "–"}</td>
+          </tr>
+          ${idRaw ? `
+          <tr>
+            <td style="padding:4px 6px; color:#374151; white-space:nowrap;"><strong>ID</strong></td>
+            <td style="padding:4px 6px;">${esc(idRaw)}</td>
+          </tr>` : ""}
+        </table>
       </div>
     `;
   }
@@ -259,7 +199,7 @@
     });
 
     fetchAny(lzSources()).then(geojson => {
-      // Filter: only features whose properties look like Landing Zones
+      // Strict: only features that look like Landing Zones
       const only = {
         type: "FeatureCollection",
         features: (geojson.features || []).filter(f => isLandingZoneProps(f.properties || {}))
@@ -267,7 +207,7 @@
 
       const layer = L.geoJSON(only, {
         pointToLayer: (feature, latlng) => L.marker(latlng, {icon}),
-        onEachFeature: (f, l) => l.bindPopup(buildPopup(f.properties || {}))
+        onEachFeature: (f, l) => l.bindPopup(buildPopup(f))
       }).addTo(map);
       try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
       console.log("[landing-zone] features with popups:", layer.getLayers().length);
