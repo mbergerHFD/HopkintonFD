@@ -66,49 +66,7 @@
   else{ init(); }
 })();
 
-// === HFD: Embed an existing toolbar into Leaflet control ===
-function HFD_embedToolbarInLeaflet(map, selector){
-  try{
-    if(!map || !map.getContainer) return;
-    var el = (typeof selector === 'string') ? document.querySelector(selector) : selector;
-    if(!el) return;
-    var Ctrl = L.Control.extend({
-      onAdd: function(){
-        var div = L.DomUtil.create('div','leaflet-control map-search-control');
-        div.appendChild(el); // moves node into the control
-        L.DomEvent.disableClickPropagation(div);
-        L.DomEvent.disableScrollPropagation(div);
-        return div;
-      }
-    });
-    map.addControl(new Ctrl({position:'topright'}));
-  }catch(e){ console.warn("HFD_embedToolbarInLeaflet error:", e); }
-}
-// === End HFD block ===
+// Neutralize any old helpers that tried to move the toolbar into the map
+window.HFD_embedToolbarInLeaflet = function(){ /* no-op */ };
+window.addLeafletSearchControl = function(){ /* no-op */ };
 
-(function(){
-  if (typeof window.__HFD_SEARCH_CSS__ === 'undefined') {
-    window.__HFD_SEARCH_CSS__ = true;
-    var css = [
-      ".map-search-control{background:#fff;padding:8px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.15);max-width:clamp(220px,35vw,420px);z-index:1200;}",
-      ".map-search-control input[type=text],.map-search-control input[type=search]{width:100%;border:1px solid #ccc;border-radius:6px;padding:8px 10px;outline:none;}",
-      ".map-search-control button{padding:6px 10px;border:1px solid #ccc;border-radius:6px;background:#f7f7f7;cursor:pointer;margin-left:6px;}",
-      ".leaflet-top.leaflet-right .map-search-control{margin:12px 12px 0 0;}",
-      ".leaflet-top.leaflet-left .map-search-control{margin:12px 0 0 12px;}"
-    ].join("\\n");
-    var style = document.createElement('style'); style.textContent = css; document.head.appendChild(style);
-  }
-})();
-
-/* HFD map bootstrap */
-(function(){
-  var tries = 0;
-  var timer = setInterval(function(){
-    var candidate = (typeof map !== 'undefined' && map && map.getContainer) ? map : null;
-    if (candidate && typeof HFD_embedToolbarInLeaflet === 'function'){
-      HFD_embedToolbarInLeaflet(candidate, '#mapToolbar');
-      clearInterval(timer);
-    }
-    if (++tries > 100) clearInterval(timer);
-  }, 100);
-})();

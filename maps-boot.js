@@ -33,3 +33,8 @@
   // Expose globally so pages can call it before initializing Leaflet
   window.ensureMapHeight = ensureMapHeight;
 })();
+
+// Neutralize any old helpers that tried to move the toolbar into the map
+window.HFD_embedToolbarInLeaflet = function(){ /* no-op */ };
+window.addLeafletSearchControl = function(){ /* no-op */ };
+
