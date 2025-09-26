@@ -1,4 +1,4 @@
-// cistern-map.js — Cautions in main popup + omit empty core rows
+// cistern-map.js — ID in core, cautions up front, omit blanks, exclude LZs
 (function(){
   const center = [42.2289, -71.5223]; // Hopkinton approx
   let map, searchMarker;
@@ -21,10 +21,7 @@
     return obj;
   }
 
-  // Extract a robust "Cautions" value:
-  //  - any prop key containing "caution" or "hazard" (case-insensitive)
-  //  - or a notes/note field that mentions caution/hazard
-  //  - or a "CAUTIONS: ..." line inside description
+  // Extract a robust "Cautions" value
   function extractCautions(props){
     if (!props) return "";
     let best = "";
@@ -70,9 +67,13 @@
     const lat      = p.Latitude || p.latitude || p.lat || "";
     const cautions = extractCautions(p);
 
+    // ID candidates
+    const idVal = p.id || p.ID || p.cistern_id || p.CISTERN_ID || p.Cistern_ID || p.CISTERN || "";
+
     const clean = s => (s || "").toString().replace(/\\"/g,'"').replace(/\s+/g,' ').trim();
 
     return {
+      id: clean(idVal),
       name: clean(name),
       address: clean(address),
       capacity: clean(cap),
@@ -111,7 +112,8 @@
 
     // Build core rows and OMIT any that are empty
     const corePairs = [
-      ["Cautions", n.cautions],            // moved to core
+      ["ID", n.id],                  // <-- ID added to main table
+      ["Cautions", n.cautions],      // keep cautions prominent
       ["Capacity (gal)", n.capacity],
       ["Type", n.type],
       ["Status", n.status],
@@ -145,6 +147,7 @@
 
     // Prepare "More details" excluding keys used in core (and omitting empties)
     const used = new Set([
+      "id","ID","cistern_id","CISTERN_ID","Cistern_ID","CISTERN",
       "name","Name","title","street_loc","address","Address","location",
       "capacity","Capacity","gallons","Gallons","volume","Volume",
       "type","Type","cistern_type",
@@ -294,7 +297,16 @@
     });
 
     fetchAny(cisternSources()).then(geojson => {
-      const layer = L.geoJSON(geojson, {
+      // Exclude any features that look like Landing Zones (LZ/LZ###/Landing Zone)
+      const filtered = {
+        type: "FeatureCollection",
+        features: (geojson.features || []).filter(f => {
+          const txt = JSON.stringify(f.properties || {}).toLowerCase();
+          return !(/\blz\b|\blz\d+\b|landing\s*zone/.test(txt));
+        })
+      };
+
+      const layer = L.geoJSON(filtered, {
         pointToLayer: (feature, latlng) => L.marker(latlng, {icon}),
         onEachFeature: (f, l) => l.bindPopup(buildCisternPopup(f.properties || {}))
       }).addTo(map);
