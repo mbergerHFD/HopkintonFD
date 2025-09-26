@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta charset="utf-8"/>
+		<meta content="width=device-width, initial-scale=1" name="viewport"/>
+		<title>Engine 1 Equipment — Hopkinton Fire Department | Hopkinton Fire Department</title>
+		<link href="styles.css" rel="stylesheet"/>
+	  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+	<body>
+		
+		<main>
+			<section class="hero">
+				<img alt="Engine 1 Equipment" class="hero__image" src="images/compartments/engine2/equipment.jpg"/>
+			</section>
+			<section class="container">
+				<!-- Compartment Nav (moved from engine1.html) -->
+				<nav aria-label="Compartment navigation" class="compartment-nav">
+					<ul class="comp-links">
+						<!-- Driver's Side dropdown -->
+						<li class="comp-dropdown">
+							<button aria-expanded="false" aria-haspopup="true" class="comp-btn" type="button">
+								Driver's Side ▾
+							</button>
+							<ul class="comp-menu">
+								<li><a data-target="PumpPanel" href="#">Pump Panel</a></li>
+								<li><a data-target="D1" href="#">D1</a></li>
+								<li><a data-target="D2" href="#">D2</a></li>
+								<li><a data-target="D3" href="#">D3</a></li>
+								<li><a data-target="D4" href="#">D4</a></li>
+								<li><a data-target="D5" href="#">D5</a></li>
+							</ul>
+						</li>
+						<!-- Officer's Side dropdown -->
+						<li class="comp-dropdown">
+							<button aria-expanded="false" aria-haspopup="true" class="comp-btn" type="button">
+								Officer's Side ▾
+							</button>
+							<ul class="comp-menu">
+								<li><a data-target="O1" href="#">O1</a></li>
+								<li><a data-target="O2" href="#">O2</a></li>
+								<li><a data-target="O3" href="#">O3</a></li>
+								<li><a data-target="O4" href="#">O4</a></li>
+								<li><a data-target="O5" href="#">O5</a></li>
+							</ul>
+						</li>
+						<!-- Singles -->
+						<li><a class="comp-link" data-target="Front" href="#">Front</a></li>
+						<li><a class="comp-link" data-target="Rear" href="#">Rear</a></li>
+						<li><a class="comp-link" data-target="RearHose" href="#">Rear Hose</a></li>
+						<li><a class="comp-link" data-target="RearLadder" href="#">Rear Ladder</a></li>
+						<li><a class="comp-link" data-target="Cab" href="#">Cab</a></li>
+						<li><a class="comp-link" data-target="Top" href="#">Top</a></li>
+					</ul>
+				</nav>
+				<!-- Divider line under dropdowns -->
+				<hr class="section-divider"/>
+				<!-- FRAME: content switches here (hidden by default) -->
+				<div id="compartment-frame">
+					<!-- D1 -->
+					<section class="comp-section" hidden="" id="D1">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="D1 compartment overview" src="images/compartments/engine2/d1.jpg"/>
+								<figcaption>Driver's Compartment — D1</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Driver’s Side — D1</h2>
+								<table class="info-table">
+									<tbody>
+										<tr><td>4” Storz - 5” Storz</td><td class="img-cell"><img alt="4” Storz - 5” Storimages/Ladder1/4-5-Storz.jpgtorz.jpg"/></td></tr>
+										<tr><td>4 ½” NH Female - 6” NH Female</td><td class="img-cell"><img alt="4 ½” NH Female - 6” images/engine1/4.5-6-nh.jpgges/4.5-6-nh.jpg"/></td></tr>
+										<tr><td>6” NH Cover</td><td class="img-cell"><imgimages/Ladder1/6incap.jpg" src="images/6incap.jpg"/></td></tr>
+										<tr><td>2.5 NH Female - 2.5 NH Female <br/>Quantity: 2</td><td class="img-cell"><img alt="2.5 NH Female - 2.5 NH Femimages/Ladder1/2.5nh-ff.jpgity: 2" src="images/compartments/engine2/2.5nh-ff.jpg"/></td></tr>
+										<tr><td>2.5 NH Male - 2.5 NH Male <br/>Quantity: 2</td><td class="img-cell"><img alt="2.5 NH Male - images/Ladder1/2.5nh-mm.jpggt;Quantity: 2" src="images/compartments/engine2/2.5nh-mm.jpg"/></td></tr>
+										<tr><td>4” Storz - 2.5 NH Male</td><td class="iimages/Ladder1/4-storz-2.5m.jpgtorz - 2.5 NH Male" src="images/4-storz-2.5m.jpg"/></td></tr>
+										<tr><td>4” Storz - 2.5 NH Female</td><td climages/Ladder1/4-storz-2.5f.jpg="4” Storz - 2.5 NH Female" src="images/4-storz-2.5f.jpg"/></td></tr>
+										<tr><td>1.5 NH Female - 1.5 NPSH Male</td><tdimages/Ladder1/1.5nh-fm.jpgimg alt="1.5 NH Female - 1.5 NPSH Male" src="images/1.5nh-fm.jpg"/></td></tr>
+										<tr><td>1.5 NPSH Female - 1.5 NH Maleimages/Ladder1/1.5npsh-1.5nh-fm.jpgimg alt="1.5 NPSH Female - 1.5 NH Male" src="images/1.5npsh-1.5nh-fm.jpg"/></td></tr>
+										<tr><td>1.5 NPSH Male - 1.5 Nimages/Ladder1/1.5npsh-mm.jpgs="img-cell"><img alt="1.5 NPSH Male - 1.5 NPSH Male" src="images/compartments/engine2/1.5npsh-mm.jpg"/></td></tr>
+										<tr><td>1.5 NPSH Female - 1.5images/Ladder1/1.5npsh-ff.jpgclass="img-cell"><img alt="1.5 NPSH Female - 1.5 NPSH Female" src="images/compartments/engine2/1.5npsh-ff.jpg"/></td></tr>
+										<tr><td>Large Spanner Wrench <br/>images/Ladder1/lgspannerstorz.jpg="img-cell"><img alt="Large Spanner Wrench &lt;br&gt;Quantity: 4" src="images/compartments/engine2/lgspannerstorz.jpg"/></td></tr>
+										<tr><td>Small Spanner Wrenimages/Ladder1/smspanner.jpg/td><td class="img-cell"><img alt="Small Spanner Wrench &lt;br&gt;Quantity: 2" src="images/compartments/engine2/td><td class="img-cell"><img alt="Rubber Mallet" src="images/compartments/engine2/td><td class="img-cell"><img alt="Foam Pickup Tubeimages/Ladder1/hydrantwrench.jpgg"/></td></tr>
+										<tr><td>Hydrant Wrench</td><td class="img-cell"><img alt="Hydrant Wrench" src="images/compartments/engine2/td><td class="img-cell"><img alt="Streamlight Vulcan Box Lightimages/Ladder1/fireline.jpgnlight.jpg"/></td></tr>
+										<tr><td>Fire Scene Tape Roll</td><td class="img-cell"images/engine1/waspspray.jpge Tape Roll" src="images/fireline.jpg"/></td></tr>
+										<tr><td>Wasp Spray</td><td class="img-cell"><img alt="Wasp Spray" images/Ladder1/tft-d1024.jpgy.jpg"/></td></tr>
+										<tr><td>TFT Combination Nozzle (D1024)</td><td class="img-cell"><img alt="TFT Combination Nozzle (D1024)" src="images/compartments/engine2/tft-d1024.jpg"/></td></trimages/Ladder1/noimage.jpgd>1.4218 x 11 Female - 1” NPSH Male <br/>Quantity: 3</td><td class="img-cell"><img alt="1.4218 x 11 Female - 1” NPSH Male &lt;br&gt;Quantity: 3" src="images/compartments/engine2/noimage.jpg"/><images/Ladder1/noimage.jpg		<tr><td>1” NPSH Female - 1.4218 x 11 Male <br/>Quantity: 2</td><td class="img-cell"><img alt="1” NPSH Female - 1.4218 x 11 Male &lt;bimages/Ladder1/noimage.jpgsrc="images/noimage.jpg"/></td></tr>
+										<tr><td>1.5 NPSH Female - 1.4218 x 11 Male</td><td class="img-cell"><img alt="1.5 NPSH Female - 1.images/Ladder1/noimage.jpgc="images/noimage.jpg"/></td></tr>
+										<tr><td>1” ALFCO Shutoff with ¼” Smoothbore Tip</td><td class="img-cell"><img alt="1” ALFCO Shutoff with ¼” Smoothbore Tip" src="images/compartments/engine2/noimage.jpg"/></td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					<images/compartments/engine1/d2a.jpg					<section class="comp-section" hidden="" id="D2">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="D2 compartment (Front view)" src="images/compartments/engine2/d2a.jpg"/>
+								<figcaption>D2 Compartment — Front</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Driver’s Side — D2</h2>
+								<table class="info-table"><caption class="subheading"images/Ladder1/boltcutters.jpg				<tbody>
+										<tr><td><strong>Front</strong></td><td class="img-cell"></td></tr>
+										<tr>images/Ladder1/boltcutters.jpgtd><td class="img-cell"><img alt="24 inch bolt cutters" src="images/compartments/engine2/boltcutters.jpg"/></td></tr>
+										<tr><td>18" Bimages/Ladder1/4ft_d_hook.jpglass="img-cell"><img alt="18 inch bolt cutters" src="images/compartments/engine2/boltcutters.jpg"/></td></tr>
+										<tr><timages/Ladder1/10lb_sledge.jpgdle Roof Hook</td><td class="img-cell"><img alt="4 feet D-Handle hook" src="images/compartments/engine2/4ft_d_hook.jpg"/></td></tr>
+										<tr><td>10 lb Sledge Hammer</td><td class="img-cell">images/engine1/flatheadshovel.jpgmmer" src="images/10lb_sledge.jpg"/></td></tr>
+										<tr><td><strong>Rear</stroimages/engine1/pigtool.jpg"img-cell"></td></tr>
+										<tr><td>Flat Head Shovel</td><td class="img-cell"><img alt="flathead shovel" src="images/compartments/engine2/flatheadshovel.jpg"/></td></tr>
+										<tr><td>Pig Tool</td><td class="img-cell"><img alt="Pig Tool" src="images/compartments/engine2/pigtool.jpg"/></td></tr>
+								images/compartments/engine1/d3.jpg
+							</div>
+						</div>
+					</section>
+					<!-- D3 -->
+					<section class="comp-section" hidden="" id="D3">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="D3 compartment overview" src="images/compartments/engine2/d3.jpg"/>
+								<figcaption>D3 Compartment</figcaption>
+							</figure>
+			images/Ladder1/msa45.jpgcomp-content">
+								<h2 class="section-title">Driver’s Side — D3</h2>
+								<table class="info-table">
+									<tbody>
+				images/Ladder1/msa45.jpg00 PSI 30 MIN MSA G1 Cylinder</td><td class="img-cell"><img alt="4500 PSI 30 MIN MSA G1 Cylinder" src="images/compartments/engine2/msa45.jpg"/></td></images/Ladder1/msa45.jpgr><td>4500 PSI 30 MIN MSA G1 Cylinder</td><td class="img-cell"><img alt="4500 PSI 30 MIN MSA G1 Cylinder" src="images/compartments/engine2/msa45.jpg"/></td></tr>
+										<tr><td>4500 PSI 30 MIN MSA G1 Cylinder</td><td class="img-cell"><img alt="4500 PSI 30 MIN MSA G1 Cylinder" src="images/compartments/engine2/section>
+					<!-- D4 -->
+					<section class="comp-section" hidden="" id="D4">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="D4 compartment overview" src="images/compartments/engine2/d4.jpg"/>
+								<figcaption>D4 Compartment</images/Ladder1/msa45.jpg			</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Driver’s Side — images/engine1/def.jpg		<table class="info-table">
+									<tbody>
+										<tr><td>4500 PSI 30 MIN MSA G1 Cylinder</timages/engine1/fuelfill.jpgll"><img alt="4500 PSI 30 MIN MSA G1 Cylinder" src="images/compartments/engine2/msa45.jpg"/></td></tr>
+										<tr><td>DEF Fill (4.5 Gallons)</td><td class="img-cell"><img alt="DEF Fill" src="images/compartments/engine2/def.jpg"/></td></tr>
+										<tr><td>Fuel Fill (65 Gallons)</td><td class="img-cell"><imimages/compartments/ladder1/d5.jpgges/fuelfill.jpg"/></td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</section>
+					<!-- D5 -->
+					<section class="comp-section" hidden="" id="D5">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="D5 compartment overview" src="images/compartments/engine2/d5.jpg"/>
+								<figcaption>D5 Compartment</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Driverimages/Ladder1/flygt8.jpg
+								<table class="info-table"><caption class="subheading">Shelf 1</caption>
+									<tbody>
+			images/Ladder1/2npsh1-5nh.jpg->
+										<tr><td><strong>Shelf 1</strong></td><td class="img-cell"></td></tr>
+										<tr><td>FLYGT Ready 8 Sump Pump</td><td class="img-cell"><img alt="FLYGT Ready 8 Sump Pump" images/engine1/waynepump.jpgpg"/></td></tr>
+										<tr><td>2" NPSH - 1.5" NPSH</td><td class="img-cell"><img alt="2 NPSH - 1.5 NH" src="images/compartments/engine2/hurst110.jpg								<tr><td><a href="pdf/waynepump.pdf" rel="noopener" target="_blank">Wayne ⅙ HP Submersible Pumimages/engine1/evpowercutoff.jpg-cell"><img alt="Wayne ⅙ HP Submersible Pump" src="images/compartments/engine2/waynepump.jpg"/></td></tr>
+						images/Ladder1/glasscutter.jpg Power Supply Adapter</td><td class="img-cell"><img alt="Hurst 110V Power Supply Adapter" src="images/compartments/engine2/hurst110.jpg"/></td></images/Ladder1/speedydry.jpgd>EV Emergency Plug</td><td class="img-cell"><img alt="EV Emergency Plug" src="images/compartments/engine2/evpowercutoff.jpg"/></td></tr>
+										<tr><td>Glass Cutter</td><td class="img-cell"><img alt="Glass Cutter" src="images/compartments/engine2/glasscutter.jpg"/></td></tr>
+										<tr><td>Bucket of Speedy Dry <br/>Quantity: images/Ladder1/kobalt-230.jpgcell"><img alt="Bucket of Speedy Dry" src="images/compartments/engine2/speedydry.jpg"/></td></tr>
+										<!-- Shelf 2 -->
+										<tr><images/Ladder1/dck594P2.jpg/strong></td><td class="img-cell"></td></tr>
+										<tr><td><a href="pdf/kobalt_tool_kit.pdf" rel="noopener" target="_blank">Kobalt 230-Piece Tool Kit</a></td><td class="img-cell"><img alt="Kobalt 230-Pieceimages/Ladder1/dcf887.jpgmages/kobalt-230.jpg"/></td></tr>
+										<tr><td>Dewalt Tool Kit (DCK594P2)</td><td class="img-cell"><img alt="Dewalt Tool Kit (DCK594P2)" src="images/compartments/engine2/dck594P2.jpg"/></td></tr>
+										<trimages/Ladder1/dcd996.jpg/dcf887.pdf" rel="noopener" target="_blank">Dealt 1/4" 3-speed Impact Driver (DCF887)</a></td><td class="img-cell"><img alt='Dealt 1/4" 3-speed Impact Driver (DCF887)' src="images/compartments/engine2/dcl040.jpg"/></td></tr>
+										<tr><td><a href="pdf/dcd996.pdf" rel="noopener" target="_blank">½” Hammer Drill / Driver (DCD996)</a></td><td class="img-cell"><img alt="½” Hammer Drill / Driver (DCD996)"images/Ladder1/dcs367.jpg96.jpg"/></td></tr>
+										<tr><td><a href="pdf/dcl040.pdf" rel="noopener" target="_blank">LED Work Light (DCL040)</a></td><td class="img-cell"><img alt="LED Work Ligimages/Ladder1/dcs570.jpg"images/dcl040.jpg"/></td></tr>
+										<tr><td><a href="pdf/dcs367.pdf" rel="noopener" target="_blank">Compact Reciprocating Saw (DCS367)</a></td><td class="img-cell"><img alt="Compact Reciprocating Saw images/Ladder1/dcb205.jpgages/dcs367.jpg"/></td></tr>
+										<tr><td><a href="pdf/dcs570.pdf" rel="noopener" target="_blank">Circular Sawimages/Ladder1/reciprocatingblades.jpgmg-cell"><img alt="Circular Saw (DCS570)" src="images/compartments/engine2/dcs570.jpg"/></td></tr>
+										<tr><images/Ladder1/dewaltdrillbits.jpg" rel="noopener" target="_blank">5AH Battery (DCB205) <br/>Quantity: 2</a></td><td class="img-cimages/Ladder1/dewaltdriverset.jpg (DCB205) &lt;br&gt;Quantity: 2" src="images/dcb205.jpg"/></td></tr>
+										<tr><td>Reciprocating Saw Blades</td><td class="img-cell"><img alt="Reciprocating Saw Blades" src="images/compartments/engine2/reciprocatingblades.jpg"/></td></tr>
+										<tr><td>Drill Bit Set</td><td class="img-cell"><images/Ladder1/blockcribbing.jpgsrc="images/dewaltdrillbits.jpg"/></td></tr>
+										<tr><td>Driver Bit Set</td><td class="img-cell"><img alt="Driver Bit Set" src="images/compartments/engine2/dewaltdriverset.jpg"/></td></tr>
+images/Ladder1/pyramidcribbing.jpg
+										<tr><td><strong>Shelf 3</strong></td><td class="img-cell"></td></tr>
+										<tr><td>4”x4”x18” Block Cribbing (44PL-18) <br/>Quimages/Ladder1/stepchocks.jpgss="img-cell"><img alt="4”x4”x18” Block Cribbing (44PL-18) &lt;br&gt;Quantity: 9" src="images/compartments/engine2/blockcribbing.jpg"/></td></tr>
+			images/Ladder1/wedge.jpg”x4”x18” Pyramid Cribbing (24-18) <br/>Quantity: 6</td><td class="img-cell"><img alt="2”x4”x18” Pyramid Cribbing (24-18) &lt;br&images/Ladder1/wedge.jpgsrc="images/pyramidcribbing.jpg"/></td></tr>
+										<tr><td>Step Chock (SC-1) <br/>Quantity: 2</td><td class="img-cell"><img alt="Step Chock (SC-1) &lt;br&gt;Quantity: 2" src="images/compartments/engine2/stepchocks.jpg"/></td></tr>
+					images/Ladder1/hurstspreader.jpg <br/>Quantity: 2</td><td class="img-cell"><img alt="Large Wedge &lt;br&gt;Quantity: 2" src="images/compartments/engine2/td><td class="img-cell"><img alt="Small Wedge &lt;images/Ladder1/hurstcutter.jpg="images/wedge.jpg"/></td></tr>
+										<!-- Shelf 4 -->
+										<tr><td><strong>Shelf 4</strong></td><td class="img-cell"></td></images/Ladder1/hurstbattery.jpg0” Spreader (SP555-E2)</td><td class="img-cell"><img alt="30” Spreader (SP555-E2)" src="images/compartments/engine2/hurstspreader.jpg"/></td></tr>
+										<tr><td>53” RAM (R421-E2)</td><td class="img-cell"><img alt="53” RAM (R421-E2)" src="images/compartments/engine2/hurstram.jpg"/></td></tr>
+										<tr><timages/compartments/ladder1/O1.jpgd class="img-cell"><img alt="Cutters (S700-E2)" src="images/compartments/engine2/hurstcutter.jpg"/></td></tr>
+										<tr><td>Hurst Battery (272085410) <br/>Quantity: 3</td><td class="img-cell"><img alt="Hurst Battery (272085410)" src="images/compartments/engine2/hurstbattery.jpg"/></td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</section>
+					<!-- O1 -->
+					<section class="comp-section" hidden="" id="O1">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="O1 compartment overview" src="images/compartments/engine2/dcl079.jpgjpg"/>
+								<figcaption>Officer’s Compartment — O1</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Officer’s Side — O1</h2>
+								<table clasimages/Ladder1/dcb206.jpgaption class="subheading">Top Shelf</caption><tbody>
+										<tr><td><strong>Top Shelf</strong></td><td class="img-cell"><images/Ladder1/lgspannerstorz.jpgtd><a href="pdf/dcl079.pdf" target="_blank"><br/>Quantity: 2 Dewalt Cordless Tripod Light (DCL079)</a></td><td class="img-cell"><img alt="Dewalt Timages/Ladder1/smspanner.jpg" src="images/compartments/engine2/dcl079.jpg"/></td></tr>
+										<tr><td><a href="pdf/dcb206.pdf" target="_blankimages/Ladder1/hydrantwrench.jpgt 20V Max XR 6AH Battery (for tripod lights)</a></td><td class="img-cell"><img alt="Dewalt 6Ah Battery" srcimages/Ladder1/extensioncord50.jpg></tr>
+										<tr><td>Large Spanner Wrench <br/>Quantity: 4</td><td class="img-cell"><img alt="Large Spaimages/Ladder1/extensioncord10.jpggspannerstorz.jpg"/></td></tr>
+										<tr><td>Small Spanner Wrench <br/>Quantity: 2</td><td class="img-cell"><img alt="Small Spannerimages/Ladder1/hurstcharger.jpgity: 2" src="images/compartments/engine2/smspanner.jpg"/></td></tr>
+										<tr><td>Hydrant Wrench</td><td class="img-cell"><img alt="Hydrant Wrench" src="images/compartments/engine2/hydrantwrench.jpg"/></td></tr>
+								images/Ladder1/dcb115.jpgension Cord</td><td class="img-cell"><img alt="50 foot Extension Cord" src="images/compartments/engine2/extensioncord50.jpg"/></td></tr>
+										<tr><td>10' Extension Cord</td><td class="img-cell"><img alimages/Ladder1/dcb118.jpgion Cord" src="images/compartments/engine2/extensioncord10.jpg"/></td></tr>
+										<tr><td>Hurst eDraulic 2.0 Battery Charger</td><td class="img-cell"><img alt="Hurst eDraulic 2.0 Battery Charger" src="images/compartments/engine2/hurstcharger.jpg"/></td></tr>
+										<tr><td><a hreimages/Ladder1/hondaeu2200i.jpget="_blank">Dewalt 12V MAX – 20V MAX Battery Charger (DCB115)</a></td><td class="img-cell">images/Ladder1/supervac.jpgarger DCB115" src="images/dcb115.jpg"/></td></tr>
+										<tr><td><a href="pdf/dcb118.pdf" target="_blank">Dewalt 20V/60V MAX FLEXVOLT 8A Fast Charger (DCB118)</a></td><td class="img-cell"><img altimages/Ladder1/dcb612.jpgDCB118" src="images/compartments/engine2/dcb118.jpg"/></td></tr>
+										<tr><td><strong>Bottom Shelf</strong></td><td class="img-cell"></td></tr>
+										<tr><td><a href="pdf/eu2200i.pdf" target="_blank">Honda Generator (EU2200i)</a></td><td class="img-cell"><img alt="Honda Geimages/compartments/ladder1/O2.jpges/hondaeu2200i.jpg"/></td></tr>
+										<tr><td>SuperVac Fan</td><td class="img-cell"><img alt="SuperVac Fan" src="images/compartments/engine2/supervac.jpg"/></td></tr>
+										<tr><td><a href="pdf/dcb612.pdf" target="_blank">Dewalt 20V/60V MAX FLEXVOLT 12Ah Battery (for SuperVac Fan)</a></td><td class="img-cell"><img alt="Dewalt FLEXVOLT 12Ah Battery" src="images/compartments/engine2/dcb612.jpg"/></td></tr>
+									</tbody></table>
+							</div>
+						images/Ladder1/ritpack.jpgion>
+					<!-- O2 -->
+					<section class="comp-section" hidden="" id="O2">
+						<div class="comp-layout">
+							<figuimages/Ladder1/ritrope.jpgto">
+								<img alt="O2 compartment overview" src="images/compartments/engine2/o2.jpg"/>
+								<figcaption>Officer’s Comimages/Ladder1/highpointanchor.jpg
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Officer’s Siimages/Ladder1/noimage.jpg			<table class="info-table"><caption class="subheading">Top Shelf</caption><tbody>
+										<tr><td><strong>Top Shelf</strong></td><td class="img-cell"></td></tr>
+										<tr><td>MSA RIT Pack</td><td class="img-cell"><img alt="MSA RIT Packimages/Ladder1/noimage.jpgack.jpg"/></td></tr>
+										<tr><td>RIT Primary Search Rope (200')</td><td class="img-cell"><img alt="RIT Primary Seimages/Ladder1/noimage.jpgages/ritrope.jpg"/></td></tr>
+										<tr><td>2:1 High Point Anchor (100')</td><td class="img-cell"><img alt="2:1 High Point Anchor" src="images/compartments/engine2/gatedwye2.5_1.5.jpgtr>
+										<tr><td>Utility Rope (200')</td><td class="img-cell"><img alt="Utility Rope" src="images/compartments/engine2/noimage.jpg"/></td></tr>
+										<tr><td>images/Ladder1/spanner.jpglf</strong></td><td class="img-cell"></td></tr>
+										<tr><td>100' 1 3/4" Highrise Hose Bundle wiimages/Ladder1/highriseshorty.jpg/td><td class="img-cell"><img alt="Highrise Hose Bundle with 7/8 tip" src="images/compartments/engine2/noimage.jpg"/></td></tr>
+										<tr><td>100' 1 3/4" Highrise Hose Bundle</td><td class="img-cell"><img alt="Highrise Hose Bundle" src="images/compartments/engine2/noimage.jpg"/></td></tr>
+									images/compartments/ladder1/O3.jpgtity: 2 1.5" Gated Wye</td><td class="img-cell"><img alt='2.5" to &lt;br&gt;Quantity: 2 1.5" Gated Wye' src="images/compartments/engine2/gatedwye2.5_1.5.jpg"/></td></tr>
+										<tr><td>Small Spanner Wrench <br/>Quantity: 2</td><td class="img-cell"><img alt="Small Spanner Wrench &lt;br&gt;Quantity: 2" src="images/compartments/engine2/spanner.jpg"/><images/Ladder1/abcextinguisher.jpgd>6' of 2.5" Hose</td><td class="img-cell"><img alt='6 feet of 2.5" Hose' src="images/compartments/engine2/highriseshorty.jpg"/></images/Ladder1/abcextinguisher.jpg</table>
+							</div>
+						</div>
+					</section>
+					<!-- O3 -->
+					<section class="comp-section" hidden="" id="O3">
+				images/engine1/trianglekit.jpgout">
+							<figure class="comp-photo">
+								<img alt="O3 compartment overview" src="images/compartments/engine2/o3.jpg"/>
+								<figcaption>Officer’s Compartment — O3</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-titlimages/compartments/ladder1/O4.jpg>
+								<table class="info-table"><tbody>
+										<tr><td>ABC Fire Extinguisher</td><td class="img-cell"><img alt="ABC Fire Extinguisher" src="images/compartments/engine2/abcextinguisher.jpg"/></td></tr>
+										<tr><td>ABC Fire Extinguisher</td><td class="img-cell"><img alt="ABC Fire Extinguisher" src="images/compartments/engine2/td><td class="img-cell"><img alt="Triangle Refleimages/Ladder1/noimage.jpgsrc="images/trianglekit.jpg"/></td></tr>
+									</tbody></table>
+							</div>
+						</div>
+					</section>
+				images/Ladder1/bluetarp.jpgsection class="comp-section" hidden="" id="O4">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="O4 compartment overview" src="images/compartments/engine2/o4.jpg"/>
+								<figcaption>Officer’s Compartment — O4</figcaption>
+						images/compartments/ladder1/O5.jpgss="comp-content">
+								<h2 class="section-title">Officer’s Side — O4</h2>
+								<table class="info-table"><tbody>
+										<tr><td>CO₂ Fire Extinguisher</td><td class="img-cell"><img alt="CO2 Fire Extinguisher" src="images/compartments/engine2/co2extinguisher.jpg"/></td></tr>
+										<tr><td>Floor Runner</td><td class="img-cell"><img alt="Floor Runner" src="images/compartments/engine2/noimage.jpg"/></td></tr>
+										<tr><td>10×12 Blue Tarp <br/>Quantity: 2</td><timages/Ladder1/classbchaps.jpgg alt="10x12 Blue Tarp" src="images/bluetarp.jpg"/></td></tr>
+									</tbody></table>
+							</div>
+						</div>
+					</section>
+					<!-- images/Ladder1/forestryhelmet.jpgs="comp-section" hidden="" id="O5">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="images/engine1/blitzfire.jpg5" src="images/compartments/engine2/o5.jpg"/>
+								<figcaption>Officer’s Compartment — O5</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="sectiimages/Ladder1/chimneybucket.jpg — O5</h2>
+								<table class="info-table"><caption class="subheading">Shelf 1</caption><tbodimages/Ladder1/chimneyshovel.jpgrong>Shelf 1</strong></td><td class="img-cell"></td></tr>
+										<tr><td>Class-B Chaimages/Ladder1/handbrush.jpgclass="img-cell"><img alt="Class-B Chainsaw Chaps" src="images/compartments/engine2/classbchaps.jpg"/></td></tr>
+									images/Ladder1/inspectionmirror.jpglmet and Hearing Protection System</td><td class="img-cell"><img alt="Forestry Safety Helmet" simages/Ladder1/chimneygloves.jpgt.jpg"/></td></tr>
+										<tr><td>2 1/2" TFT Blitzfire Monitor</td><td class="img-cell">images/Ladder1/chimneybomb.jpgtzfire Monitor' src="images/blitzfire.jpg"/></td></tr>
+										<tr><td><strong>Chimney Bucket</strong></td><td class="img-cell"></td></tr>
+										<tr><td>Bucket</td><td class="img-cell"><img alt="Chimney Bucket" src="images/compartments/engine2/tft95-300.jpgjpg"/></td></tr>
+										<tr><td>Chimney Shovel</td><td class="img-cell"><img alt="Chimney Shovel" src="images/compartments/engine2/chimneyshovel.jpg"/></td></tr>
+							images/engine1/1.5sb1516.jpgh</td><td class="img-cell"><img alt="Hand Brush" src="images/compartments/engine2/handbrush.jpg"/></td></tr>
+										<tr><td>Inspection Mirror</td><td class="img-cell">images/engine1/tftautomatichalo.jpg" src="images/inspectionmirror.jpg"/></td></tr>
+										<tr><td>Chimney Gloves</td><td climages/Ladder1/4cycle.jpgmg alt="Chimney Gloves" src="images/chimneygloves.jpg"/></td></tr>
+										<tr>images/Ladder1/baroil.jpg/td><td class="img-cell"><img alt="Chimney Bomb" src="images/compartments/engine2/chimneybomb.jpg"/></td></tr>
+	images/Ladder1/2cycle.jpg<strong>Shelf 2</strong></td><td class="img-cell"></td></tr>
+										<tr><td>TFT 2.5" Automatic Nozzle (95–300 images/Ladder1/noimage.jpg><td class="img-cell"><img alt="TFT 2.5 inch Automatic Nozzle" src="images/compartments/engine2/tft95-300.jpg"/></td></tr>
+										<tr><td>TFT 1.5" Detent Shutoff with 15/16 Smoothbore Tip</td><td class="img-cell"><img alt="TFT 1.5 inch Shutoff with 15/16images/Ladder1/ms462.jpgs/1.5sb1516.jpg"/></td></tr>
+										<tr><td>TFT Dual Pressure Automatic Nozzle (100–500 GPM)</td><td class="img-cell"><img alt="TFT Dual Pressure Automatic Nozzle" srimages/Ladder1/dccs670.jpgatichalo.jpg"/></td></tr>
+										<tr><td>4-Cycle Fuel</td><td class="img-cell"><img alt="4-Cycle Fuel" src="images/compartments/engine2/4cycle.jpg"/></td></tr>
+										<tr><td>Bar Oilimages/Ladder1/dcs690.jpgmg-cell"><img alt="Bar Oil" src="images/compartments/engine2/baroil.jpg"/></td></tr>
+										<tr><td>2-Cycle Fuel</td><td class="img-cell"><img alt="2-Cycimages/Ladder1/dcb609.jpgges/2cycle.jpg"/></td></tr>
+										<tr><td>Small Engine Repair Kit</td><td class="img-cell"><img alt="Small Engine Repair Kit" src="images/compartments/engine2/noimage.jpg"/></td></tr>
+										<tr><td><strong>Shelf 3</strong></td><td class="img-cell"></td></tr>
+								images/front.jpgpdf" target="_blank">Stihl Gas Powered Chain Saw (MS462)</a></td><td class="img-cell"><img alt="Stihl MS462" src="images/compartments/engine2/ms462.jpg"/></td></tr>
+										<tr><td><a href="pdf/dccs670.pdf" target="_blank">Dewalt Battery Powered Chain Saw (DCCS670)</a></td><td class="img-cell"><img alt="Dewalt DCCS670" src="images/compartments/engine2/dccs670.jpg"/></td></tr>
+										<tr><td><a href="pdf/dcs690.pdf" target="_blank">Dewalt Battery Powered Rotary images/engine1/6nh4storz.jpg><td class="img-cell"><img alt="Dewalt DCS690" src="images/compartments/engine2/dcs690.jpg"/></td></tr>
+								images/engine1/4storzcap.jpg/60V MAX FLEXVOLT 12Ah Battery</td><td class="img-cell"><img alt="Dewalt FLEXVOLT 12Ah Battery" src="images/compartments/engine2/dcb609.jpg"/></td></tr>
+									</tbody></table>
+							</div>
+						</div>
+					</section>
+	images/engine1/trueid.jpg>
+					<section class="comp-section" hidden="" id="Front">
+						<div class="comp-layout">
+							<figure images/engine1/chiefxdcombination.jpgimg alt="Front area" src="images/compartments/front.jpg"/>
+								<figcaption>Front Bumper</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Front</h2>
+								<table class="info-table"><caption class="subheading">Fronimages/compartments/engine1/rear.jpg								<tr><td><strong>Front Intake</strong></td><td class="img-cell"></td></tr>
+										<tr><td>6" NH - 4" Storz</td><td class="img-cell"><img alt='6" NH - 4" Storz' src="images/compartments/engine2/6nh4storz.jpg"/></td></tr>
+										<tr><td>4" Storz Cap</td><td class="img-cell"><img alt='4" Storz Cap' src="images/compartments/engine2/4storzcap.jpg"/></td></tr>
+										<tr><td><strong>Hose Tray</strong></td><td class="img-cell"></td></tr>
+										<tr><td>100' 1 3/4" Attack Hose</td><td class="img-cell"images/engine1/4way.jpgfoot 1 3/4 inch Attack Hose" src="images/trueid.jpg"/></td></tr>
+										<tr><td>150 @ images/Ladder1/ruralhitch.jpg class="img-cell"><img alt="150 at 50 PSI Nozzle" src="images/compartments/engine2/chiefxdcombination.jpg"/></td></tr>
+									</tbody></table>
+							</div>
+						</div>
+					</section>
+					<!-- Rear -->
+					<section class="comp-section" hidden="images/Ladder1/lgspannerstorz.jpglass="comp-layout">
+							<figure class="comp-photo">
+								<img alt="Rear compartment overview" src="images/compartments/engine2/rear.jpg"/>
+								<images/Ladder1/smspanner.jpgcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Rimages/Ladder1/hydrantwrench.jpgclass="info-table"><caption class="subheading">Slide Out Tray</caption><tbody>
+										<tr><td><strong>Simages/Ladder1/2nhgatevalve.jpg/td><td class="img-cell"></td></tr>
+										<tr><td><a href="pdf/hydrantassistvalve.pdf" target="_blank">TFT Hydrant Assist Vimages/Ladder1/2.5to4storz.jpg="img-cell"><img alt="TFT Hydrant Assist Valve" src="images/compartments/engine2/4way.jpg"/></td></tr>
+										<tr><td>Rural Hitch</td><td class="img-cell"><img alt="Rural Hitch" src="images/compartments/engine2/ruralhitch.jpg"/></td></tr>
+										<tr><td><stroimages/Ladder1/lgspannerstorz.jpgtd><td class="img-cell"></td></tr>
+										<tr><td>Large Spanner Wrench <br/>Quantity: 2</td><td class="img-cell"images/engine1/4nhstorz.jpganner Wrench &lt;br&gt;Quantity: 2" src="images/lgspannerstorz.jpg"/></td></tr>
+										<tr><td>Small Spanner Wrench <br/>Quantity: 2</td><td class="img-cell"><img alt="Small Spanner Wrench &lt;br&gt;Quantity: 2" src="images/compartments/engine2/smspanner.jpg"/></td></tr>
+										images/compartments/engine1/rearhose.jpglass="img-cell"><img alt="Hydrant Wrench" src="images/compartments/engine2/hydrantwrench.jpg"/></td></tr>
+										<tr><td>2 1/2" NH Gate Valve</td><td class="img-cell"><img alt="2 1/2 NH Gate Valve" src="images/compartments/engine2/2nhgatevalve.jpg"/></td></tr>
+										<tr><td>2 1/2" NH - 4" Storz Gate Valve</td><td class="img-cell"><img alt="2 1/2 Nimages/Ladder1/noimage.jpgalve" src="images/compartments/engine2/2.5to4storz.jpg"/></td></tr>
+										<tr><td><strong>Doors</strong></td><td class="img-cellimages/Ladder1/noimage.jpg					<tr><td>Large Spanner Wrench <br/>Quantity: 4</td><td class="img-cell"><img alt="Large Spanner Wrench &lt;br&gt;Quantity: 4" src="images/compartments/engine2/2" NH Male - 4" Storz</td><td class="img-cell"><img alt="4 1/2 NH Male - 4 Storz" src="images/compartments/engine2/4nhstorz.jpg"/></timages/Ladder1/noimage.jpg/tbody></table>
+							</div>
+						</div>
+					</section>
+					<!-- Rear Hose -->
+					<section class="comp-section" hidden="" id="RearHose">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="Rear hose bed" src="images/compartments/engine2/figure>
+							<div class="comp-content">
+								<h2 class="section-title">Rear Hose</h2>
+								<table class="info-table"><tbody>
+										<tr><td>400' 1 3/4" hose with 7/8 Smoothbore Tip</td><td class="img-cell"><img alt="400' 1 3/4 hose with 7/8 tip" src="images/compartments/engine2/24ladder.jpg
+										<tr><td>1200' 4" Supply Hose</td><td class="img-cell"><img alt="1200' 4 inch Supply Hose" images/engine1/14roof.jpgge.jpg"/></td></tr>
+										<tr><td>400' 2 1/2" hose with 1 3/16" Smoothbore Tip</td><td class="img-cell"><img alt="4images/engine1/atticladder.jpg 1 3/16 tip" src="images/compartments/engine2/noimage.jpg"/></td></tr>
+										<tr><td>200' 2 1/2" hose with 1 3/16"images/engine1/pikepoll.jpg><td class="img-cell"><img alt="200' 2.5 inch hose with 1 3/16 tip" src="images/compartments/engine2/noimage.jpg"/><images/engine1/roofhook.jpg</tbody></table>
+							</div>
+						</div>
+					</section>
+					<!-- Rear Ladder -->
+					<section class="comp-section" hidden="" id="RearLadder">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="Rear ladder comimages/compartments/engine1/cab.jpgrtments/rearladder.jpg"/>
+								<figcaption>Rear Ladder Compartment</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Rear Ladder</h2>
+								<table class="info-table"><tbody>
+										<tr><td>24' Extension Ladder</td><td class="img-cell"><img alt="24 foot Extension Ladder" src="images/compartments/engine2/24ladder.jpg"/></td></tr>
+										<tr><td>14' Roof Ladder</td><td class="img-cell"><img alt="14 foot Roof Ladder" src="images/compartments/engine2/tr>
+										<tr><td>10' Folding Attic Ladder</td><td class="img-cell"><img alt="10 foot Folding Attic Ladder" src="images/compartments/engine2/flatheadaxe.jpg		<tr><td>10' Pike Pole</td><td class="img-cell"><img alt="10 foot Pike Pole" src="images/compartments/engine2/pikepoll.jpg"/></td></tr>
+										<tr><td>8' Roof Hook</td><td class="img-cellimages/Ladder1/watercan.jpgRoof Hook" src="images/roofhook.jpg"/></td></tr>
+									</tbody></table>
+							</div>
+						</div>
+					</section>
+					<!-- Cab -->
+					<section images/Ladder1/msa4xr.jpgon" hidden="" id="Cab">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="Cab area" src="images/compartments/engine2/cab.jpg"/>
+								<figcaptiimages/Ladder1/vulcanboxlight.jpg		</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Cab</h2>
+								<table class="info-table"><caption class=images/Ladder1/msag14500.jpghter Area (Rear)</caption><tbody>
+										<tr><td><strong>Firefighter Area (Rear)</strong></td><td class="img-cell"></td></tr>
+										<tr><td>30" Halligan Bar <br/>Quantity: 2</td><td class="img-cell"><img alt="30 inch Halligan Bar &lt;br&gimages/Ladder1/msa5x.jpgrc="images/30halligan.jpg"/></td></tr>
+										<tr><td>36" Flat Head Axe <br/>Quantity: 2</td><td class="img-cell"><iimages/Ladder1/bullardqxt.jpgHead Axe &lt;br&gt;Quantity: 2" src="images/flatheadaxe.jpg"/></td></tr>
+										<tr><td>2.5 Gallon Pressurized Water Can <br/>Quantity: 2</td><td cimages/Ladder1/vulcanboxlight.jpg"2.5 Gallon Pressurized Water Can &lt;br&gt;Quantity: 2" src="images/watercan.jpg"/></td></tr>
+										<tr><td>MSAimages/Ladder1/msag14500.jpg Detector [LEL, O₂, CO, H₂S]</td><td class="img-cell"><img alt="MSA ALTAIR 4XR Multigas Detector" src="images/engine2/knoxboxkey.jpg="Streamlight Fire Vulcan Box Light &lt;br&gt;Quantity: 2" src="images/compartments/engine2/vulcanboxlight.jpg"/></td></trimages/Ladder1/elevatorkey.jpgA G1 4500 SCBA <br/>Quantity: 2</td><td class="img-cell"><img alt="MSA G1 4500 SCBAimages/Ladder1/fuelkey.jpgy: 2" src="images/compartments/engine2/msag14500.jpg"/></td></tr>
+										<tr><td><strong>Officer Area (Front)</strong></td><td class="img-cell"></td></tr>
+										<tr><td>MSA ALTAIR 5X Multigas Detector [LEL, O₂, CO, H₂S, HCN]</tdimages/Ladder1/mustangic9002.jpgmg alt="MSA ALTAIR 5X Multigas Detector" src="images/msa5x.jpg"/></td></tr>
+										<tr><td>Bullard QXT Thermal Imaimages/Ladder1/mustangvest.jpg-cell"><img alt="Bullard QXT Thermal Imager" src="images/compartments/engine2/bullardqxt.jpg"/></td></tr>
+										<timages/Ladder1/redropebag.jpge Vulcan Box Light <br/>Quantity: 1</td><td class="img-cell"><img alt="Streamlight Fire Vulcan images/Ladder1/noimage.jpgages/vulcanboxlight.jpg"/></td></tr>
+										<tr><td>MSA G1 4500 SCBA <br/>Quantity: 1</td><td class="imgimages/Ladder1/firstinbag.jpgG1 4500 SCBA" src="images/msag14500.jpg"/></td></tr>
+										<tr><td>24" Halligan Barimages/Ladder1/oxygenbag.jpgcell"><img alt="24 inch Halligan Bar" src="images/compartments/engine2/24halligan.jpg"/></td></tr>
+										<tr><td>Knox Box Key</td><td images/Ladder1/lifepakcr2.jpg alt="Knox Box Key" src="images/knoxboxkey.jpg"/></td></tr>
+										<tr><td>Elevator Door Keyimages/Ladder1/msag1mask.jpgcell"><img alt="Elevator Door Key" src="images/compartments/engine2/elevatorkey.jpg"/></td></tr>
+									images/Ladder1/hydraram.jpgtd><td class="img-cell"><img alt="Fuel Key" src="images/compartments/engine2/fuelkey.jpg"/></td></trimages/Ladder1/ktool.jpg<td><strong>EMS Cabinet</strong></td><td class="img-cell"></td></tr>
+										<tr><td>Mustang IC9002 Water Rescue Suit</td><td class="img-cell"><img alt="Mustang IC9002 Water Rescue Suit" src="images/compartments/engine2/mustangic9002.jpg"/></td></tr>
+										<tr><td>Mustaimages/compartments/ladder1/top.jpgd class="img-cell"><img alt="Mustang Water Rescue Vest" src="images/compartments/engine2/mustangvest.jpg"/></td></tr>
+										<tr><td>185' Rope Bag</td><td class="img-cell"><img alt="185 foot Rope Bag" src="images/compartments/engine2/redropebag.jpg"/></td></tr>
+										<tr><td>90' Rope Bag</td><td class="img-cell"><img alt="90 images/Ladder1/whitebucket.jpgages/noimage.jpg"/></td></tr>
+										<tr><td>First-In Medical Bag</td><td class="img-cell"><img alt="First-In Medical Bagimages/engine1/trafficcone.jpgag.jpg"/></td></tr>
+										<tr><td>Oxygen Bag</td><td class="img-cell"><img alt="Oxygen Bag" src="images/compartments/engine2/td><td class="img-cell"><img alt="LifePak CR2 Defibrillator" srimages/engine1/floatingstrainer.jpg</td></tr>
+										<tr><td>Spare MSA Mask</td><td class="img-cell"><img alt="Spare MSA Mask" srimages/engine1/barrelstrainer.jpg></td></tr>
+										<tr><td>Hydra Ram</td><td class="img-cell"><img alt="Hydra Ram" src="images/compartments/engine2/td><td class="img-cell"><img alt="K-Tool" src="images/compartments/engine2/ktool.jpg"images/engine1/gardenhose.jpg	</tbody></table>
+							</div>
+						</div>
+					</section>
+					<!-- Top -->
+					<secimages/engine1/firerake.jpgction" hidden="" id="Top">
+						<div class="comp-layout">
+							<figure class="comp-photimages/engine1/pushbroom.jpg="Top compartment" src="images/compartments/top.jpg"/>
+								<figcaption>Top</figcaption>
+							</figure>
+							<divimages/engine1/forestryhose.jpg								<h2 class="section-title">Top</h2>
+								<table class="info-table"><tbody>
+										<tr><td>5 Gallon Bucket Speedy Dry <br/>Quantity: 2</td><td class="img-cell"><img alt="5 Gallon Speedy Dry" src=images/engine1/yellowgardenhose.jpg/td></tr>
+										<tr><td>Orange Traffic Cones <br/>Quantity: 5</td><td class="img-cell"><img alt="Orimages/engine1/gardenhosenozzle.jpgages/trafficcone.jpg"/></td></tr>
+										<tr><td>4' A-Frame Ladder</td><td class="img-cell"><iimages/engine1/redscrubbrush.jpgadder" src="images/aframeladder.jpg"/></td></tr>
+										<tr><td>Self Leveling Floating Strainer</timages/engine1/whitescrubbrush.jpgg alt="Floating Strainer" src="images/floatingstrainer.jpg"/></td></tr>
+										<trimages/engine1/gearsoap.jpgr</td><td class="img-cell"><img alt="Barrel Strainer" src="images/compartments/engine2/barrelstrainer.jpg"/></td></tr>
+										<tr><timages/engine1/2.5tohosebib.jpgantity: 2</td><td class="img-cell"><img alt="Pump Hose" src="images/compartments/engine2/pumphose.jpg"/></td></tr>
+										<tr><td>Garden Hose</td><td class="img-cell"><img alt="Garden Hose" src="images/compartments/engine2/gardenhose.jpg"/></td></tr>
+										<tr><td>5' Fire Rake</td><td class="img-cell"><img alt="Fire Rake" src="images/compartments/engine2/tr>
+										<tr><td>5' Push Broom</td><td class="img-cell"><img alt="Push Broom" src="images/compartments/engine2/pushbroom.jpg"/></td></tr>
+										<tr><td>1" Forestry Hose <br/>Quimages/engine1/tyvek400.jpglass="img-cell"><img alt="1 inch Forestry Hose" src="images/compartments/engine2/forestryhose.jpg"/></td></tr>
+									</tbody></table>
+								<table class="info-table"><caption class=images/engine1/pigpool.jpg Bucket</caption><tbody>
+										<tr><td>Garden Hose</td><td class="img-cell"><img alt="Garden Hose" src="images/compartments/engine2/yellowgardenhose.jpg"/></td></tr>
+										<tr><images/Ladder1/pigmat.jpgzzle</td><td class="img-cell"><img alt="Garden Hose Nozzle" src="images/compartments/engine2/gardenhosenozzle.jpg"/></td></tr>
+										<tr><td>Red Scrub Brush</td><td class="img-cellimages/engine1/pigboom.jpgrub Brush" src="images/redscrubbrush.jpg"/></td></tr>
+										<tr><td>White Scrub Brush</td><td class="img-cell"><img alt="White Scrub Brush" src="images/compartments/engine2/td><td class="img-cell"><img alt="Gear Soap" src="images/compartments/engine2/gearsoap.jpg"/></td></tr>
+										<tr><td>1 1/2" to 3/4" Hose Bib Reducer</td><td class="img-cell"><img alt="Hose Bib Reducer" src="images/compartments/engine2/table>
+								<table class="info-table"><caption class="subheading">Hazmat Box</captiimages/engine1/stackedtips.jpgtr><td><a href="pdf/ultranitril485.pdf" target="_blank">MAPA Ultra Nitril Chemical Protection Gloves (12 pairsimages/engine1/stackedtips.jpgmg-cell"><img alt="MAPA Gloves" src="images/compartments/engine2/mapa485.jpg"/></td></tr>
+										<tr><td><a href="pdf/tyvek400.pimages/engine1/stackedtips.jpgpont Tyvek 400 Suit <br/>Quantity: 25</a></td><td class="img-cell"><img alt="Tyvek 400 Suit" src="images/compartments/engine2/stackedtips.jpg									<tr><td><a href="pdf/pigpool.pdf" target="_blank">100 Gallon Portable Containment Pool</a></td><td class="img-cell"><img alt="Containment Pool" src="images/compartments/engine2/pigpool.jpg"/></td></tr>
+										<tr><td><a href="pdf/pigmat.pdf" target="_blank">PIG Absorbent Pad <br/>Quantity: 20</a></td><td class="img-cell"><img alt="PIG Absorbent Pad" src="images/compartments/engine2/pigmat.jpg"/></td></tr>
+										<tr><td><a href="pdf/pigboom.pdf" target="_blank">PIG Absorbent Boom 5"x10' <br/>Quantity: 2</a></td><td class="img-cell"><img alt="PIG Boom" src="images/compartments/engine2/pigboom.jpg"/></td></tr>
+										<tr><td><a href="pdf/indianbag.pdf" target="_blank">Collapsible Indian Fire Tank Bag w/ Pump</a></td><td class="img-cell"><img alt="Indian Fire Tank Bag" src="images/compartments/engine2/indianwatercan.jpg"/></td></tr>
+									</tbody></table>
+								<table class="info-table"><caption class="subheading">Apollo Hi-Riser Deck Gun</caption><tbody>
+										<tr><td>Apollo Hi-Riser Deck Gun</td><td class="img-cell"><img alt="Deck Gun" src="images/compartments/engine2/deckgun.jpg"/></td></tr>
+										<tr><td>2" Tip – 1,063 GPM @ 80 PSI</td><td class="img-cell"><img alt="2 inch Tip" src="images/compartments/engine2/stackedtips.jpg"/></td></tr>
+										<tr><td>1 3/4" Tip – 814 GPM @ 80 PSI</td><td class="img-cell"><img alt="1 3/4 inch Tip" src="images/compartments/engine2/stackedtips.jpg"/></td></tr>
+										<tr><td>1 1/2" Tip – 598 GPM @ 80 PSI</td><td class="img-cell"><img alt="1 1/2 inch Tip" src="images/compartments/engine2/stackedtips.jpg"/></td></tr>
+										<tr><td>1 3/8" Tip – 502 GPM @ 80 PSI</td><td class="img-cell"><img alt="1 3/8 inch Tip" src="images/compartments/engine2/stackedtips.jpg"/></td></tr>
+									</tbody></table>
+							</div>
+						</div>
+					</section>
+					<!-- Pump Panel (placeholder) -->
+					<section class="comp-section" hidden="" id="PumpPanel">
+						<div class="comp-layout">
+							<figure class="comp-photo">
+								<img alt="Pump Panel" src="images/compartments/engine2/pumppanel.jpg"/>
+								<figcaption>Pump Panel</figcaption>
+							</figure>
+							<div class="comp-content">
+								<h2 class="section-title">Driver’s Side — Pump Panel</h2>
+								<table class="info-table"><tbody>
+										<tr><td>—</td><td class="img-cell"></td></tr>
+									</tbody></table>
+							</div>
+						</div>
+					</section>
+				</div>
+			</section>
+		</main>
+		<!-- Footer -->
+		
+		<!-- Image Modal -->
+		<div class="modal" id="imgModal">
+			<div class="modal-content-wrapper">
+				<span class="close">×</span>
+				<img alt="" class="modal-content" id="modalImage"/>
+				<div id="caption"></div>
+			</div>
+		</div>
+		<!-- JavaScript (moved here from engine1.html) -->
+		
+	  <script src="assets/js/site.js"></script>
+<footer class="site-footer">
+    <div class="container">
+      <p><strong>© 2025 Hopkinton Fire Department</strong></p>
+    </div>
+  </footer>
+</body>
+</html>
