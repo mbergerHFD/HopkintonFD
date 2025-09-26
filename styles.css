@@ -571,3 +571,27 @@ img { max-width: 100%; height: auto; display: block; }
   }
 }
 
+/* Ensure header & dropdowns sit above map/search */
+.site-header { position: relative; z-index: 2000; }
+.nav, .nav * { position: relative; z-index: 2001; }
+
+/* Your dropdown panes */
+.dropdown-content,
+.submenu {
+  position: absolute;           /* already true in your site, keep it */
+  z-index: 2100;                /* higher than any map controls */
+}
+
+/* Map containers should NOT sit above header */
+.leaflet-container { z-index: 0; }
+.leaflet-control-container { z-index: 300; }  /* default Leaflet is ~1000; lower it */
+
+/* Your custom search bar above map tiles, but below header */
+.map-shell { position: relative; }            /* create a local stacking context */
+.map-shell .map-search { position: relative; z-index: 150; }
+
+/* In case any parent had overflow that clipped dropdowns */
+.site-header .container,
+.nav,
+.dropdown { overflow: visible; }
+

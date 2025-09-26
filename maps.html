@@ -1,11 +1,37 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-		<meta charset="utf-8"/>
-		<meta content="width=device-width, initial-scale=1" name="viewport"/>
-		<title>Maps — Hopkinton Fire Department</title>
-		<link href="styles.css" rel="stylesheet"/>
-	</head>
-	<body class="page-maps"><header class="site-header">
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Maps</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .card {
+      text-decoration: none;
+      color: inherit;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,.12);
+      background: #fff;
+    }
+    .card__figure { position: relative; margin: 0; }
+    .card__figure img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .card__caption {
+      position: absolute; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,.0));
+      color: #fff; padding: 10px 12px; font-weight: 700;
+      text-shadow: 0 1px 2px rgba(0,0,0,.6);
+    }
+  </style>
+</head>
+<body>
+      <header class="site-header">
 			<div class="container">
 				<nav class="nav">
 					<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
@@ -91,8 +117,11 @@
 						<li class="dropdown">
 							<a class="dropbtn" href="maps.html">Maps ▾</a>
 							<ul class="dropdown-content">
-								<li><a href="water-maps.html">Water Maps</a></li>
-								<li><a href="highway-map.html">Highway Map</a></li>
+								<li><a href="water-maps.html">Hydrant Maps</a></li>
+								<li><a href="cistern-map.html">Cistern Maps</a></li>
+								<li><a href="landing-zone.html">Landing Zone Maps</a></li>
+								<li><a href="out-of-hydrant.html">Out of Hydrant District</a></li>
+								<li><a href="highway-maps.html">Highway Map</a></li>
 								<li><a href="trail-maps.html">Trail Maps</a></li>
 							</ul>
 						</li>
@@ -102,8 +131,49 @@
 					</ul>
 				</nav>
 			</div>
-		</header><main class="container"><h1 class="section-title">Maps</h1><section class="landing"><div class="landing-grid"><a class="landing-card" href="water-maps.html"><img alt="Water Maps" src="images/water-maps.jpg"/><div class="label">Water Maps</div></a><a class="landing-card" href="highway-maps.html"><img alt="Highway Maps" src="images/highway-maps.jpg"/><div class="label">Highway Maps</div></a><a class="landing-card" href="trail-maps.html"><img alt="Trail Maps" src="images/trail-maps.jpg"/><div class="label">Trail Maps</div></a></div></section></main><footer class="site-footer">
+		</header>
+
+  <main>
+    <section class="container">
+      <h2 class="section-title">Maps</h2>
+      <div class="cards-grid">
+
+        <a class="card" href="water-maps.html">
+          <figure class="card__figure">
+            <img src="images/maps/hydrant-maps.jpg" alt="Hydrant Maps"/>
+            <figcaption class="card__caption">Hydrant Maps</figcaption>
+          </figure>
+        </a>
+
+        <a class="card" href="cistern-map.html">
+          <figure class="card__figure">
+            <img src="images/maps/cistern-maps.jpg" alt="Cistern Maps"/>
+            <figcaption class="card__caption">Cistern Maps</figcaption>
+          </figure>
+        </a>
+
+        <a class="card" href="out-of-hydrant.html">
+          <figure class="card__figure">
+            <img src="images/maps/out-of-hydrant-district.jpg" alt="Out of Hydrant District"/>
+            <figcaption class="card__caption">Out of Hydrant District</figcaption>
+          </figure>
+        </a>
+
+        <a class="card" href="landing-zone.html">
+          <figure class="card__figure">
+            <img src="images/maps/landing-zone-maps.jpg" alt="Landing Zone Maps"/>
+            <figcaption class="card__caption">Landing Zone Maps</figcaption>
+          </figure>
+        </a>
+
+      </div>
+    </section>
+  </main>
+
+      <footer class="site-footer">
 			<div class="container">
 				<p><strong>© Hopkinton Fire Department</strong></p>
 			</div>
-		</footer></body></html>
+		</footer>
+</body>
+</html>

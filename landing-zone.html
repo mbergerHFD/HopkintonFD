@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="water-maps.css"/>
 </head>
 <body>
-  <header class="site-header">
+      <header class="site-header">
+			<div class="container">
 				<nav class="nav">
 					<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
 					<ul class="nav__links">
@@ -72,6 +73,17 @@
 										<li><a href="rescue1-foam.html">Foam Operations</a></li>
 									</ul>
 								</li>
+								<!-- Nested submenu for Brush 11) -->
+								<li class="dropdown-submenu">
+									<a class="submenu-btn" href="brush11.html">Brush 11 ▸</a>
+									<ul class="submenu">
+										<li><a class="" href="brush11.html">Overview</a></li>
+										<li><a href="brush11-specifications.html">Specifications</a></li>
+										<li><a href="brush11-hose.html">Hose</a></li>
+										<li><a href="brush11-equipment.html">Equipment</a></li>
+										<li><a href="brush11-foam.html">Foam Operations</a></li>
+									</ul>
+								</li>
 								<!-- Other apparatus -->
 								<li><a href="brush6.html">Brush 6</a></li>
 								<li><a href="squad1.html">Squad 1</a></li>
@@ -83,8 +95,11 @@
 						<li class="dropdown">
 							<a class="dropbtn" href="maps.html">Maps ▾</a>
 							<ul class="dropdown-content">
-								<li><a href="water-maps.html">Water Maps</a></li>
-								<li><a href="highway-map.html">Highway Map</a></li>
+								<li><a href="water-maps.html">Hydrant Maps</a></li>
+								<li><a href="cistern-map.html">Cistern Maps</a></li>
+								<li><a href="landing-zone.html">Landing Zone Maps</a></li>
+								<li><a href="out-of-hydrant.html">Out of Hydrant District</a></li>
+								<li><a href="highway-maps.html">Highway Map</a></li>
 								<li><a href="trail-maps.html">Trail Maps</a></li>
 							</ul>
 						</li>
@@ -93,7 +108,8 @@
 						<li><a href="administrative.html">Administrative</a></li>
 					</ul>
 				</nav>
-  </header>
+			</div>
+		</header>
 
   <main>
     <section class="container">
@@ -113,9 +129,11 @@
       </div>
     </section>
   </main>
-  <footer class="site-footer">
-    <div class="container">© Hopkinton Fire Department</div>
-  </footer>
+      <footer class="site-footer">
+			<div class="container">
+				<p><strong>© Hopkinton Fire Department</strong></p>
+			</div>
+		</footer>
 
   <script src="leaflet/leaflet.js"></script>
   <script src="landing-zone.js"></script>

@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Hydrant Map</title>
+  <title>Cistern Map</title>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="leaflet/leaflet.css"/>
   <link rel="stylesheet" href="water-maps.css"/>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
+      <header class="site-header">
+			<div class="container">
 				<nav class="nav">
 					<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
 					<ul class="nav__links">
@@ -108,30 +108,30 @@
 						<li><a href="administrative.html">Administrative</a></li>
 					</ul>
 				</nav>
-    </div>
-  </header>
+			</div>
+		</header>
 
   <main>
     <section class="container">
-      <h2 class="section-title">Hydrant Map</h2>
+      <h2 class="section-title">Cistern Map</h2>
       <div class="map-shell">
         <div class="map-search">
-          <input id="hydrant-search-input" type="text" placeholder="Search address…" aria-label="Search hydrant map"/>
-          <button id="hydrant-search-btn" type="button">Search</button>
+          <input id="cistern-search-input" type="text" placeholder="Search address…" aria-label="Search cistern map"/>
+          <button id="cistern-search-btn" type="button">Search</button>
         </div>
-        <div id="hydrant-map" style="height:520px;" role="region" aria-label="Hydrant map"></div>
-        <div id="hydrant-toast" class="map-toast" aria-live="polite"></div>
+        <div id="cistern-map" style="height:520px;" role="region" aria-label="Cistern map"></div>
+        <div id="cistern-toast" class="map-toast" aria-live="polite"></div>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container">
-      <p><strong>© Hopkinton Fire Department</strong></p>
-    </div>
-  </footer>
+      <footer class="site-footer">
+			<div class="container">
+				<p><strong>© Hopkinton Fire Department</strong></p>
+			</div>
+		</footer>
 
   <script src="leaflet/leaflet.js"></script>
-  <script src="hydrant-map.js"></script>
+  <script src="cistern-map.js"></script>
 </body>
 </html>
