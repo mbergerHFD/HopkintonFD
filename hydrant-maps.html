@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hydrant Map — Hopkinton Fire Department</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23ef4444'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css" />
+  <title>Hydrant Map - Hopkinton Fire Department</title>
+
+  <!-- Main site styles -->
+  <link rel="stylesheet" href="styles.css?v=2" />
+
+  <!-- Leaflet core CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-  <link rel="stylesheet" href="maps-shared.css" />
+
+  <!-- Shared map styles -->
+  <link rel="stylesheet" href="maps-shared.css?v=2" />
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <nav class="nav nav--stack">
+      <nav class="nav">
         <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
         <ul class="nav__links">
           <li><a href="home.html">Home</a></li>
@@ -28,23 +32,35 @@
   </header>
 
   <main class="container">
-    <h1 class="section-title">Hydrant Map</h1>
-    <div class="map-toolbar" role="search">
-      <form id="mapSearchForm" class="map-search" autocomplete="off">
-        <input id="mapSearchInput" type="search" placeholder="Search address or place..." aria-label="Search address">
-        <button type="submit" title="Search">Search</button>
+    <h1 style="text-align:center; margin: 1rem 0;">Hydrant Map</h1>
+
+    <!-- Search bar -->
+    <div id="mapToolbar">
+      <form id="mapSearchForm">
+        <input type="text" id="mapSearchInput" placeholder="Search address or place..." />
+        <button type="submit">Search</button>
       </form>
-      <div class="map-legend"><span class="legend-item"><span class="swatch hydrant"></span>Hydrant</span></div>
     </div>
-    <div id="map" class="map-viewport" aria-label="Hydrant Map"></div>
+
+    <!-- Map container (with inline height fallback for iOS Safari) -->
+    <div id="map" class="map-viewport" style="height:70svh; min-height:420px;" aria-label="Hydrant map"></div>
   </main>
 
-  <footer class="site-footer">
-    <div class="container"><p><strong>© Hopkinton Fire Department</strong></p></div>
-  </footer>
-
+  <!-- Leaflet core JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-  <script defer src="hydrant-map.js"></script>
+
+  <!-- Your hydrant map script -->
+  <script src="hydrant-map.js?v=2" defer></script>
+
+  <script>
+    // Extra mobile safeguard if iOS reports tiny map height
+    document.addEventListener("DOMContentLoaded", () => {
+      const el = document.getElementById("map");
+      if (el && el.clientHeight < 150) {
+        el.style.height = "70svh";
+        el.style.minHeight = "420px";
+      }
+    });
+  </script>
 </body>
 </html>

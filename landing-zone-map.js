@@ -1,8 +1,8 @@
-// landing-zone-map.js — robust, no-filter-by-default + centroid fallback + diagnostics
+// landing-zone-map.js — STRICT LZ filter by default, robust & minimal
 (function(){
   const center = [42.2289, -71.5223]; let map;
   const qs = new URLSearchParams(location.search);
-  const lzOnly = qs.get("lz_only") === "1";
+  const nofilter = qs.get("nofilter") === "1";  // set ?nofilter=1 to disable filtering
 
   const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
@@ -17,6 +17,7 @@
     return obj;
   }
 
+  // ---------- Loading (multi-path + sanitizing)
   function sanitizeJSONText(s){
     let out="",inStr=false,escaped=false;
     for (let i=0;i<s.length;i++){
@@ -68,8 +69,8 @@
     return [...new Set(c)];
   }
 
+  // ---------- Feature handling
   function flattenFeatures(data){
-    // Some exports wrap features under nested collections
     function collect(d, bag){
       if (!d) return;
       if (Array.isArray(d)) { d.forEach(x=>collect(x, bag)); return; }
@@ -84,8 +85,20 @@
     const out=[]; collect(data, out); return out;
   }
 
+  function looksLikeLZ(props){
+    const p = props || {};
+    const text = JSON.stringify(p).toLowerCase();
+    if (/landing\s*zone|landing\s*z|\blz\b|lz\d+/.test(text)) return true;
+
+    // Also accept explicit ID/Name patterns
+    const id = (p.lz || p.LZ || p.LZ_ID || p.lz_id || p.LZId || p.id || "").toString();
+    const name = (p.name || p.Name || p.title || p.Title || "").toString();
+    if (/^lz\s*\d+/i.test(id) || /^lz\s*\d+/i.test(name)) return true;
+
+    return false;
+  }
+
   function centroid(coords){
-    // naive centroid for Polygon-like nests
     const flat = [];
     (function walk(c){
       if (!Array.isArray(c)) return;
@@ -99,11 +112,6 @@
     }
     if (!n) return null;
     return [sx/n, sy/n];
-  }
-
-  function isLandingZoneProps(props){
-    const t = JSON.stringify(props||{}).toLowerCase();
-    return /landing\s*zone|landing\s*z|\blz\b|lz\d+/.test(t);
   }
 
   function getCoords(feature){
@@ -171,6 +179,7 @@
       </table></div>`;
   }
 
+  // ---------- Init
   function init(){
     const el = document.getElementById("map"); if(!el){ console.error("#map missing"); return; }
     map = L.map(el).setView(center, 13);
@@ -193,40 +202,22 @@
       console.log(`[LZ] total features found (flattened): ${all.length}`);
 
       let feats = all;
-      if (lzOnly){
-        feats = all.filter(f => isLandingZoneProps(f.properties||{}));
-        console.log(`[LZ] after lz_only filter: ${feats.length}`);
+      if (!nofilter){
+        feats = all.filter(f => looksLikeLZ(f.properties||{}));
+        console.log(`[LZ] after STRICT LZ filter: ${feats.length}`);
       } else {
-        console.log("[LZ] no filtering (showing all features). Add ?lz_only=1 to filter.");
+        console.log("[LZ] filter disabled via ?nofilter=1 (showing all features).");
       }
 
       if (feats.length === 0){
-        console.warn("[LZ] No features to render. Showing ALL as circleMarkers for debug.");
-        feats = all;
-        const layer = L.geoJSON({type:"FeatureCollection", features:feats}, {
-          pointToLayer: (feature, latlng) => L.circleMarker(latlng, {radius:5, color:"#3b82f6", weight:2, fillOpacity:0.7}),
-          onEachFeature: (feature, lyr)=> lyr.bindPopup(buildPopup(feature))
-        }).addTo(map);
-        try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
-        return;
+        console.warn("[LZ] No features after filter. If your LZs use a specific key, tell me and I'll match it precisely.");
       }
 
-      // Convert non-Point geometries to markers at centroid
       const markers = [];
       for (const f of feats){
         const c = getCoords(f);
         if (!c) continue;
         markers.push({ type:"Feature", geometry:{type:"Point", coordinates:[c.lon, c.lat]}, properties: f.properties });
-      }
-
-      if (markers.length === 0){
-        console.warn("[LZ] No valid coords after processing. Falling back to raw circleMarkers where possible.");
-        const layer = L.geoJSON({type:"FeatureCollection", features:feats}, {
-          pointToLayer: (feature, latlng) => L.circleMarker(latlng, {radius:5, color:"#3b82f6", weight:2, fillOpacity:0.7}),
-          onEachFeature: (feature, lyr)=> lyr.bindPopup(buildPopup(feature))
-        }).addTo(map);
-        try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
-        return;
       }
 
       const layer = L.geoJSON({type:"FeatureCollection", features:markers}, {
