@@ -107,7 +107,9 @@
   function init(){
     const el = document.getElementById("map"); if(!el){ console.error("#map missing"); return; }
     map = L.map(el).setView(center, 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+    
+  try{ HFD_bindToolbarSearch(map, { zoom: 16 }); }catch(e){ console.warn('bind search failed', e); }
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 
     // Mobile sizing fix
     function fixSizeSoon(d=0){ setTimeout(()=> map.invalidateSize(true), d); }
