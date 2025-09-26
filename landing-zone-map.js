@@ -1,4 +1,4 @@
-// landing-zone-map.js — LZ-only, minimal popup (Coordinates, Cautions, ID, Name/Description)
+// landing-zone-map.js — ensure CAUTIONS show up (case-insensitive + description scan)
 (function(){
   const center = [42.2289, -71.5223]; // Hopkinton approx
   let map, searchMarker;
@@ -6,7 +6,6 @@
   // ---------- Helpers
   const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
-  // Parse lines like "key: value" in a description blob
   function parseDescriptionBlob(txt){
     if (!txt) return {};
     const lines = String(txt).split(/\r?\n/);
@@ -22,14 +21,59 @@
     return obj;
   }
 
-  // Landing zone detection
+  // case-insensitive getter across props (keys may vary in case/underscore)
+  function getCI(props, names){
+    const entries = Object.entries(props || {});
+    for (const want of names){
+      const wantLc = want.toLowerCase();
+      for (const [k,v] of entries){
+        if (k && String(k).toLowerCase() === wantLc && v != null && String(v).trim() !== ""){
+          return String(v).trim();
+        }
+      }
+    }
+    return "";
+  }
+
+  // extract cautions robustly:
+  //  - any prop whose key contains "caution" or "hazard" (any case)
+  //  - otherwise: a "CAUTIONS: ..." line from description text
+  function extractCautions(props){
+    if (!props) return "";
+    // 1) direct property keys
+    let best = "";
+    for (const [k,v] of Object.entries(props)){
+      if (v == null) continue;
+      const keyLc = String(k).toLowerCase();
+      if (keyLc.includes("caution") || keyLc.includes("hazard")){
+        const val = String(v).trim();
+        if (val) best = best ? (best + "; " + val) : val;
+      }
+    }
+    if (best) return best;
+
+    // 2) consider "notes" if it clearly mentions cautions/hazards
+    const notes = getCI(props, ["notes","note"]);
+    if (notes && /caution|hazard/i.test(notes)) return notes;
+
+    // 3) scan freeform description for a "cautions: ..." line
+    const desc = props.description || props.Description || "";
+    if (desc){
+      const m = String(desc).match(/cautions?\s*:\s*(.+)/i);
+      if (m && m[1]){
+        // stop at line break if present
+        return m[1].split(/\r?\n/)[0].trim();
+      }
+    }
+    return "";
+  }
+
   function isLandingZoneProps(props){
     const text = JSON.stringify(props || {}).toLowerCase();
     return /landing\s*zone|landing\s*z|\blz\b|lz\d+/.test(text);
   }
 
   function getCoords(feature){
-    // Prefer geometry for precise coords
     try{
       if (feature.geometry && feature.geometry.type === "Point"){
         const [lon, lat] = feature.geometry.coordinates || [];
@@ -45,27 +89,24 @@
   function buildPopup(feature){
     const p = feature.properties || {};
 
-    // Merge parsed description into properties (non-destructive)
+    // Merge parsed description into properties (non-destructive, case-insensitive)
     const descText = p.description || p.Description || "";
     const descPairs = parseDescriptionBlob(descText);
     for (const [k,v] of Object.entries(descPairs)){
-      if (v && (p[k] == null || p[k] === "")) p[k] = v;
+      if (!v) continue;
+      // if a case-insensitive equivalent doesn't exist or is empty, set it
+      const hasSame = Object.keys(p).some(pk => pk.toLowerCase() === k.toLowerCase() && String(p[pk]||"").trim() !== "");
+      if (!hasSame) p[k] = v;
     }
 
-    // ID + Name/Description
-    const idRaw   = p.lz || p.LZ || p.LZ_ID || p.lz_id || p.LZId || "";
-    const nameRaw = p.name || p.Name || p.title || p.Title || "";
+    const idRaw   = getCI(p, ["lz","LZ","lz_id","LZ_ID","LZId","id"]);
+    const nameRaw = getCI(p, ["name","Name","title","Title"]);
     const descr   = p.Description || p.description || "";
     const title   = (idRaw ? `LZ ${esc(idRaw)}` : (nameRaw ? esc(nameRaw) : "Landing Zone"));
 
-    // Cautions (support variants: "cautions", "caution", "hazards", "notes")
-    const cautions = p.cautions || p.Cautions || p.caution || p.Caution || p.hazards || p.Hazards || p.notes || p.Notes || "";
-
-    // Coordinates
+    const cautions = extractCautions(p);
     const coords = getCoords(feature);
     const coordHtml = coords ? `${coords.lat.toFixed(6)}, ${coords.lon.toFixed(6)}` : "–";
-
-    // Description fallback if no name
     const nameOrDesc = nameRaw ? esc(nameRaw) : (descr ? esc(String(descr).slice(0,300)) : "");
 
     return `
@@ -91,7 +132,7 @@
     `;
   }
 
-  // ---------- Source lookup + sanitizing
+  // ---------- Source lookup + sanitizing (same robust loader as before)
   function lzSources(){
     const urlParam = new URLSearchParams(location.search).get("lz");
     const candidates = [];
@@ -199,7 +240,6 @@
     });
 
     fetchAny(lzSources()).then(geojson => {
-      // Strict: only features that look like Landing Zones
       const only = {
         type: "FeatureCollection",
         features: (geojson.features || []).filter(f => isLandingZoneProps(f.properties || {}))

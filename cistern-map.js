@@ -1,4 +1,4 @@
-// cistern-map.js — robust loader + professional popups (core + all descriptors)
+// cistern-map.js — Cautions in main popup + omit empty core rows
 (function(){
   const center = [42.2289, -71.5223]; // Hopkinton approx
   let map, searchMarker;
@@ -19,6 +19,32 @@
       }
     }
     return obj;
+  }
+
+  // Extract a robust "Cautions" value:
+  //  - any prop key containing "caution" or "hazard" (case-insensitive)
+  //  - or a notes/note field that mentions caution/hazard
+  //  - or a "CAUTIONS: ..." line inside description
+  function extractCautions(props){
+    if (!props) return "";
+    let best = "";
+    for (const [k,v] of Object.entries(props)){
+      if (v == null) continue;
+      const keyLc = String(k).toLowerCase();
+      if (keyLc.includes("caution") || keyLc.includes("hazard")){
+        const val = String(v).trim();
+        if (val) best = best ? (best + "; " + val) : val;
+      }
+    }
+    if (best) return best;
+    const notes = props.notes || props.Notes || props.note || props.Note || "";
+    if (notes && /caution|hazard/i.test(String(notes))) return String(notes).trim();
+    const desc = props.description || props.Description || "";
+    if (desc){
+      const m = String(desc).match(/cautions?\s*:\s*(.+)/i);
+      if (m && m[1]) return m[1].split(/\r?\n/)[0].trim();
+    }
+    return "";
   }
 
   function normalize(props){
@@ -42,6 +68,7 @@
     const diameter = p.diameter || p.Diameter || "";
     const lon      = p.Longitude || p.longitude || p.lon || "";
     const lat      = p.Latitude || p.latitude || p.lat || "";
+    const cautions = extractCautions(p);
 
     const clean = s => (s || "").toString().replace(/\\"/g,'"').replace(/\s+/g,' ').trim();
 
@@ -57,6 +84,7 @@
       diameter: clean(diameter),
       lon: clean(lon),
       lat: clean(lat),
+      cautions: clean(cautions),
       props: p
     };
   }
@@ -80,23 +108,50 @@
 
   function buildCisternPopup(allProps){
     const n = normalize(allProps);
-    const coreRows = [
-      ["Capacity (gal)", n.capacity || "–"],
-      ["Type", n.type || "–"],
-      ["Status", n.status || "–"],
-      ["Access", n.access || "–"],
-      ["Depth", n.depth || "–"],
-      ["Diameter", n.diameter || "–"],
-      ["Year", n.year || "–"]
-    ];
 
+    // Build core rows and OMIT any that are empty
+    const corePairs = [
+      ["Cautions", n.cautions],            // moved to core
+      ["Capacity (gal)", n.capacity],
+      ["Type", n.type],
+      ["Status", n.status],
+      ["Access", n.access],
+      ["Depth", n.depth],
+      ["Diameter", n.diameter],
+      ["Year", n.year]
+    ];
+    const coreRows = corePairs
+      .filter(([_, v]) => v != null && String(v).trim() !== "")
+      .map(([k, v]) => [`${k}`, String(v).trim()]);
+
+    const title = n.name ? esc(n.name) : "Cistern";
+    const addr  = n.address ? `<p style="margin:0 0 8px; color:#111;"><strong>${esc(n.address)}</strong></p>` : "";
+
+    const coordRow = (n.lat || n.lon)
+      ? `<tr><td style="padding:4px 6px; color:#374151;"><strong>Coordinates</strong></td>
+           <td style="padding:4px 6px;">${esc(n.lat||"–")}, ${esc(n.lon||"–")}</td></tr>`
+      : "";
+
+    const coreTable = `
+      <table style="width:100%; border-collapse: collapse; font-size:0.92rem;">
+        ${coreRows.map(([k,v]) => `
+          <tr>
+            <td style="padding:4px 6px; color:#374151; white-space:nowrap;"><strong>${esc(k)}</strong></td>
+            <td style="padding:4px 6px;">${esc(v)}</td>
+          </tr>`).join("")}
+        ${coordRow}
+      </table>
+    `;
+
+    // Prepare "More details" excluding keys used in core (and omitting empties)
     const used = new Set([
       "name","Name","title","street_loc","address","Address","location",
       "capacity","Capacity","gallons","Gallons","volume","Volume",
       "type","Type","cistern_type",
       "status","Status","access","Access","depth","Depth","diameter","Diameter",
       "year","Year","Longitude","Latitude","longitude","latitude","lon","lat",
-      "description","Description"
+      "notes","Notes","note","Note","hazards","Hazards","hazard","Hazard",
+      "cautions","Cautions","CAUTIONS","description","Description"
     ]);
 
     const rest = [];
@@ -107,23 +162,6 @@
       rest.push([prettyLabel(k), esc(val)]);
     }
     rest.sort((a,b) => a[0].localeCompare(b[0]));
-
-    const title = n.name ? esc(n.name) : "Cistern";
-    const addr  = n.address ? `<p style="margin:0 0 8px; color:#111;"><strong>${esc(n.address)}</strong></p>` : "";
-
-    const coreTable = `
-      <table style="width:100%; border-collapse: collapse; font-size:0.92rem;">
-        ${coreRows.map(([k,v]) => `
-          <tr>
-            <td style="padding:4px 6px; color:#374151; white-space:nowrap;"><strong>${esc(k)}</strong></td>
-            <td style="padding:4px 6px;">${esc(v)}</td>
-          </tr>`).join("")}
-        ${(n.lat || n.lon) ? `
-          <tr><td style="padding:4px 6px; color:#374151;"><strong>Coordinates</strong></td>
-          <td style="padding:4px 6px;">${esc(n.lat||"–")}, ${esc(n.lon||"–")}</td></tr>` : ""}
-      </table>
-    `;
-
     const more = rest.length ? `
       <details style="margin-top:8px;">
         <summary style="cursor:pointer; font-weight:700; color:#1f2937;">More details</summary>
