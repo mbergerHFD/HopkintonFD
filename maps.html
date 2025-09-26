@@ -5,70 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Maps</title>
   <link rel="stylesheet" href="styles.css"/>
-  <style>
-    .map-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-    .map-card {
-      display: flex;
-      flex-direction: column;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      text-align: center;
-      background: #fff;
-      transition: transform 0.2s ease;
-    }
-    .map-card:hover { transform: scale(1.03); }
-    .map-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-    }
-    .map-card h3 {
-      margin: 0;
-      padding: 1rem;
-      font-size: 1.2rem;
-    }
-  </style>
 </head>
 <body>
   <header class="site-header">
-    <div class="container">
-      <nav class="nav">
-        <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
-        <ul class="nav__links">
-          <li><a href="home.html">Home</a></li>
-          <li class="dropdown">
-            <a class="dropbtn" href="apparatus.html">Apparatus ▾</a>
-            <!-- apparatus dropdown omitted for brevity -->
-          </li>
-          <li class="dropdown">
-            <a class="dropbtn" href="maps.html">Maps ▾</a>
-            <ul class="dropdown-content">
-              <li><a href="water-maps.html">Hydrant Maps</a></li>
-              <li><a href="cistern-map.html">Cistern Maps</a></li>
-              <li><a href="landing-zone.html">Landing Zone Maps</a></li>
-              <li><a href="out-of-hydrant.html">Out of Hydrant District</a></li>
-              <li><a href="highway-maps.html">Highway Map</a></li>
-              <li><a href="trail-maps.html">Trail Maps</a></li>
-            </ul>
-          </li>
-          <li><a href="run-cards.html">Run Cards</a></li>
-          <li><a href="erg.html">ERG</a></li>
-          <li><a href="administrative.html">Administrative</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+		<div class="container">
+			<nav class="nav nav--stack">
+				<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
+				<ul class="nav__links">
+					<li><a href="home.html">Home</a></li>
+					<li><a href="apparatus.html">Apparatus</a></li>
+					<li><a href="maps.html">Maps</a></li>
+					<li><a href="run-cards.html">Run Cards</a></li>
+					<li><a href="erg.html">ERG</a></li>
+					<li><a href="administrative.html">Administrative</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
 
   <main class="container">
     <h2 class="section-title">Maps</h2>
     <div class="map-grid">
-      <a class="map-card" href="water-maps.html">
+      <a class="map-card" href="hydrant-maps.html">
         <img src="images/maps/hydrant-maps.jpg" alt="Hydrant Maps"/>
         <h3>Hydrant Maps</h3>
       </a>

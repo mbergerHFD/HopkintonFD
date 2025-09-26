@@ -11,90 +11,80 @@ img { max-width: 100%; height: auto; display: block; }
 
 .container { width: min(1100px, 92%); margin: 0 auto; }
 
-/* ========== Header / Nav ========== */
+
+/* ========== Header / Nav (stacked, no submenus) ========== */
 .site-header {
-  background: #000; 
+  background: #000;
   color: #fff;
+  position: relative;
+  z-index: 1000;
 }
 
 .nav {
-  display: flex;
-  flex-direction: column;   /* stack brand above links */
   align-items: center;
-  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;   /* stack brand and links */
+  
+  gap: 8px;
+  padding: 8px 0;
 }
 
 .nav__brand {
-  color: #fff;
+  display: block;
   font-weight: 800;
-  text-decoration: none;
   font-size: 1.7rem;
-  margin-bottom: 0.4rem;   /* spacing between title and menu */
+  color: #fff;
+  text-decoration: none;
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #fff; /* underline */
+
   text-align: center;
 }
 
 .nav__links {
+  justify-content: center;
   list-style: none;
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 12px;
   margin: 0;
   padding: 0;
-  flex-wrap: wrap;
-  justify-content: center;
+  
+  align-items: center;
 }
 
-.nav__links > li > a,
-.dropbtn {
+.nav__links > li > a {
   color: #fff;
   font-weight: 700;
   text-decoration: none;
-  padding: .5rem .6rem;
+  padding: .4rem .6rem;
   display: inline-block;
+  border-radius: 8px;
+  transition: background .15s ease;
 }
 
-.nav__links > li > a.active {
-  text-decoration: underline;
+.nav__links > li > a.active { text-decoration: underline; }
+
+.nav__links > li > a:hover {
+  background: rgba(255,255,255,0.12);
 }
 
-.nav__links > li > a:hover,
-.dropbtn:hover {
-  opacity: .9;
-}
-
-/* Primary dropdown */
-.dropdown { position: relative; }
-.dropdown > .dropdown-content {
-  position: absolute; top: 100%; left: 0;
-  min-width: 220px; background: #111; border: 1px solid #222;
-  display: none; z-index: 1000; padding: 6px 0; list-style: none; margin: 0;
-}
-.dropdown:hover > .dropdown-content,
-.dropdown:focus-within > .dropdown-content { display: block; }
-.dropdown-content > li > a, .dropdown-content > li > .submenu-btn {
-  display: block; padding: 10px 12px; color: #fff; text-decoration: none; font-weight: 600; white-space: nowrap;
-}
-.dropdown-content > li > a:hover, .dropdown-content > li > .submenu-btn:hover { background: #222; }
-
-/* Nested submenu (Apparatus → Engine 1) */
-.dropdown-submenu { position: relative; }
-.dropdown-submenu > .submenu {
-  position: absolute; top: 0; left: 100%; min-width: 220px;
-  background: #111; border: 1px solid #222; display: none; z-index: 1100; padding: 6px 0; list-style: none; margin: 0;
-}
-.dropdown-submenu:hover > .submenu, .dropdown-submenu:focus-within > .submenu { display: block; }
-.dropdown-submenu > .submenu > li > a {
-  display: block; padding: 10px 12px; color: #fff; text-decoration: none; font-weight: 600; white-space: nowrap;
-}
-.dropdown-submenu > .submenu > li > a:hover { background: #222; }
+/* Neutralize legacy dropdown remnants */
+.dropdown,
+.dropdown-content,
+.dropdown-submenu,
+.submenu,
+.submenu-btn { all: unset; }
+.submenu, .dropdown-content { display: none !important; }
 
 @media (max-width: 900px) {
-  .nav__links { flex-direction: column; }
-  .dropdown > .dropdown-content, .dropdown-submenu > .submenu { position: static; border: none; display: none; }
-  .dropdown:hover > .dropdown-content, .dropdown:focus-within > .dropdown-content,
-  .dropdown-submenu:hover > .submenu, .dropdown-submenu:focus-within > .submenu { display: block; }
+  .nav { align-items: center; }
+  .nav__links { justify-content: center; }
 }
 
-/* ========== Hero ========== */
+
+/* ========== Hero/* ========== Hero ========== */
 .hero__image { 
   width: 100%; 
   height: clamp(120px, 24vw, 240px); /* smaller overall than original */
@@ -571,27 +561,58 @@ img { max-width: 100%; height: auto; display: block; }
   }
 }
 
-/* Ensure header & dropdowns sit above map/search */
-.site-header { position: relative; z-index: 2000; }
-.nav, .nav * { position: relative; z-index: 2001; }
 
-/* Your dropdown panes */
-.dropdown-content,
-.submenu {
-  position: absolute;           /* already true in your site, keep it */
-  z-index: 2100;                /* higher than any map controls */
+
+
+/* ==== Maps page grid (3 columns) ==== */
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin: 16px 0 32px;
 }
 
-/* Map containers should NOT sit above header */
-.leaflet-container { z-index: 0; }
-.leaflet-control-container { z-index: 300; }  /* default Leaflet is ~1000; lower it */
+.map-card {
+  display: block;
+  background: #f7f7f7;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  border: 2px solid #ccc;
+  box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  color: inherit;
+}
 
-/* Your custom search bar above map tiles, but below header */
-.map-shell { position: relative; }            /* create a local stacking context */
-.map-shell .map-search { position: relative; z-index: 150; }
+.map-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.16);
+  border-color: #bbb;
+}
 
-/* In case any parent had overflow that clipped dropdowns */
-.site-header .container,
-.nav,
-.dropdown { overflow: visible; }
+.map-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
 
+.map-card h3 {
+  margin: 0;
+  padding: 12px 14px;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #111;
+  background: #fff;
+}
+
+/* Responsive: drop to 2 columns, then 1 */
+@media (max-width: 900px) {
+  .map-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .map-card img { height: 190px; }
+}
+@media (max-width: 600px) {
+  .map-grid { grid-template-columns: 1fr; }
+  .map-card img { height: 180px; }
+}

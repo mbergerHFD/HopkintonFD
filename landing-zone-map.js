@@ -1,4 +1,4 @@
-// cistern-map.js — robust loader + professional popups (core + all descriptors)
+// landing-zone-map.js — robust loader + LZ-only + professional popups
 (function(){
   const center = [42.2289, -71.5223]; // Hopkinton approx
   let map, searchMarker;
@@ -30,72 +30,72 @@
       if (v && (p[k] == null || p[k] === "")) p[k] = v;
     }
 
-    // Common cistern fields (fallbacks included)
-    const name     = p.name || p.Name || p.title || "";
-    const address  = p.street_loc || p.address || p.Address || p.location || "";
-    const cap      = p.capacity || p.Capacity || p.gallons || p.Gallons || p.volume || p.Volume || "";
-    const type     = p.type || p.Type || p.cistern_type || "";
-    const year     = p.year != null ? String(p.year).replace(/\.0$/, "") : (p.Year || "");
-    const status   = p.status || p.Status || "";
-    const access   = p.access || p.Access || "";
-    const depth    = p.depth || p.Depth || "";
-    const diameter = p.diameter || p.Diameter || "";
-    const lon      = p.Longitude || p.longitude || p.lon || "";
-    const lat      = p.Latitude || p.latitude || p.lat || "";
+    // Extract common Landing Zone fields
+    const name    = p.name || p.Name || p.title || p.Title || p.lz_name || "";
+    const lzId    = p.lz || p.LZ || p.LZ_ID || p.LZId || p.lz_id || "";
+    const address = p.street_loc || p.address || p.Address || p.location || "";
+    const surface = p.surface || p.Surface || "";
+    const size    = p.size || p.Size || p.dimensions || p.Dimensions || "";
+    const notes   = p.notes || p.Notes || p.note || p.Note || "";
+    const hazards = p.hazards || p.Hazards || p.hazard || p.Hazard || "";
+    const lighting= p.lighting || p.Lighting || p.night || p.Night || "";
+    const access  = p.access || p.Access || "";
+    const lat     = p.Latitude || p.latitude || p.lat || "";
+    const lon     = p.Longitude || p.longitude || p.lon || "";
 
     const clean = s => (s || "").toString().replace(/\\"/g,'"').replace(/\s+/g,' ').trim();
 
     return {
       name: clean(name),
+      lzId: clean(lzId),
       address: clean(address),
-      capacity: clean(cap),
-      type: clean(type),
-      year: clean(year),
-      status: clean(status),
+      surface: clean(surface),
+      size: clean(size),
+      notes: clean(notes),
+      hazards: clean(hazards),
+      lighting: clean(lighting),
       access: clean(access),
-      depth: clean(depth),
-      diameter: clean(diameter),
-      lon: clean(lon),
       lat: clean(lat),
+      lon: clean(lon),
       props: p
     };
   }
 
   function prettyLabel(key){
     const map = {
-      capacity: "Capacity (gal)",
-      gallons: "Capacity (gal)",
-      Volume: "Volume",
-      diameter: "Diameter",
-      depth: "Depth",
-      access: "Access",
-      status: "Status",
+      lz: "LZ ID", LZ: "LZ ID", LZ_ID: "LZ ID", lz_id: "LZ ID",
       street_loc: "Address / Location",
-      Latitude: "Latitude",
-      Longitude: "Longitude"
+      lighting: "Lighting", night: "Night Lighting"
     };
     if (map[key]) return map[key];
     return key.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
   }
 
-  function buildCisternPopup(allProps){
+  function isLandingZoneProps(props){
+    const text = JSON.stringify(props || {}).toLowerCase();
+    // Match "landing zone", "landing z", or standalone 'lz'/'lz123'
+    return /landing\s*zone|landing\s*z|\blz\b|lz\d+/.test(text);
+  }
+
+  function buildPopup(allProps){
     const n = normalize(allProps);
+    const title = (n.lzId ? `LZ ${esc(n.lzId)}` : (n.name ? esc(n.name) : "Landing Zone"));
+
     const coreRows = [
-      ["Capacity (gal)", n.capacity || "–"],
-      ["Type", n.type || "–"],
-      ["Status", n.status || "–"],
+      ["Surface", n.surface || "–"],
+      ["Size/Dimensions", n.size || "–"],
       ["Access", n.access || "–"],
-      ["Depth", n.depth || "–"],
-      ["Diameter", n.diameter || "–"],
-      ["Year", n.year || "–"]
+      ["Lighting", n.lighting || "–"],
+      ["Hazards", n.hazards || "–"]
     ];
 
     const used = new Set([
-      "name","Name","title","street_loc","address","Address","location",
-      "capacity","Capacity","gallons","Gallons","volume","Volume",
-      "type","Type","cistern_type",
-      "status","Status","access","Access","depth","Depth","diameter","Diameter",
-      "year","Year","Longitude","Latitude","longitude","latitude","lon","lat",
+      "name","Name","title","Title","lz","LZ","lz_id","LZ_ID","LZId",
+      "street_loc","address","Address","location",
+      "surface","Surface","size","Size","dimensions","Dimensions",
+      "notes","Notes","note","Note","hazards","Hazards","hazard","Hazard",
+      "lighting","Lighting","night","Night",
+      "Latitude","Longitude","latitude","longitude","lat","lon",
       "description","Description"
     ]);
 
@@ -106,10 +106,9 @@
       if (!val) continue;
       rest.push([prettyLabel(k), esc(val)]);
     }
-    rest.sort((a,b) => a[0].localeCompare(b[0]));
+    rest.sort((a,b)=> a[0].localeCompare(b[0]));
 
-    const title = n.name ? esc(n.name) : "Cistern";
-    const addr  = n.address ? `<p style="margin:0 0 8px; color:#111;"><strong>${esc(n.address)}</strong></p>` : "";
+    const addrLine = n.address ? `<p style="margin:0 0 8px; color:#111;"><strong>${esc(n.address)}</strong></p>` : "";
 
     const coreTable = `
       <table style="width:100%; border-collapse: collapse; font-size:0.92rem;">
@@ -121,6 +120,9 @@
         ${(n.lat || n.lon) ? `
           <tr><td style="padding:4px 6px; color:#374151;"><strong>Coordinates</strong></td>
           <td style="padding:4px 6px;">${esc(n.lat||"–")}, ${esc(n.lon||"–")}</td></tr>` : ""}
+        ${n.notes ? `
+          <tr><td style="padding:4px 6px; color:#374151;"><strong>Notes</strong></td>
+          <td style="padding:4px 6px;">${esc(n.notes)}</td></tr>` : ""}
       </table>
     `;
 
@@ -141,29 +143,29 @@
 
     return `
       <div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; min-width:260px;">
-        <h3 style="margin:0 0 6px; font-size:1.1rem; color:#065f46;">${title}</h3>
-        ${addr}
+        <h3 style="margin:0 0 6px; font-size:1.1rem; color:#1e3a8a;">${title}</h3>
+        ${addrLine}
         ${coreTable}
         ${more}
       </div>
     `;
   }
 
-  // ---------- Source lookup + sanitizing (handles bad newlines/tabs in JSON)
-  function cisternSources(){
-    const urlParam = new URLSearchParams(location.search).get("cisterns");
+  // ---------- Source lookup + sanitizing
+  function lzSources(){
+    const urlParam = new URLSearchParams(location.search).get("lz");
     const candidates = [];
     if (urlParam) candidates.push(urlParam);
     candidates.push(
-      "data/hopkinton_fire_department___cisterns.geojson",
-      "data/cisterns.geojson",
-      "cisterns.geojson",
-      "../data/hopkinton_fire_department___cisterns.geojson",
-      "../data/cisterns.geojson",
-      "../cisterns.geojson",
-      "/data/hopkinton_fire_department___cisterns.geojson",
-      "/data/cisterns.geojson",
-      "/cisterns.geojson"
+      "data/hopkinton_fire_department.geojson",
+      "data/landing_zones.geojson",
+      "landing_zones.geojson",
+      "../data/hopkinton_fire_department.geojson",
+      "../data/landing_zones.geojson",
+      "../landing_zones.geojson",
+      "/data/hopkinton_fire_department.geojson",
+      "/data/landing_zones.geojson",
+      "/landing_zones.geojson"
     );
     return [...new Set(candidates)];
   }
@@ -173,24 +175,24 @@
       try{
         const absolute = new URL(path, window.location.href).toString();
         const r = await fetch(absolute, {cache: 'no-cache'});
-        if (!r.ok) { console.warn("[cistern-map] Not found:", absolute, r.status); continue; }
+        if (!r.ok) { console.warn("[landing-zone] Not found:", absolute, r.status); continue; }
         const text = await r.text();
         try {
           const data = JSON.parse(text);
-          console.log("[cistern-map] Loaded:", absolute);
+          console.log("[landing-zone] Loaded:", absolute);
           return data;
         } catch (e) {
-          console.warn("[cistern-map] Parse failed; attempting sanitize:", absolute, e.message);
+          console.warn("[landing-zone] Parse failed; attempting sanitize:", absolute, e.message);
           const fixed = sanitizeJSONText(text);
           const data = JSON.parse(fixed);
-          console.log("[cistern-map] Loaded (sanitized):", absolute);
+          console.log("[landing-zone] Loaded (sanitized):", absolute);
           return data;
         }
       }catch(e){
-        console.warn("[cistern-map] Fetch failed:", path, e);
+        console.warn("[landing-zone] Fetch failed:", path, e);
       }
     }
-    throw new Error("No cistern GeoJSON found in known locations.");
+    throw new Error("No Landing Zone GeoJSON found in known locations.");
   }
 
   function sanitizeJSONText(s){
@@ -251,20 +253,27 @@
       });
     }
 
-    const icon = L.divIcon({className:"cistern-pin",
-      html:'<svg viewBox="0 0 24 24" width="18" height="18" fill="#10b981" stroke="#065f46" stroke-width="1.5"><rect x="6" y="6" width="12" height="12" rx="3"/></svg>'
+    const icon = L.divIcon({
+      className:"lz-pin",
+      html:'<svg viewBox="0 0 24 24" width="18" height="18" fill="#3b82f6" stroke="#1e40af" stroke-width="1.5"><polygon points="12,3 21,21 3,21"/></svg>'
     });
 
-    fetchAny(cisternSources()).then(geojson => {
-      const layer = L.geoJSON(geojson, {
+    fetchAny(lzSources()).then(geojson => {
+      // Filter: only features whose properties look like Landing Zones
+      const only = {
+        type: "FeatureCollection",
+        features: (geojson.features || []).filter(f => isLandingZoneProps(f.properties || {}))
+      };
+
+      const layer = L.geoJSON(only, {
         pointToLayer: (feature, latlng) => L.marker(latlng, {icon}),
-        onEachFeature: (f, l) => l.bindPopup(buildCisternPopup(f.properties || {}))
+        onEachFeature: (f, l) => l.bindPopup(buildPopup(f.properties || {}))
       }).addTo(map);
       try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
-      console.log("[cistern-map] features with popups:", layer.getLayers().length);
+      console.log("[landing-zone] features with popups:", layer.getLayers().length);
     }).catch(err => {
-      console.error("Failed to load cisterns:", err);
-      L.marker(center).addTo(map).bindPopup("Cistern data not found.");
+      console.error("Failed to load Landing Zones:", err);
+      L.marker(center).addTo(map).bindPopup("Landing Zone data not found.");
     });
   }
 

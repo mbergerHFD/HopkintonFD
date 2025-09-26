@@ -1,137 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Cistern Map</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="leaflet/leaflet.css"/>
-  <link rel="stylesheet" href="water-maps.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cistern Map — Hopkinton Fire Department</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23ef4444'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <link rel="stylesheet" href="maps-shared.css" />
 </head>
 <body>
-      <header class="site-header">
-			<div class="container">
-				<nav class="nav">
-					<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
-					<ul class="nav__links">
-						<li><a href="home.html">Home</a></li>
-						<li class="dropdown">
-							<a class="dropbtn" href="apparatus.html">Apparatus ▾</a>
-							<ul class="dropdown-content">
-								<!-- Nested submenu for Engine 1) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="engine1.html">Engine 1 ▸</a>
-									<ul class="submenu">
-										<li><a class="active" href="engine1.html">Overview</a></li>
-										<li><a href="engine1-specifications.html">Specifications</a></li>
-										<li><a href="engine1-hose.html">Hose</a></li>
-										<li><a href="engine1-equipment.html">Equipment</a></li>
-										<li><a href="engine1-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Engine 2) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="engine2.html">Engine 2 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="engine2.html">Overview</a></li>
-										<li><a href="engine2-specifications.html">Specifications</a></li>
-										<li><a href="engine2-hose.html">Hose</a></li>
-										<li><a href="engine2-equipment.html">Equipment</a></li>
-										<li><a href="engine2-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Ladder 1) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="ladder1.html">Ladder 1 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="ladder1.html">Overview</a></li>
-										<li><a href="ladder1-specifications.html">Specifications</a></li>
-										<li><a href="ladder1-hose.html">Hose</a></li>
-										<li><a href="ladder1-equipment.html">Equipment</a></li>
-										<li><a href="ladder1-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Tanker 3) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="tanker3.html">Tanker 3 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="tanker3.html">Overview</a></li>
-										<li><a href="tanker3-specifications.html">Specifications</a></li>
-										<li><a href="tanker3-hose.html">Hose</a></li>
-										<li><a href="tanker3-equipment.html">Equipment</a></li>
-										<li><a href="tanker3-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Rescue 1) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="rescue1.html">Rescue 1 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="rescue1.html">Overview</a></li>
-										<li><a href="rescue1-specifications.html">Specifications</a></li>
-										<li><a href="rescue1-hose.html">Hose</a></li>
-										<li><a href="rescue1-equipment.html">Equipment</a></li>
-										<li><a href="rescue1-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Nested submenu for Brush 11) -->
-								<li class="dropdown-submenu">
-									<a class="submenu-btn" href="brush11.html">Brush 11 ▸</a>
-									<ul class="submenu">
-										<li><a class="" href="brush11.html">Overview</a></li>
-										<li><a href="brush11-specifications.html">Specifications</a></li>
-										<li><a href="brush11-hose.html">Hose</a></li>
-										<li><a href="brush11-equipment.html">Equipment</a></li>
-										<li><a href="brush11-foam.html">Foam Operations</a></li>
-									</ul>
-								</li>
-								<!-- Other apparatus -->
-								<li><a href="brush6.html">Brush 6</a></li>
-								<li><a href="squad1.html">Squad 1</a></li>
-								<li><a href="boats.html">Boats</a></li>
-								<li><a href="ambulance1.html">Ambulance 1</a></li>
-								<li><a href="ambulance2.html">Ambulance 2</a></li>
-							</ul>
-						</li>
-						<li class="dropdown">
-							<a class="dropbtn" href="maps.html">Maps ▾</a>
-							<ul class="dropdown-content">
-								<li><a href="water-maps.html">Hydrant Maps</a></li>
-								<li><a href="cistern-map.html">Cistern Maps</a></li>
-								<li><a href="landing-zone.html">Landing Zone Maps</a></li>
-								<li><a href="out-of-hydrant.html">Out of Hydrant District</a></li>
-								<li><a href="highway-maps.html">Highway Map</a></li>
-								<li><a href="trail-maps.html">Trail Maps</a></li>
-							</ul>
-						</li>
-						<li><a href="run-cards.html">Run Cards</a></li>
-						<li><a href="erg.html">ERG</a></li>
-						<li><a href="administrative.html">Administrative</a></li>
-					</ul>
-				</nav>
-			</div>
-		</header>
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav nav--stack">
+        <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
+        <ul class="nav__links">
+          <li><a href="home.html">Home</a></li>
+          <li><a href="apparatus.html">Apparatus</a></li>
+          <li><a href="maps.html">Maps</a></li>
+          <li><a href="run-cards.html">Run Cards</a></li>
+          <li><a href="erg.html">ERG</a></li>
+          <li><a href="administrative.html">Administrative</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-  <main>
-    <section class="container">
-      <h2 class="section-title">Cistern Map</h2>
-      <div class="map-shell">
-        <div class="map-search">
-          <input id="cistern-search-input" type="text" placeholder="Search address…" aria-label="Search cistern map"/>
-          <button id="cistern-search-btn" type="button">Search</button>
-        </div>
-        <div id="cistern-map" style="height:520px;" role="region" aria-label="Cistern map"></div>
-        <div id="cistern-toast" class="map-toast" aria-live="polite"></div>
-      </div>
-    </section>
+  <main class="container">
+    <h1 class="section-title">Cistern Map</h1>
+    <div class="map-toolbar" role="search">
+      <form id="mapSearchForm" class="map-search" autocomplete="off">
+        <input id="mapSearchInput" type="search" placeholder="Search address or place..." aria-label="Search address">
+        <button type="submit" title="Search">Search</button>
+      </form>
+      <div class="map-legend"><span class="legend-item"><span class="swatch cistern"></span>Cistern</span></div>
+    </div>
+    <div id="map" class="map-viewport" aria-label="Cistern Map"></div>
   </main>
 
-      <footer class="site-footer">
-			<div class="container">
-				<p><strong>© Hopkinton Fire Department</strong></p>
-			</div>
-		</footer>
+  <footer class="site-footer">
+    <div class="container"><p><strong>© Hopkinton Fire Department</strong></p></div>
+  </footer>
 
-  <script src="leaflet/leaflet.js"></script>
-  <script src="cistern-map.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script defer src="cistern-map.js"></script>
 </body>
 </html>
