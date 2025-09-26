@@ -22,3 +22,17 @@
 .pin-icon svg { display:block; }
 
 @media (max-width: 640px) { #map { height: 60vh; min-height: 360px; } }
+
+/* Legend icon layout */
+.map-legend .legend-item { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.map-legend .legend-icon { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; }
+.map-legend .legend-line { width: 22px; height: 4px; border-radius: 2px; display: inline-block; }
+.map-legend .legend-sep { border: none; border-top: 1px solid #e5e7eb; margin: 6px 0; }
+
+
+.map-layers .controls-title { font-weight: 700; margin-bottom: 6px; }
+.layer-toggle { display: flex; align-items: center; gap: 8px; }
+.layer-toggle input { transform: translateY(1px); }
+.legend-icon { width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; }
+.legend-line { width: 22px; height: 4px; border-radius: 2px; display: inline-block; }
+.legend-sep { border: none; border-top: 1px solid #e5e7eb; margin: 6px 0; }

@@ -3,16 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Water Maps</title>
+  <title>Out of Hydrant District Map</title>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="leaflet/leaflet.css"/>
   <link rel="stylesheet" href="water-maps.css"/>
-  <style>
-    /* Two stacked maps with spacing */
-    .map-shell + .map-shell { margin-top: 28px; }
-    #hydrant-map, #cistern-map { height: 520px; }
-    /* Use site container widths */
-  </style>
 </head>
 <body>
   <header class="site-header">
@@ -103,35 +97,27 @@
 
   <main>
     <section class="container">
-      <h2 class="section-title">Hydrant Map</h2>
+      <h2 class="section-title">Out of Hydrant District Map</h2>
       <div class="map-shell">
         <div class="map-search">
-          <input id="hydrant-search-input" type="text" placeholder="Search address, intersection, place…" aria-label="Search hydrant map"/>
-          <button id="hydrant-search-btn" type="button">Search</button>
+          <input id="map-search-input" type="text" placeholder="Search address, intersection, place…" aria-label="Search address"/>
+          <button id="map-search-btn" type="button">Search</button>
+          <select id="zoom-select" title="Zoom to layer">
+            <option value="">Zoom to…</option>
+            <option value="layer">This Layer</option>
+            <option value="all">Entire Map</option>
+          </select>
         </div>
-        <div id="hydrant-map" role="region" aria-label="Hydrant map"></div>
-        <div id="hydrant-toast" class="map-toast" aria-live="polite"></div>
-      </div>
-    </section>
-
-    <section class="container">
-      <h2 class="section-title">Cistern Map</h2>
-      <div class="map-shell">
-        <div class="map-search">
-          <input id="cistern-search-input" type="text" placeholder="Search address, intersection, place…" aria-label="Search cistern map"/>
-          <button id="cistern-search-btn" type="button">Search</button>
-        </div>
-        <div id="cistern-map" role="region" aria-label="Cistern map"></div>
-        <div id="cistern-toast" class="map-toast" aria-live="polite"></div>
+        <div id="map" role="region" aria-label="Out of Hydrant District Map"></div>
+        <div id="toast" class="map-toast" aria-live="polite"></div>
       </div>
     </section>
   </main>
-
   <footer class="site-footer">
     <div class="container">© Hopkinton Fire Department</div>
   </footer>
 
   <script src="leaflet/leaflet.js"></script>
-  <script src="water-maps-embed.js"></script>
+  <script src="out-of-hydrant.js"></script>
 </body>
 </html>
