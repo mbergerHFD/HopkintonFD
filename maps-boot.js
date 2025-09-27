@@ -1,3 +1,47 @@
+// === HFD global readiness helpers (DOM + Leaflet) ===
+(function () {
+  const HFD = (window.HFD = window.HFD || {});
+
+  // DOM ready as a Promise (works even if DOM was already ready)
+  HFD.whenDOMReady = function () {
+    if (document.readyState === "interactive" || document.readyState === "complete") {
+      return Promise.resolve();
+    }
+    return new Promise((res) =>
+      document.addEventListener("DOMContentLoaded", res, { once: true })
+    );
+  };
+
+  // Leaflet ready as a Promise, with small retry loop + load fallback (iOS-safe)
+  HFD.whenLeafletReady = function (timeoutMs = 8000) {
+    if (window.L && typeof window.L.map === "function") return Promise.resolve(window.L);
+    return new Promise((resolve, reject) => {
+      const start = Date.now();
+      const timer = setInterval(() => {
+        if (window.L && typeof window.L.map === "function") {
+          clearInterval(timer);
+          resolve(window.L);
+        } else if (Date.now() - start > timeoutMs) {
+          clearInterval(timer);
+          reject(new Error("Leaflet timed out"));
+        }
+      }, 40);
+
+      // also resolve on full load (covers iOS back/forward cache)
+      window.addEventListener(
+        "load",
+        () => {
+          if (window.L && typeof window.L.map === "function") {
+            clearInterval(timer);
+            resolve(window.L);
+          }
+        },
+        { once: true }
+      );
+    });
+  };
+})();
+
 // maps-boot.js — force a safe map height on iOS Safari and handle rotation
 (function(){
   function ensureMapHeight(id="map"){

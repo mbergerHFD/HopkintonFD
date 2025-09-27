@@ -1,3 +1,37 @@
+// Ensure DOM and Leaflet are ready on iOS before running any map code
+(async function () {
+  try {
+    await HFD.whenDOMReady();
+    await HFD.whenLeafletReady(8000);
+  } catch (e) {
+    console.warn("[HFD] Leaflet not ready; retrying on window.load", e);
+    await new Promise((res) => window.addEventListener("load", res, { once: true }));
+    await HFD.whenLeafletReady(8000);
+  }
+
+  // ---- START your existing hydrant initialization ----
+  // If you have an init() function already:
+  // init();
+
+  // Otherwise, move your current map creation + layer code into here.
+  // Example (keep your real code):
+  // const map = L.map("map").setView([42.2289, -71.5223], 13);
+  // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+  // ... load hydrants GeoJSON, bind search, etc. ...
+  // window.map = map; // if other code references it
+
+  // ---- END your existing hydrant initialization ----
+
+  // iOS layout nudge: invalidate size a few times as fonts/layers settle
+  if (window.map && typeof window.map.invalidateSize === "function") {
+    let shots = 0;
+    const nudge = () => {
+      try { window.map.invalidateSize(); } catch {}
+      if (++shots < 5) setTimeout(nudge, 250);
+    };
+    setTimeout(nudge, 200);
+  }
+})();
 
 /* === HFD Leaflet guard: run page script only after Leaflet + DOM are ready (mobile-safe) === */
 ;(function(){
