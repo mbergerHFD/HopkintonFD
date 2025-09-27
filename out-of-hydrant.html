@@ -29,22 +29,23 @@
     </div>
   </header>
 
-  <main class="container">
-    <section class="map-section">
-      <h1 class="section-title">Out of Hydrant District Map</h1>
+<main class="container">
+    <h1 class="page-title">Out of Hydrant District Map</h1>
 
-      <div class="map-toolbar" role="search">
-        <form id="mapSearchForm" class="map-search" autocomplete="off">
-          <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address" />
-          <input id="mapSearchCity"   type="search" value="Hopkinton" placeholder="City" aria-label="City" />
-          <button type="submit" title="Search">Search</button>
-        </form>
-      </div>
+    <div class="map-section">
+<div class="map-toolbar" role="search">
+  <form id="mapSearchForm" class="map-search" autocomplete="off">
+    <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address">
+    <input id="mapSearchCity" type="search" value="Hopkinton" placeholder="City" aria-label="City">
+    <button type="submit" title="Search">Search</button>
+  </form>
+</div>
 
-      <div class="map-card">
-        <div id="map" class="map-canvas" aria-label="Out of Hydrant District Map"></div>
-      </div>
-    </section>
+
+    <div class="map-wrapper"><div class="map-card">
+<div id="map" class="map-viewport" aria-label="Cistern map"></div>
+</div>
+</div>
   </main>
 
   <!-- Simple footer consistent with screenshots -->

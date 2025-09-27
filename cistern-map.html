@@ -8,34 +8,6 @@
   <link rel="stylesheet" href="styles.css?v=2" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="maps-shared.css?v=2" />
-<style id="hfd-map-clean">
-/* Center the whole map section */
-.map-section{max-width:760px;margin:0 auto 24px;padding:0 12px;box-sizing:border-box;}
-/* Toolbar full width with breathing room below header */
-.map-section .map-toolbar, .map-section #mapToolbar{position:relative !important;z-index:1 !important;width:100%;margin:16px 0 12px;}
-.map-section .map-toolbar form, .map-section #mapToolbar form{display:flex;gap:10px;width:100%;}
-.map-section .map-toolbar input[type="search"], .map-section #mapToolbar input[type="search"],
-.map-section .map-toolbar input[type="text"],   .map-section #mapToolbar input[type="text"]{flex:1;min-width:0;border:1px solid #cfcfcf;border-radius:9999px;padding:10px 14px;outline:none;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.12);}
-.map-section .map-toolbar button, .map-section #mapToolbar button{padding:10px 16px;border-radius:9999px;border:1px solid #cfcfcf;background:#2d6cdf;color:#fff;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.12);}
-/* Map card clamps size and clips overflow */
-.map-card{width:100%;height:400px;border:1px solid #ddd;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
-.map-card #map, .map-card .leaflet-container{width:100% !important;height:100% !important;display:block;position:relative !important;}
-.map-card .leaflet-top{top:12px !important;}
-
-/* Split search inputs: street + city */
-.map-section #mapSearchStreet,
-.map-section #mapSearchCity{
-  border:1px solid #cfcfcf; border-radius:9999px; padding:10px 14px;
-  outline:none; background:#fff; box-shadow:0 3px 10px rgba(0,0,0,.12);
-}
-.map-section #mapSearchStreet{ flex:2; min-width:160px; }
-.map-section #mapSearchCity{ flex:1; min-width:120px; }
-.map-section .map-search button{
-  padding:10px 16px; border-radius:9999px; border:1px solid #cfcfcf; background:#2d6cdf; color:#fff; cursor:pointer;
-  box-shadow:0 3px 10px rgba(0,0,0,.12);
-}
-
-</style>
 </head>
 <body>
   <header class="site-header">
@@ -65,6 +37,7 @@
     <button type="submit" title="Search">Search</button>
   </form>
 </div>
+
 
     <div class="map-wrapper"><div class="map-card">
 <div id="map" class="map-viewport" aria-label="Cistern map"></div>

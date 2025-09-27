@@ -151,136 +151,103 @@
 }
 
 
-/* === HFD: Unified pill search bar (matches cistern style) === */
-.map-toolbar { margin: 10px auto 12px; max-width: 1100px; }
-.map-toolbar .map-search {
-  display: grid;
-  grid-template-columns: 1fr 320px 120px;
-  gap: 14px;
-}
-@media (max-width: 900px) {
-  .map-toolbar .map-search {
-    grid-template-columns: 1fr 1fr;
-  }
-  .map-toolbar .map-search button {
-    grid-column: span 2;
-  }
-}
-.map-toolbar .map-search input[type="search"],
-.map-toolbar .map-search input[type="text"] {
-  height: 48px;
-  padding: 0 18px;
-  border: 1px solid #d9dde6;
-  border-radius: 9999px;
-  font-size: 16px;
-  background: #fff;
-  box-shadow: 0 4px 14px rgba(0,0,0,.06);
-}
-.map-toolbar .map-search button[type="submit"] {
-  height: 48px;
-  padding: 0 22px;
-  border: none;
-  border-radius: 9999px;
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  background: #2563eb;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(37,99,235,.35);
-}
-.map-toolbar .map-search button[type="submit"]:hover { filter: brightness(1.05); }
+/* --- HFD width alignment override (captures pages where .map-card isn't nested under .map-section)
+   and neutralizes inline 760px cap on Out-of-Hydrant --- */
+.map-section { max-width: 900px !important; }
 
-
-/* === HFD: expand toolbar to map width & unify pill style === */
-.map-section .map-toolbar{
-  display:flex;
-  justify-content:center;
-  width:100%;
-  margin: 8px 0 14px;
-}
-.map-section .map-toolbar .map-search{
-  width:100%;
-  display:grid;
-  grid-template-columns: 1fr 320px 120px;
-  gap:14px;
-}
-@media (max-width: 900px){
-  .map-section .map-toolbar .map-search{ grid-template-columns: 1fr 1fr; }
-  .map-section .map-toolbar .map-search button{ grid-column: span 2; }
-}
-.map-section .map-search input[type="search"],
-.map-section .map-search input[type="text"]{
-  height:48px; padding:0 18px;
-  border:1px solid #d9dde6; border-radius:9999px; font-size:16px;
-  background:#fff; box-shadow:0 4px 14px rgba(0,0,0,.06); width:100%;
-  box-sizing:border-box;
-}
-.map-section .map-search button[type="submit"]{
-  height:48px; padding:0 22px; border:none; border-radius:9999px;
-  font-size:16px; font-weight:600; color:#fff; background:#2563eb; cursor:pointer;
-  box-shadow:0 4px 14px rgba(37,99,235,.35);
-}
-.map-section .map-search button[type="submit"]:hover{ filter:brightness(1.05); }
-
-
-
-/* Layout container for all map pages */
-.map-section {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px 0 56px;
+/* Ensure toolbar, map card, and legend all share the exact same centered width */
+.map-toolbar,
+.map-card,
+.map-legend {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* Page title spacing */
-.page-title,
-.section-title {
-  text-align: center;
-  margin: 8px 0 20px;
-}
-
-/* Search bar: same width as the map card */
+/* Map search (single-input style) */
 .map-toolbar {
-  margin: 8px 0 16px;
+  display: flex;
+  justify-content: center;
+  margin: 0 0 12px;
+}
+
+.map-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-search--single {
+  width: min(800px, 96%);
+  background: #fff;
+  border: 1px solid #e5e7eb;         /* light gray */
+  border-radius: 999px;               /* pill */
+  padding: 8px 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+
+.map-search--single input[type="search"] {
+  flex: 1 1 auto;
+  border: 0;
+  outline: none;
+  font-size: 16px;
+  padding: 6px 10px;
+  min-width: 0;                       /* prevent overflow on narrow screens */
+}
+
+.map-search--single button[type="submit"] {
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #ef4444;                /* red */
+  color: #fff;
+}
+
+.map-search--single button[type="submit"]:hover {
+  filter: brightness(0.95);
+}
+
+
+
+
+/* === Unified Map Search Toolbar (applied across all maps) === */
+.map-toolbar {
+  display: flex;
+  justify-content: center;
+  margin: 16px auto 12px;
+  max-width: 900px;
 }
 .map-search {
-  display: grid;
-  grid-template-columns: 1fr 260px auto;
-  gap: 12px;
-  max-width: 100%;
-}
-.map-search input {
-  height: 44px;
-  border-radius: 999px;
-  padding: 0 16px;
-}
-.map-search button {
-  height: 44px;
-  padding: 0 18px;
-  border-radius: 10px;
-}
-
-/* Map "card" look */
-.map-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 10px 24px rgba(0,0,0,.10);
-  overflow: hidden;              /* keeps Leaflet tiles clipped to rounded corners */
-}
-
-/* The map canvas itself */
-.map-canvas,
-#map {
+  display: flex;
+  gap: 10px;
   width: 100%;
-  height: 60vh;                  /* responsive height */
-  min-height: 480px;             /* good desktop minimum */
+  max-width: 900px;
 }
-
-/* Ensure Leaflet controls don’t overlap rounded corners */
-.leaflet-container {
-  border-radius: 16px;
+#mapSearchStreet,
+#mapSearchCity {
+  flex: 1;
+  min-width: 120px;
+  border: 1px solid #cfcfcf;
+  border-radius: 9999px;
+  padding: 10px 14px;
+  outline: none;
+  background: #fff;
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
 }
-@media (max-width: 720px) {
-  .map-search { grid-template-columns: 1fr 1fr; }
-  .map-search button { grid-column: 1 / -1; }
-  .map-canvas, #map { min-height: 380px; height: 55vh; }
+#mapSearchStreet { flex: 2; }
+#mapSearchCity   { flex: 1; }
+.map-search button {
+  padding: 10px 16px;
+  border-radius: 9999px;
+  border: 1px solid #cfcfcf;
+  background: #2d6cdf;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
 }
+.map-search button:hover { background: #1e40af; }
+/* Match toolbar, map card, legend widths */
+.map-toolbar, .map-card, .map-legend { max-width: 900px; margin-left:auto; margin-right:auto; }

@@ -29,25 +29,26 @@
     </div>
   </header>
 
-  <main class="container">
-    <section class="map-section">
-      <h1 class="page-title">Hydrant Map</h1>
+<main class="container">
+    <h1 class="page-title">Hydrant Map</h1>
 
-      <!-- Search toolbar -->
-      <div class="map-toolbar" role="search">
-        <form id="mapSearchForm" class="map-search" autocomplete="off">
-          <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address" />
-          <input id="mapSearchCity"   type="search" value="Hopkinton"  aria-label="City" />
-          <button type="submit" title="Search">Search</button>
-        </form>
-      </div>
+    <div class="map-section">
+<div class="map-toolbar" role="search">
+  <form id="mapSearchForm" class="map-search" autocomplete="off">
+    <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address">
+    <input id="mapSearchCity" type="search" value="Hopkinton" placeholder="City" aria-label="City">
+    <button type="submit" title="Search">Search</button>
+  </form>
+</div>
 
-      <!-- Map card -->
-      <div class="map-card">
-        <div id="map" class="map-canvas" aria-label="Hydrant map"></div>
-      </div>
-    </section>
+
+    <div class="map-wrapper"><div class="map-card">
+<div id="map" class="map-viewport" aria-label="Hydrant map"></div>
+</div>
+</div>
   </main>
+
+<!-- Keep your existing script tags as-is, in the same order as cistern -->
 
   <footer class="site-footer">
     <div class="container"><p>© Hopkinton Fire Department</p></div>

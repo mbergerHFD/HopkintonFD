@@ -177,7 +177,7 @@ function HFD_getSearchQuery(){
     return false;
   }
 
-  function centroid(coords){
+  function centroid(ds){
     const flat = [];
     (function walk(c){
       if (!Array.isArray(c)) return;
@@ -250,7 +250,6 @@ function HFD_getSearchQuery(){
 
     return `<div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; min-width:240px;">
       <h3 style="margin:0 0 6px; font-size:1.1rem; color:#1e3a8a;">${title}</h3>
-      ${nameOrDesc ? `<p style="margin:0 0 8px; color:#111;"><strong>${nameOrDesc}</strong></p>` : ""}
       <table style="width:100%; border-collapse: collapse; font-size:0.92rem;">
         <tr><td style="padding:4px 6px; color:#374151;"><strong>Coordinates</strong></td><td style="padding:4px 6px;">${coordHtml}</td></tr>
         <tr><td style="padding:4px 6px; color:#374151;"><strong>Cautions</strong></td><td style="padding:4px 6px;">${cautions ? esc(cautions) : "–"}</td></tr>

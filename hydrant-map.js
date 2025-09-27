@@ -1,193 +1,339 @@
-// hydrant-map.js — diagnostic build (logs + safe fallbacks)
-(function(){
-  const center = [42.2289, -71.5223]; let map, searchMarker;
 
-  // --- Helpers
-  const esc = s => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const qs = new URLSearchParams(location.search);
-  const nofilter = qs.get("nofilter") === "1";
-
-  function parseDescriptionBlob(txt){
-    if (!txt) return {};
-    const lines = String(txt).split(/\r?\n/);
-    const obj = {};
-    for (let ln of lines){
-      const m = ln.match(/^\s*([^:]+)\s*:\s*(.*)\s*$/);
-      if (m){ obj[m[1].trim()] = m[2].trim(); }
-    }
-    return obj;
-  }
-
-  function normalize(props){
-    const p = {...props};
-    const descPairs = parseDescriptionBlob(p.description || p.Description || "");
-    for (const [k,v] of Object.entries(descPairs)){
-      if (v && (p[k] == null || p[k] === "")) p[k] = v;
-    }
-    const building = p.Building_no || p.building_no || p.hyd_no || p.hydrant_no || p.hyd_id || "";
-    const street   = p.street_loc || p.Street || p.Address || p.addr || p.location || "";
-    const hydType  = p.Hyd_Type || p.type || p.Type || "";
-    const size     = p.main_size || p.Main_Size || p.size || "";
-    const flow     = p.Flow_gpm || p.flow_gpm || p.flow || "";
-    const psiS     = p.psi_Static || p.static_psi || p.static || "";
-    const psiR     = p.Residual_psi || p.residual_psi || p.residual || "";
-    const year     = p.year != null ? String(p.year).replace(/\.0$/, "") : "";
-    const lon      = p.Longitude || p.longitude || p.lon || "";
-    const lat      = p.Latitude || p.latitude || p.lat || "";
-    const clean = s => (s || "").toString().replace(/\\"/g,'"').replace(/\s+/g,' ').trim();
-    return { building: clean(building), street: clean(street), hydType: clean(hydType), size: clean(size),
-      flow: clean(flow), psiS: clean(psiS), psiR: clean(psiR), year: clean(year), lon: clean(lon),
-      lat: clean(lat), props: p };
-  }
-
-  function buildPopup(allProps){
-    const n = normalize(allProps);
-    const coreRows = [
-      ["Type", n.hydType || "–"],
-      ["Main Size", n.size || "–"],
-      ["Flow (gpm)", n.flow || "–"],
-      ["Static PSI", n.psiS || "–"],
-      ["Residual PSI", n.psiR || "–"],
-      ["Year", n.year || "–"]
-    ];
-    const titleLine = `Hydrant ${n.building ? "#" + esc(n.building) : ""}`;
-    const streetLine = n.street ? `<p style="margin:0 0 8px; color:#111;"><strong>${esc(n.street)}</strong></p>` : "";
-    const coreTable = `
-      <table style="width:100%; border-collapse: collapse; font-size:0.92rem;">
-        ${coreRows.map(([k,v]) => `<tr><td style="padding:4px 6px; color:#374151;"><strong>${esc(k)}</strong></td><td style="padding:4px 6px;">${esc(v)}</td></tr>`).join("")}
-        ${(n.lat || n.lon) ? `<tr><td style="padding:4px 6px; color:#374151;"><strong>Coordinates</strong></td><td style="padding:4px 6px;">${esc(n.lat||"–")}, ${esc(n.lon||"–")}</td></tr>` : ""}
-      </table>`;
-    return `<div style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; min-width:260px;">
-      <h3 style="margin:0 0 6px; font-size:1.1rem; color:#b91c1c;">${titleLine}</h3>${streetLine}${coreTable}</div>`;
-  }
-
-  function hydrantSources(){
-    const urlParam = new URLSearchParams(location.search).get("hydrants");
-    const c = []; if (urlParam) c.push(urlParam);
-    c.push("data/hopkinton_fire_department___hydrants.geojson","data/hydrants.geojson","hydrants.geojson",
-           "../data/hopkinton_fire_department___hydrants.geojson","../data/hydrants.geojson","../hydrants.geojson",
-           "/data/hopkinton_fire_department___hydrants.geojson","/data/hydrants.geojson","/hydrants.geojson");
-    return [...new Set(c)];
-  }
-
-  function sanitizeJSONText(s){
-    let out="",inStr=false,escaped=false;
-    for (let i=0;i<s.length;i++){
-      const ch=s[i];
-      if (inStr){
-        if (escaped){ out+=ch; escaped=false; continue; }
-        if (ch==="\\"){ out+=ch; escaped=true; continue; }
-        if (ch==='"'){ out+=ch; inStr=false; continue; }
-        if (ch==="\n"){ out+="\\n"; continue; }
-        if (ch==="\r"){ out+="\\r"; continue; }
-        if (ch==="\t"){ out+="\\t"; continue; }
-        out+=ch;
-      } else {
-        out+=ch; if (ch==='"'){ inStr=true; escaped=false; }
-      }
-    }
-    return out;
-  }
-
-  async function fetchAny(paths){
-    for (let path of paths){
-      try{
-        const absolute = new URL(path, location.href).toString();
-        const r = await fetch(absolute, {cache:'no-cache'});
-        if (!r.ok){ console.warn("[hydrant-map] Not found:", absolute, r.status); continue; }
-        const text = await r.text();
-        try{ console.log("[hydrant-map] Loaded:", absolute); return JSON.parse(text); }
-        catch(e){ console.warn("[hydrant-map] Parse failed; sanitizing:", absolute, e.message);
-          return JSON.parse(sanitizeJSONText(text)); }
-      }catch(e){ console.warn("[hydrant-map] Fetch failed:", path, e); }
-    }
-    throw new Error("No hydrant GeoJSON found.");
-  }
-
-  function init(){
-    const el = document.getElementById("map"); if(!el){ console.error("#map missing"); return; }
-    map = L.map(el).setView(center, 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
-
-    // --- Bind toolbar search (street + city -> marker)
-    try{
-      const form = document.getElementById('mapSearchForm');
-      const streetEl = document.getElementById('mapSearchStreet');
-      const cityEl = document.getElementById('mapSearchCity');
-      if (form && streetEl && cityEl){
-        form.addEventListener('submit', async (e)=>{
-          e.preventDefault();
-          const street = streetEl.value.trim();
-          const city = (cityEl.value || "Hopkinton").trim();
-          if (!street) return;
-          const q = encodeURIComponent(street + ", " + city + ", MA");
-          const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${q}`;
-          try{
-            const res = await fetch(url, {headers:{'Accept':'application/json'}});
-            const arr = await res.json();
-            if (Array.isArray(arr) && arr.length){
-              const lat = parseFloat(arr[0].lat), lon = parseFloat(arr[0].lon);
-              if (!isNaN(lat) && !isNaN(lon)){
-                if (searchMarker) { try{ map.removeLayer(searchMarker);}catch{} }
-                searchMarker = L.circleMarker([lat, lon], {radius: 10, color:'#2563eb', weight:3, fillColor:'#60a5fa', fillOpacity:0.9, pane: 'markerPane'}).addTo(map).bindPopup('Search location').openPopup(); try{ searchMarker.bringToFront(); }catch{}
-                map.setView([lat, lon], 16);
-              }
-            } else {
-              alert("Address not found. Try a more specific street and city.");
-            }
-          }catch(err){
-            console.warn("Search failed:", err);
-            alert("Search failed. Please check your connection.");
-          }
-        });
-      }
-    }catch(_){}
-
-
-    // Mobile sizing fix
-    function fixSizeSoon(d=0){ setTimeout(()=> map.invalidateSize(true), d); }
-    map.once('load', ()=> fixSizeSoon(0));
-    map.on('popupopen', ()=> fixSizeSoon(0));
-    window.addEventListener('resize', ()=> fixSizeSoon(150));
-    window.addEventListener('orientationchange', ()=> fixSizeSoon(300));
-
-    const icon = L.divIcon({className:"hydrant-pin",
-      html:'<svg viewBox="0 0 24 24" width="18" height="18" fill="#ef4444" stroke="#991b1b" stroke-width="1.5"><circle cx="12" cy="12" r="6"/></svg>'});
-
-    fetchAny(hydrantSources()).then(geojson => {
-      const all = geojson.features || [];
-      console.log(`[hydrant-map] total features in file: ${all.length}`);
-
-      let feats = all;
-      if (!nofilter){
-        feats = all.filter(f => !/LZ\d+/i.test(JSON.stringify(f.properties||{})));
-        console.log(`[hydrant-map] after LZ filter: ${feats.length}`);
-      } else {
-        console.log("[hydrant-map] filter disabled via ?nofilter=1");
-      }
-
-      if (feats.length === 0){
-        console.warn("[hydrant-map] No features to render. Falling back to no-filter circleMarkers for debug.");
-        feats = all;
-        const layer = L.geoJSON({type:"FeatureCollection", features:feats}, {
-          pointToLayer: (feature, latlng) => L.circleMarker(latlng, {radius:5, color:"#ef4444", weight:2, fillOpacity:0.7}),
-          onEachFeature: (feature, lyr)=> lyr.bindPopup(buildPopup(feature.properties||{}))
-        }).addTo(map);
-        try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
+/* === HFD Leaflet guard: run page script only after Leaflet + DOM are ready (mobile-safe) === */
+;(function(){
+  function whenLeafletReady(fn){
+    var tries = 0;
+    (function tick(){
+      if (window.L && typeof L.map === 'function'){
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, {once:true});
+        else fn();
         return;
       }
+      if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
+      setTimeout(tick, 25);
+    })();
+  }
+  whenLeafletReady(function(){
+// === HFD mobile-safe Leaflet guard (JS-only, no layout changes) ===
+(function(){
+  function domReady(cb){
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cb, {once:true});
+    else cb();
+  }
+  function afterLeaflet(run){
+    var tries = 0;
+    function tick(){
+      if (window.L && typeof L.map === 'function'){ domReady(run); return; }
+      if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
+      setTimeout(tick, 25);
+    }
+    tick();
+  }
+  afterLeaflet(function(){
 
-      const layer = L.geoJSON({type:"FeatureCollection", features:feats}, {
-        pointToLayer: (feature, latlng) => L.marker(latlng, {icon}),
-        onEachFeature: (feature, lyr)=> lyr.bindPopup(buildPopup(feature.properties||{}))
+// === HFD: Leaflet-ready page-local guard (JS-only) ===
+(function(){
+  function waitForLeaflet(run){
+    if (window.L && typeof L.map === 'function'){ run(); return; }
+    var tries = 0, t = setInterval(function(){
+      if (window.L && typeof L.map === 'function'){ clearInterval(t); run(); }
+      else if (++tries > 400){ clearInterval(t); console.warn('[HFD] Leaflet not ready'); }
+    }, 25);
+  }
+  waitForLeaflet(function(){
+    // Expose created Leaflet map as window.map (safe shim)
+    if (window.L && typeof L.map === 'function' && !L.map.__hfd_shimmed){
+      var _orig = L.map;
+      L.map = function(){
+        var m = _orig.apply(this, arguments);
+        try { window.map = m; } catch(e){}
+        return m;
+      };
+      L.map.__hfd_shimmed = true;
+    }
+
+// === HFD safe query helper ===
+function HFD_getSearchQuery(){
+  var s = document.getElementById('mapSearchStreet');
+  var c = document.getElementById('mapSearchCity');
+  var x = document.getElementById('mapSearchInput');
+  var street = s && typeof s.value === 'string' ? s.value.trim() : '';
+  var city   = c && typeof c.value === 'string' ? c.value.trim() : 'Hopkinton';
+  if (street) return (street + ', ' + (city||'Hopkinton')).trim();
+  return x && typeof x.value === 'string' ? x.value.trim() : '';
+}
+
+(function(){
+  const center = [42.2289, -71.5223]; // Hopkinton approx
+  let map, searchMarker;
+
+  function init(){
+    const el = document.getElementById("map");
+    if(!el){ console.error("Map container #map not found"); return; }
+
+    map = L.map(el).setView(center, 13);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+    // --- Mobile sizing fix ---
+    function fixSizeSoon(delay=0){ setTimeout(()=> map.invalidateSize(true), delay); }
+    map.once('load', () => fixSizeSoon(0));
+    map.on('popupopen', () => fixSizeSoon(0));
+    window.addEventListener('resize', () => fixSizeSoon(150));
+    window.addEventListener('orientationchange', () => fixSizeSoon(300));
+
+
+    if(L.Control && L.Control.Geocoder){
+      L.Control.geocoder({ defaultMarkGeocode:false })
+      .on('markgeocode', e => {
+        const b = e.geocode.bbox; map.fitBounds(L.latLngBounds(b._southWest, b._northEast));
       }).addTo(map);
-      try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
-      console.log("[hydrant-map] rendered features:", layer.getLayers().length);
-    }).catch(err => {
-      console.error("Failed to load hydrants:", err);
-      L.marker(center).addTo(map).bindPopup("Hydrant data not found.");
+    }
+
+    const form = document.getElementById("mapSearchForm");
+    const input = document.getElementById("mapSearchInput");
+    form.addEventListener("submit", async (e)=>{
+      e.preventDefault(); var query = HFD_getSearchQuery();
+      const q = HFD_getSearchQuery(); if(!q) return;
+      try{
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`;
+        const res = await fetch(url, { headers:{'Accept-Language':'en'} });
+        const data = await res.json();
+        if(data && data[0]){
+          const lat = parseFloat(data[0].lat), lon = parseFloat(data[0].lon);
+          if(searchMarker) map.removeLayer(searchMarker);
+          searchMarker = L.marker([lat,lon]).addTo(map).bindPopup(data[0].display_name);
+          map.setView([lat,lon], 16);
+        } else { alert("No results found."); }
+      }catch(err){ console.error(err); alert("Search failed."); }
     });
+
+// === Sets the long lat markers to a mini fire hydranr ===
+
+function loadLayers(map){
+  const files = ["data/hopkinton_fire_department___hydrants.geojson"];
+
+  // your existing icon…
+  const icon = L.divIcon({
+    className:"hydrant-pin",
+    html:`<svg viewBox="0 0 64 64" width="20" height="20">
+      <rect x="26" y="24" width="12" height="24" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/>
+      <circle cx="32" cy="20" r="8" fill="#dc2626" stroke="#7f1d1d" stroke-width="2"/>
+      <circle cx="20" cy="36" r="4" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.5"/>
+      <circle cx="44" cy="36" r="4" fill="#dc2626" stroke="#7f1d1d" stroke-width="1.5"/>
+      <rect x="24" y="48" width="16" height="4" fill="#7f1d1d"/>
+    </svg>`
+  });
+
+  // ---- Landing Zone detector ----
+  function isLandingZone(p = {}){
+    const id   = String(p.hydi_id ?? p.hyd_id ?? p.ID ?? "").trim().toUpperCase();
+    const name = String(p.Name ?? p.name ?? "");
+    const desc = String(p.Description ?? p.description ?? "");
+    const type = String(p.Hyd_Type ?? p.type ?? "");
+    // Heuristics: ID like "LZ###", or label/desc/type mentions "Landing Zone"
+    return /^LZ\d*/.test(id)
+        || /\bLanding\s*Zone\b/i.test(name)
+        || /\bLanding\s*Zone\b/i.test(desc)
+        || /\bLanding\s*Zone\b/i.test(type);
   }
 
-  if (document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
+  // simple HTML-escape
+  const esc = v => (v == null ? "" :
+    String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+
+  fetch(files[0]).then(r=>r.json()).then(geojson=>{
+    // (optional) count removed LZs for sanity
+    let removed = 0;
+
+    const layer = L.geoJSON(geojson, {
+      // ⬅️ filter out landing zones here
+      filter: (f) => {
+        const keep = !isLandingZone(f?.properties);
+        if (!keep) removed++;
+        return keep;
+      },
+      pointToLayer: (_, latlng) => L.marker(latlng, {icon}),
+onEachFeature: (f, l) => {
+  const p = f.properties || {};
+
+  const hydrantId = p.hydi_id ?? p.hyd_id ?? p.ID ?? "N/A";
+  const notes     = p.Name ?? p.name ?? "";
+
+  // Merge both description variants
+  let description = [p.Description, p.description]
+    .filter((v,i,arr)=>v && (i===0 || v!==arr[0]))
+    .join(" / ");
+
+  // --- CLEAN DUPLICATES FROM DESCRIPTION ---
+  // 1) Normalize line breaks
+  description = description.replace(/<br\s*\/?>/gi, '\n');
+
+  // 2) Remove lines that are actually other fields you already show elsewhere
+  const removeLabeledLine = new RegExp(
+    String.raw`^\s*(?:` +
+    [
+      `street(?:_loc(?:ation)?)?`,  // street_loc, street_location
+      `Hyd[_\\s-]*Type`,            // Hyd_Type, Hyd Type
+      `main[_\\s-]*size`,           // main_size, main size
+      `psi[_\\s-]*Static`,          // psi_Static
+      `Residual[_\\s-]*psi`,        // Residual_psi
+      `Flow[_\\s-]*gpm`,            // Flow_gpm
+      `year`,                       // year
+      `Latitude`,                   // Latitude
+      `Longitude`,                  // Longitude
+      `ID`                          // ID
+    ].join('|') +
+    String.raw`)\\s*:\\s*.*$`,
+    'gim'
+  );
+  description = description.replace(removeLabeledLine, '');
+
+  // 3) Drop lone “hyd_ 90” style artifacts
+  description = description.replace(/^\s*hyd[_\s-]*\d+\s*$/gim, '');
+
+  // 4) Collapse whitespace and convert back to <br>
+  description = description
+    .replace(/\n{2,}/g, '\n')
+    .trim()
+    .replace(/\n/g, '<br>');
+
+  const street   = p.street_location ?? p.street_loc ?? "";
+  const bldg     = p.Building_no ?? p.building_no ?? "";
+  const mainSize = p.main_size ?? "";
+  const gpm      = p.Flow_gpm ?? p.flow_gpm ?? "";
+  const cautions = p.CAUTIONS ?? "";
+
+  let lat = p.Latitude, lon = p.Longitude;
+  if (lat == null || lon == null) {
+    const coords = f.geometry && Array.isArray(f.geometry.coordinates) ? f.geometry.coordinates : null;
+    if (coords) { lon = lon ?? coords[0]; lat = lat ?? coords[1]; }
+  }
+  const latlon = (lat != null && lon != null) ? `${lat}, ${lon}` : "Unknown";
+
+  const esc = v => (v == null ? "" :
+    String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+
+  const html = `
+    <div class="hydrant-popup">
+      <div><b>Hydrant ID:</b> ${esc(hydrantId)}</div>
+      <div><b>Notes:</b> ${esc(notes) || "—"}</div>
+      <div><b>Street Location:</b> ${esc(street) || "—"}</div>
+      <div><b>Building Number:</b> ${esc(bldg) || "—"}</div>
+      <div><b>Main Size:</b> ${esc(mainSize) || "—"}</div>
+      <div><b>GPM:</b> ${esc(gpm) || "—"}</div>
+      ${cautions ? `<div><b>CAUTIONS:</b> <span style="color:#b91c1c;font-weight:700">${esc(cautions)}</span></div>` : ""}
+      <div><b>Latitude Longitude:</b> ${esc(latlon)}</div>
+    </div>
+  `;
+  l.bindPopup(html);
+}
+    }).addTo(map);
+
+    // Fit and log how many LZs were excluded (for debugging)
+    try { map.fitBounds(layer.getBounds(), {padding:[20,20]}); } catch {}
+    if (removed) console.info(`[HFD] Excluded ${removed} Landing Zone records from hydrant map.`);
+  }).catch(()=> console.warn("hydrant GeoJSON not found."));
+}
+
+
+
+  loadLayers(map);
+  }
+
+  if(document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); }
+  else{ init(); }
 })();
+
+// === HFD: late binder to ensure toolbar search is wired ===
+(function(){
+  function tryBind(){
+    if (typeof window.HFD_bindToolbarSearch !== 'function') return false;
+    var m = window.map;
+    if (!m || typeof m.setView !== 'function') return false;
+    try {
+      window.HFD_bindToolbarSearch(m, { zoom: 16, defaultCity: 'Hopkinton' });
+      return true;
+    } catch(e){ console.warn('HFD_bindToolbarSearch failed', e); return false; }
+  }
+  if (!tryBind()){
+    var attempts = 0;
+    var t = setInterval(function(){
+      attempts++;
+      if (tryBind() || attempts > 200){ clearInterval(t); }
+    }, 50);
+  }
+})();
+
+// === HFD late binder call (guards missing function) ===
+(function(){
+  function attempt(){
+    if (window.map && typeof window.map.setView === 'function' && typeof window.HFD_bindToolbarSearch === 'function'){
+      try { window.HFD_bindToolbarSearch(window.map, { zoom: 16, defaultCity: 'Hopkinton' }); } catch(e){ console.warn('bind search failed', e); }
+      return true;
+    }
+    return false;
+  }
+  if (!attempt()){
+    var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
+  }
+})();
+
+// === HFD: robust late binder to avoid race with maps-boot.js ===
+(function(){
+  function attempt(){
+    if (window.map && typeof window.map.setView === 'function' &&
+        typeof window.HFD_bindToolbarSearch === 'function'){
+      try { window.HFD_bindToolbarSearch(window.map, { zoom: 16, defaultCity: 'Hopkinton' }); }
+      catch(e){ console.warn('[HFD] bind search failed', e); }
+      return true;
+    }
+    return false;
+  }
+  if (!attempt()){
+    var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
+  }
+})();
+
+
+    // Post-init: nudge Leaflet to paint on small screens
+    try {
+      if (window.map && typeof window.map.invalidateSize === 'function'){
+        setTimeout(function(){ window.map.invalidateSize(); }, 120);
+        setTimeout(function(){ window.map.invalidateSize(); }, 400);
+      }
+      window.addEventListener('orientationchange', function(){
+        if (window.map && window.map.invalidateSize){
+          setTimeout(function(){ window.map.invalidateSize(); }, 180);
+        }
+      });
+    } catch(e){}
+  });
+})();
+// === HFD end guard ===
+
+    try {
+      if (window.map && typeof window.map.invalidateSize === 'function'){
+        setTimeout(function(){ window.map.invalidateSize(); }, 120);
+        setTimeout(function(){ window.map.invalidateSize(); }, 400);
+        window.addEventListener('orientationchange', function(){ setTimeout(function(){ window.map.invalidateSize(); }, 180); });
+      }
+    } catch(e){}
+  });
+})();
+// === end HFD guard ===
+
+  });
+})();
+/* === end HFD Leaflet guard === */
+
+/* HFD bootstrap: DOM then Leaflet, then init() (desktop-safe) */
+HFD.whenDOMReady().then(() => HFD.whenLeafletReady()).then(() => {
+  try { init(); } catch(e) { console.error('[HFD] init() failed:', e); }
+  if (window.map && window.map.invalidateSize) {
+    setTimeout(() => window.map.invalidateSize(), 200);
+    setTimeout(() => window.map.invalidateSize(), 500);
+    window.addEventListener('orientationchange', () => setTimeout(() => window.map.invalidateSize(), 180));
+  }
+});
