@@ -1,42 +1,14 @@
 
-// === HFD: Mobile-safe Leaflet wait wrapper ===
-(function(){
-  function HFD_waitForLeaflet(run){
-    if (window.L && typeof L.map === 'function'){ run(); return; }
-    var tries = 0;
-    (function tick(){
-      if (window.L && typeof L.map === 'function'){ run(); return; }
-      if (++tries > 400){ console.warn('[HFD] Leaflet did not load in time'); return; }
-      setTimeout(tick, 25);
-    })();
-  }
-  HFD_waitForLeaflet(function(){
-
-
-// === HFD: safe search query helper (street+city with fallback) ===
+// === HFD safe query helper ===
 function HFD_getSearchQuery(){
   var s = document.getElementById('mapSearchStreet');
   var c = document.getElementById('mapSearchCity');
-  var x = document.getElementById('mapSearchInput'); // legacy single input
+  var x = document.getElementById('mapSearchInput');
   var street = s && typeof s.value === 'string' ? s.value.trim() : '';
   var city   = c && typeof c.value === 'string' ? c.value.trim() : 'Hopkinton';
-  if (street) return (street + ', ' + (city || 'Hopkinton')).trim();
+  if (street) return (street + ', ' + (city||'Hopkinton')).trim();
   return x && typeof x.value === 'string' ? x.value.trim() : '';
 }
-
-
-// HFD: Shim L.map to expose the created map as window.map (for search + tooling)
-(function(){
-  if (window.L && typeof L.map === 'function' && !L.map.__hfd_shimmed){
-    var _orig = L.map;
-    L.map = function(){
-      var m = _orig.apply(this, arguments);
-      try { window.map = m; } catch(e){}
-      return m;
-    };
-    L.map.__hfd_shimmed = true;
-  }
-})();
 
 // out-of-hydrant-map.js — only Out-of-Hydrant District features from hopkinton_fire_department.geojson
 (function(){
@@ -74,8 +46,8 @@ function HFD_getSearchQuery(){
     const form = document.getElementById("mapSearchForm");
     const input = document.getElementById("mapSearchInput");
     form.addEventListener("submit", async (e)=>{
-      e.preventDefault();
-      const q = (input.value||'').trim(); if(!q) return;
+      e.preventDefault(); var query = HFD_getSearchQuery();
+      const q = HFD_getSearchQuery(); if(!q) return;
       try{
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`;
         const res = await fetch(url, { headers:{'Accept-Language':'en'} });
@@ -113,10 +85,40 @@ function HFD_getSearchQuery(){
   if(document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); }
   else{ init(); }
 })();
-  });
-})();
-// === HFD: end wrapper ===
 
+// === HFD: late binder to ensure toolbar search is wired ===
+(function(){
+  function tryBind(){
+    if (typeof window.HFD_bindToolbarSearch !== 'function') return false;
+    var m = window.map;
+    if (!m || typeof m.setView !== 'function') return false;
+    try {
+      window.HFD_bindToolbarSearch(m, { zoom: 16, defaultCity: 'Hopkinton' });
+      return true;
+    } catch(e){ console.warn('HFD_bindToolbarSearch failed', e); return false; }
+  }
+  if (!tryBind()){
+    var attempts = 0;
+    var t = setInterval(function(){
+      attempts++;
+      if (tryBind() || attempts > 200){ clearInterval(t); }
+    }, 50);
+  }
+})();
+
+// === HFD late binder call (guards missing function) ===
+(function(){
+  function attempt(){
+    if (window.map && typeof window.map.setView === 'function' && typeof window.HFD_bindToolbarSearch === 'function'){
+      try { window.HFD_bindToolbarSearch(window.map, { zoom: 16, defaultCity: 'Hopkinton' }); } catch(e){ console.warn('bind search failed', e); }
+      return true;
+    }
+    return false;
+  }
+  if (!attempt()){
+    var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
+  }
+})();
 
 // === HFD: robust late binder to avoid race with maps-boot.js ===
 (function(){
@@ -131,58 +133,6 @@ function HFD_getSearchQuery(){
   }
   if (!attempt()){
     var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
-  }
-})();
-
-
-// === HFD: local search fallback (works without maps-boot.js) ===
-(function(){
-  function pickForm(){
-    return document.getElementById('mapSearchForm') ||
-           document.querySelector('.map-search') ||
-           document.querySelector('.map-toolbar form') || null;
-  }
-  function ensureMarker(m, lat, lon){
-    if (!m.__hfd_search_marker){ m.__hfd_search_marker = L.marker([lat, lon]).addTo(m); }
-    else { m.__hfd_search_marker.setLatLng([lat, lon]); }
-  }
-  function doSearch(m, query){
-    if (!query) return;
-    var url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&addressdetails=0&namedetails=0&email=' +
-              encodeURIComponent('webmaster@hopkintonfd.org') + '&q=' + encodeURIComponent(query);
-    fetch(url, { headers: {Accept:'application/json'}, referrerPolicy:'no-referrer' })
-      .then(function(r){ return r.json(); })
-      .then(function(rows){
-        if (!rows || !rows.length) return;
-        var r0 = rows[0], lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
-        if (!isFinite(lat) || !isFinite(lon)) return;
-        m.setView([lat, lon], 16);
-        ensureMarker(m, lat, lon);
-      })
-      .catch(function(err){ console.warn('[HFD] local search failed', err); });
-  }
-  function attach(){
-    var form = pickForm();
-    if (!form || !window.map) return false;
-    if (form.__hfd_local_bound) return true;
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var q = (typeof HFD_getSearchQuery === 'function') ? HFD_getSearchQuery() : '';
-      doSearch(window.map, q);
-    });
-    var btn = form.querySelector('button[type="submit"], button');
-    if (btn){
-      btn.addEventListener('click', function(e){
-        e.preventDefault();
-        var q = (typeof HFD_getSearchQuery === 'function') ? HFD_getSearchQuery() : '';
-        doSearch(window.map, q);
-      });
-    }
-    form.__hfd_local_bound = true;
-    return true;
-  }
-  if (!attach()){
-    var tries = 0, t = setInterval(function(){ if (attach() || ++tries > 200) clearInterval(t); }, 50);
   }
 })();
 
