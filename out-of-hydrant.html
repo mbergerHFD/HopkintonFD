@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Out of Hydrant District — Hopkinton Fire Department</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23ef4444'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-  <link rel="stylesheet" href="maps-shared.css" />
+  <link rel="stylesheet" href="maps-shared.css?v=2" />
 <style id="hfd-map-clean">
 /* Center the whole map section */
-.map-section{max-width:760px;margin:0 auto 24px;padding:0 12px;box-sizing:border-box;}
+.map-section{margin:0 auto 24px;padding:0 12px;box-sizing:border-box;}
 /* Toolbar full width with breathing room below header */
 .map-section .map-toolbar, .map-section #mapToolbar{position:relative !important;z-index:1 !important;width:100%;margin:16px 0 12px;}
 .map-section .map-toolbar form, .map-section #mapToolbar form{display:flex;gap:10px;width:100%;}
@@ -36,6 +36,12 @@
   box-shadow:0 3px 10px rgba(0,0,0,.12);
 }
 
+
+.map-section .map-legend{border:1px solid #e3e3e3;border-radius:10px;padding:10px 12px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.07);}
+.map-section .map-legend .legend-title{font-size:14px;margin:0 0 6px 0;font-weight:600;}
+.map-section .map-legend ul{margin:0;padding-left:18px;}
+.map-section .map-legend li{margin:4px 0;line-height:1.25;}
+
 </style>
 </head>
 <body>
@@ -56,7 +62,7 @@
 	</header>
 
   <main class="container">
-    <h1 class="page-title">Out of Hydrant District</h1>
+    <h1 class="page-title">Out of Hydrant District Map</h1>
     <div class="map-section">
 <div class="map-toolbar mt-3" role="search">
   <form id="mapSearchForm" class="map-search map-search" autocomplete="off">
@@ -65,10 +71,18 @@
     <button type="submit" title="Search">Search</button>
   </form>
 </div>
-    </div>
+
     <div class="map-wrapper"><div class="map-card">
-<div id="map" class="map-viewport" aria-label="Out of Hydrant District"></div>
+<div id="map" class="map-viewport" aria-label="Out of Hydrant District map"></div>
+<div class="map-legend mt-3">
+  <h3 class="legend-title">Legend</h3>
+  <ul>
+    <li>Search result marker</li>
+    <li>Hydrant layer</li>
+  </ul>
 </div>
+</div>
+  
 </div>
   </main>
 

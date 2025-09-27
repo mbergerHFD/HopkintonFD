@@ -68,3 +68,98 @@
 .hydrant-pin svg, .cistern-pin svg, .lz-pin svg { display: block; }
 .leaflet-marker-icon { z-index: 500; }
 .leaflet-popup { z-index: 600; }
+
+/* --- HFD map card & layout unification — append to end of maps-shared.css --- */
+
+/* Page section wrapper */
+.map-section{
+  display:block;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Page title */
+.map-section .page-title{
+  text-align:center;
+  margin: 16px 0 10px 0;
+  font-weight: 700;
+}
+
+/* Toolbar spacing */
+.map-section .map-toolbar{
+  margin-top: 12px; /* ensure breathing room below header */
+}
+
+/* Card that wraps the map viewport */
+.map-section .map-card{
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.08);
+  padding: 10px;
+  margin: 10px auto 0 auto;
+  overflow: hidden;
+}
+
+/* Map viewport box */
+.map-section #map{
+  width: 100%;
+  /* A sane, responsive height: 60vh on desktop, but never too small or too huge */
+  height: clamp(360px, 60vh, 720px);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Legend card (standardized across pages) */
+.map-section .map-legend{
+  margin: 14px auto 0 auto;
+  background: #fff;
+  border: 1px solid #e3e3e3;
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.07);
+  max-width: 900px;
+}
+.map-section .map-legend .legend-title{
+  font-size: 14px;
+  margin: 0 0 6px 0;
+  font-weight: 600;
+}
+.map-section .map-legend ul{
+  margin: 0;
+  padding-left: 18px;
+}
+.map-section .map-legend li{
+  margin: 4px 0;
+  line-height: 1.25;
+}
+
+/* Small-screen/safari guard: make sure map repaints when container changes */
+@supports (height: clamp(1px, 2px, 3px)){
+  .map-section #map {
+    contain: layout paint;
+  }
+}
+
+/* Align toolbar, map, and legend widths across all maps */
+.map-section .map-toolbar,
+.map-section .map-card,
+.map-section .map-legend {
+  max-width: 900px;   /* consistent width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* --- HFD width alignment override (captures pages where .map-card isn't nested under .map-section)
+   and neutralizes inline 760px cap on Out-of-Hydrant --- */
+.map-section { max-width: 900px !important; }
+
+/* Ensure toolbar, map card, and legend all share the exact same centered width */
+.map-toolbar,
+.map-card,
+.map-legend {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}

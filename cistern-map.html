@@ -35,6 +35,12 @@
   box-shadow:0 3px 10px rgba(0,0,0,.12);
 }
 
+
+.map-section .map-legend{border:1px solid #e3e3e3;border-radius:10px;padding:10px 12px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.07);}
+.map-section .map-legend .legend-title{font-size:14px;margin:0 0 6px 0;font-weight:600;}
+.map-section .map-legend ul{margin:0;padding-left:18px;}
+.map-section .map-legend li{margin:4px 0;line-height:1.25;}
+
 </style>
 </head>
 <body>
@@ -68,6 +74,13 @@
 
     <div class="map-wrapper"><div class="map-card">
 <div id="map" class="map-viewport" aria-label="Cistern map"></div>
+<div class="map-legend mt-3">
+  <h3 class="legend-title">Legend</h3>
+  <ul>
+    <li>Search result marker</li>
+    <li>Cistern layer</li>
+  </ul>
+</div>
 </div>
 </div>
   </main>
