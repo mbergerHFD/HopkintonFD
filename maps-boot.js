@@ -34,35 +34,75 @@
   window.ensureMapHeight = ensureMapHeight;
 })();
 
-// === HFD reusable toolbar search binder ===
-if (typeof window.HFD_bindToolbarSearch !== 'function') {
-  window.HFD_bindToolbarSearch = function(map, opts){
-    opts = opts || {};
-    var form = document.getElementById(opts.formId || 'mapSearchForm');
-    var input = document.getElementById(opts.inputId || 'mapSearchInput');
-    if (!form || !input || !map || form.__hfd_bound) return;
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var q = (input.value || '').trim();
-      if (!q) return;
-      var url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&limit=1';
-      fetch(url, { headers: { 'Accept': 'application/json' }, referrerPolicy: 'no-referrer' })
-        .then(function(r){ return r.json(); })
-        .then(function(rows){
-          if (!rows || !rows.length) return;
-          var r0 = rows[0]; var lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
-          if (isFinite(lat) && isFinite(lon)){
+// === HFD reusable toolbar search binder (v2.2 ultra-robust + debug) ===
+(function(){
+  function qSel(selector){ return document.querySelector(selector); }
+  function pickInput(){
+    // Prefer explicit IDs
+    var s = document.getElementById('mapSearchStreet') || qSel('input[name="street"]') || qSel('input[placeholder*="Street" i]');
+    var c = document.getElementById('mapSearchCity')   || qSel('input[name="city"]')   || qSel('input[placeholder*="City" i]');
+    var single = document.getElementById('mapSearchInput') || qSel('.map-search input[type="search"]');
+    return {street:s, city:c, single:single};
+  }
+  function pickForm(){
+    return document.getElementById('mapSearchForm') || qSel('.map-search') || qSel('.map-toolbar form');
+  }
+  function ensureBinder(){
+    if (typeof window.HFD_bindToolbarSearch === 'function' && window.HFD_bindToolbarSearch.__v22) return;
+    window.HFD_bindToolbarSearch = function(map, opts){
+      opts = opts || {};
+      var form = pickForm();
+      if (!form || !map) return;
+      if (form.__hfd_bound) return;
+
+      var inputs = pickInput();
+      var status = document.createElement('div');
+      status.className = 'map-search-status';
+      status.style.cssText = 'font-size:12px;margin-top:6px;min-height:16px;color:#444;';
+      form.parentNode && form.parentNode.appendChild(status);
+
+      function setStatus(msg, err){ if (status){ status.textContent = msg||''; status.style.color = err ? '#b00020' : '#444'; } }
+      function buildQuery(){
+        var street = inputs.street && inputs.street.value ? inputs.street.value.trim() : '';
+        var city   = inputs.city   && inputs.city.value   ? inputs.city.value.trim()   : (opts.defaultCity || 'Hopkinton');
+        var single = inputs.single && inputs.single.value ? inputs.single.value.trim() : '';
+        var q = street || city ? [street, city || 'Hopkinton'].filter(Boolean).join(', ') : single;
+        if (window.HFD_DEBUG) console.log('[hfd-search] query:', q);
+        return q;
+      }
+      function search(query){
+        if (!query){ setStatus('Enter an address.', true); return; }
+        setStatus('Searching…');
+        var url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&addressdetails=0&namedetails=0&email='
+          + encodeURIComponent(opts.email || 'webmaster@hopkintonfd.org') + '&q=' + encodeURIComponent(query);
+        if (window.HFD_DEBUG) console.log('[hfd-search] fetch:', url);
+        var ac = new AbortController(), to = setTimeout(function(){ ac.abort(); }, 8000);
+        fetch(url, { headers:{Accept:'application/json'}, signal: ac.signal, referrerPolicy:'no-referrer' })
+          .then(function(r){ clearTimeout(to); return r.json(); })
+          .then(function(rows){
+            if (window.HFD_DEBUG) console.log('[hfd-search] rows:', rows);
+            if (!rows || !rows.length){ setStatus('No results. Try a different address.', true); return; }
+            var r0 = rows[0], lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
+            if (!isFinite(lat) || !isFinite(lon)){ setStatus('Invalid result.', true); return; }
+            setStatus('');
             map.setView([lat, lon], opts.zoom || 16);
-            if (!map.__hfd_search_marker){
-              map.__hfd_search_marker = L.marker([lat, lon]).addTo(map);
-            } else {
-              map.__hfd_search_marker.setLatLng([lat, lon]);
-            }
-          }
-        })
-        .catch(function(err){ console.warn('Search error', err); });
-    });
-    form.__hfd_bound = true;
-  };
-}
+            if (!map.__hfd_search_marker){ map.__hfd_search_marker = L.marker([lat, lon]).addTo(map); }
+            else { map.__hfd_search_marker.setLatLng([lat, lon]); }
+          })
+          .catch(function(err){ console.warn('[hfd-search] error', err); setStatus('Search failed (network/CSP?).', true); });
+      }
+
+      // submit and click bindings
+      form.addEventListener('submit', function(e){ e.preventDefault(); search(buildQuery()); });
+      var btn = form.querySelector('button[type="submit"], button');
+      if (btn){ btn.addEventListener('click', function(e){ e.preventDefault(); search(buildQuery()); }); }
+
+      form.__hfd_bound = true;
+      if (window.HFD_DEBUG) console.log('[hfd-search] binder attached');
+    };
+    window.HFD_bindToolbarSearch.__v22 = true;
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ensureBinder);
+  else ensureBinder();
+})();
 

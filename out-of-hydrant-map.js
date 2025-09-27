@@ -1,3 +1,15 @@
+
+// === HFD safe query helper ===
+function HFD_getSearchQuery(){
+  var s = document.getElementById('mapSearchStreet');
+  var c = document.getElementById('mapSearchCity');
+  var x = document.getElementById('mapSearchInput');
+  var street = s && typeof s.value === 'string' ? s.value.trim() : '';
+  var city   = c && typeof c.value === 'string' ? c.value.trim() : 'Hopkinton';
+  if (street) return (street + ', ' + (city||'Hopkinton')).trim();
+  return x && typeof x.value === 'string' ? x.value.trim() : '';
+}
+
 // out-of-hydrant-map.js — only Out-of-Hydrant District features from hopkinton_fire_department.geojson
 (function(){
   const center = [42.2289, -71.5223];
@@ -34,8 +46,8 @@
     const form = document.getElementById("mapSearchForm");
     const input = document.getElementById("mapSearchInput");
     form.addEventListener("submit", async (e)=>{
-      e.preventDefault();
-      const q = (input.value||'').trim(); if(!q) return;
+      e.preventDefault(); var query = HFD_getSearchQuery();
+      const q = HFD_getSearchQuery(); if(!q) return;
       try{
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`;
         const res = await fetch(url, { headers:{'Accept-Language':'en'} });
@@ -74,7 +86,53 @@
   else{ init(); }
 })();
 
-// Neutralize any old helpers that tried to move the toolbar into the map
-window.HFD_embedToolbarInLeaflet = function(){ /* no-op */ };
-window.addLeafletSearchControl = function(){ /* no-op */ };
+// === HFD: late binder to ensure toolbar search is wired ===
+(function(){
+  function tryBind(){
+    if (typeof window.HFD_bindToolbarSearch !== 'function') return false;
+    var m = window.map;
+    if (!m || typeof m.setView !== 'function') return false;
+    try {
+      window.HFD_bindToolbarSearch(m, { zoom: 16, defaultCity: 'Hopkinton' });
+      return true;
+    } catch(e){ console.warn('HFD_bindToolbarSearch failed', e); return false; }
+  }
+  if (!tryBind()){
+    var attempts = 0;
+    var t = setInterval(function(){
+      attempts++;
+      if (tryBind() || attempts > 200){ clearInterval(t); }
+    }, 50);
+  }
+})();
+
+// === HFD late binder call (guards missing function) ===
+(function(){
+  function attempt(){
+    if (window.map && typeof window.map.setView === 'function' && typeof window.HFD_bindToolbarSearch === 'function'){
+      try { window.HFD_bindToolbarSearch(window.map, { zoom: 16, defaultCity: 'Hopkinton' }); } catch(e){ console.warn('bind search failed', e); }
+      return true;
+    }
+    return false;
+  }
+  if (!attempt()){
+    var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
+  }
+})();
+
+// === HFD: robust late binder to avoid race with maps-boot.js ===
+(function(){
+  function attempt(){
+    if (window.map && typeof window.map.setView === 'function' &&
+        typeof window.HFD_bindToolbarSearch === 'function'){
+      try { window.HFD_bindToolbarSearch(window.map, { zoom: 16, defaultCity: 'Hopkinton' }); }
+      catch(e){ console.warn('[HFD] bind search failed', e); }
+      return true;
+    }
+    return false;
+  }
+  if (!attempt()){
+    var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
+  }
+})();
 
