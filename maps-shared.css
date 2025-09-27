@@ -163,3 +163,16 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+
+/* === HFD: Desktop sizing tweak (make maps smaller on wide screens) === */
+@media (min-width: 1200px){
+  .map-section .map-toolbar,
+  .map-section .map-card,
+  .map-section .map-legend{
+    max-width: 800px; /* was 900px; tighten for desktop */
+  }
+  .map-section #map{
+    height: 480px; /* reduce desktop map height */
+  }
+}
