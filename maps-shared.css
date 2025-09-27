@@ -151,15 +151,73 @@
 }
 
 
-/* --- HFD width alignment override (captures pages where .map-card isn't nested under .map-section)
-   and neutralizes inline 760px cap on Out-of-Hydrant --- */
-.map-section { max-width: 900px !important; }
-
-/* Ensure toolbar, map card, and legend all share the exact same centered width */
-.map-toolbar,
-.map-card,
-.map-legend {
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+/* === HFD: Unified pill search bar (matches cistern style) === */
+.map-toolbar { margin: 10px auto 12px; max-width: 1100px; }
+.map-toolbar .map-search {
+  display: grid;
+  grid-template-columns: 1fr 320px 120px;
+  gap: 14px;
 }
+@media (max-width: 900px) {
+  .map-toolbar .map-search {
+    grid-template-columns: 1fr 1fr;
+  }
+  .map-toolbar .map-search button {
+    grid-column: span 2;
+  }
+}
+.map-toolbar .map-search input[type="search"],
+.map-toolbar .map-search input[type="text"] {
+  height: 48px;
+  padding: 0 18px;
+  border: 1px solid #d9dde6;
+  border-radius: 9999px;
+  font-size: 16px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
+.map-toolbar .map-search button[type="submit"] {
+  height: 48px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 9999px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: #2563eb;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37,99,235,.35);
+}
+.map-toolbar .map-search button[type="submit"]:hover { filter: brightness(1.05); }
+
+
+/* === HFD: expand toolbar to map width & unify pill style === */
+.map-section .map-toolbar{
+  display:flex;
+  justify-content:center;
+  width:100%;
+  margin: 8px 0 14px;
+}
+.map-section .map-toolbar .map-search{
+  width:100%;
+  display:grid;
+  grid-template-columns: 1fr 320px 120px;
+  gap:14px;
+}
+@media (max-width: 900px){
+  .map-section .map-toolbar .map-search{ grid-template-columns: 1fr 1fr; }
+  .map-section .map-toolbar .map-search button{ grid-column: span 2; }
+}
+.map-section .map-search input[type="search"],
+.map-section .map-search input[type="text"]{
+  height:48px; padding:0 18px;
+  border:1px solid #d9dde6; border-radius:9999px; font-size:16px;
+  background:#fff; box-shadow:0 4px 14px rgba(0,0,0,.06); width:100%;
+  box-sizing:border-box;
+}
+.map-section .map-search button[type="submit"]{
+  height:48px; padding:0 22px; border:none; border-radius:9999px;
+  font-size:16px; font-weight:600; color:#fff; background:#2563eb; cursor:pointer;
+  box-shadow:0 4px 14px rgba(37,99,235,.35);
+}
+.map-section .map-search button[type="submit"]:hover{ filter:brightness(1.05); }

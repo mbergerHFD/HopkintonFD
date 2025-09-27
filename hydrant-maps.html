@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hydrant Map - Hopkinton Fire Department</title>
+  <title>Hydrant Map • Hopkinton FD</title>
 
-  <!-- ✅ CSS with correct MIME (jsDelivr CDN) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mbergerHFD/HopkintonFD@main/styles.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mbergerHFD/HopkintonFD@main/maps-shared.css">
-  <link rel="icon" href="https://mbergerHFD.github.io/HopkintonFD/favicon.ico">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="maps-shared.css" />
 
-  <!-- ✅ Leaflet CSS + JS loaded early and synchronously -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
 <body>
-  <!-- Header (matches home.html nav style/classes) -->
   <header class="site-header">
     <div class="container">
       <nav class="nav nav--stack">
@@ -33,48 +30,28 @@
   </header>
 
   <main class="container">
-    <h1 class="page-title">Hydrant Map</h1>
-
-    <!-- Search -->
-    <div class="map-toolbar" role="search">
-      <form id="mapSearchForm" class="map-search" autocomplete="off">
-        <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address">
-        <input id="mapSearchCity" type="search" value="Hopkinton" placeholder="City" aria-label="City">
-        <button type="submit" title="Search">Search</button>
-      </form>
-    </div>
-
-    <!-- Map -->
     <section class="map-section">
+      <h1 class="section-title">Hydrant Map</h1>
+
+      <div class="map-toolbar" role="search">
+        <form id="mapSearchForm" class="map-search" autocomplete="off">
+          <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address" />
+          <input id="mapSearchCity"   type="search" value="Hopkinton" placeholder="City" aria-label="City" />
+          <button type="submit" title="Search">Search</button>
+        </form>
+      </div>
+
       <div class="map-card">
-        <div id="map" class="map-viewport" aria-label="Hydrant map"></div>
+        <div id="map" class="map-canvas" aria-label="Hydrant Map"></div>
       </div>
     </section>
-
-    <div class="map-legend" aria-hidden="true"></div>
   </main>
 
-  <!-- Footer (matches site footer classes) -->
   <footer class="site-footer">
-    <div class="container">
-      <p>© Hopkinton Fire Department</p>
-    </div>
+    <div class="container"><p>© Hopkinton Fire Department</p></div>
   </footer>
 
-  <!-- Page scripts (safe to defer; Leaflet already loaded) -->
-  <script src="maps-boot.js"></script>
-  <script src="hydrant-map.js?v=2" defer></script>
-
-  <!-- iOS tiny-height guard -->
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const el = document.getElementById("map");
-    if (el && el.clientHeight < 150) {
-      el.style.height = "65svh";
-      el.style.minHeight = "420px";
-      setTimeout(() => { if (window.HFD && HFD.map) HFD.map.invalidateSize(); }, 300);
-    }
-  });
-  </script>
+  <script src="maps-boot.js" defer></script>
+  <script src="hydrant-map.js" defer></script>
 </body>
 </html>
