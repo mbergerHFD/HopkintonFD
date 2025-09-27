@@ -22,36 +22,49 @@
     String(s ?? "")
       .replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 
-  function hydrantSources() {
-    const urlParam = new URLSearchParams(location.search).get("hydrants");
-    const c = [];
-    if (urlParam) c.push(urlParam);
+function hydrantSources() {
+  const urlParam = new URLSearchParams(location.search).get("hydrants");
+  const list = [];
 
-    // common relatives
-    c.push(
-      "data/hopkinton_fire_department___hydrants.geojson",
-      "data/hydrants.geojson",
-      "hydrants.geojson",
-      "../data/hopkinton_fire_department___hydrants.geojson",
-      "../data/hydrants.geojson",
-      "../hydrants.geojson",
-      "/data/hopkinton_fire_department___hydrants.geojson",
-      "/data/hydrants.geojson",
-      "/hydrants.geojson"
-    );
+  // 1) URL override (kept first)
+  if (urlParam) list.push(urlParam);
 
-    // absolute fallbacks that work from any host (mobile previews, etc.)
-    c.push(
-      "https://mbergerHFD.github.io/HopkintonFD/data/hopkinton_fire_department___hydrants.geojson",
-      "https://mbergerHFD.github.io/HopkintonFD/data/hydrants.geojson"
-    );
+  // 2) Relative candidates (work when you host the HTML + data together)
+  list.push(
+    "data/hopkinton_fire_department___hydrants.geojson",
+    "data/hydrants.geojson",
+    "hydrants.geojson",
+    "../data/hopkinton_fire_department___hydrants.geojson",
+    "../data/hydrants.geojson",
+    "../hydrants.geojson",
+    "/data/hopkinton_fire_department___hydrants.geojson",
+    "/data/hydrants.geojson",
+    "/hydrants.geojson"
+  );
 
-    // dynamic absolute based on current page
-    c.push(new URL("data/hydrants.geojson", document.baseURI).toString());
+  // 3) GitHub Pages (adjust to the **exact** path that exists in your repo)
+  // If your repo is mbergerHFD/HopkintonFD and the file is data/hydrants.geojson, these are correct:
+  list.push(
+    "https://mbergerhfd.github.io/HopkintonFD/data/hydrants.geojson",
+    "https://mbergerhfd.github.io/HopkintonFD/data/hopkinton_fire_department___hydrants.geojson"
+  );
 
-    // de-dupe
-    return [...new Set(c)];
-  }
+  // 4) CORS-friendly CDNs (WORK FROM ANY ORIGIN, including html-preview)
+  list.push(
+    // “stable” pin to main branch tip
+    "https://cdn.jsdelivr.net/gh/mbergerHFD/HopkintonFD@main/data/hydrants.geojson",
+    "https://cdn.jsdelivr.net/gh/mbergerHFD/HopkintonFD@main/data/hopkinton_fire_department___hydrants.geojson",
+
+    // optional: @latest alias
+    "https://cdn.jsdelivr.net/gh/mbergerHFD/HopkintonFD@latest/data/hydrants.geojson",
+    "https://cdn.jsdelivr.net/gh/mbergerHFD/HopkintonFD@latest/data/hopkinton_fire_department___hydrants.geojson"
+  );
+
+  // 5) Dynamic absolute relative to current page (last resort)
+  list.push(new URL("data/hydrants.geojson", document.baseURI).toString());
+
+  return [...new Set(list)];
+}
 
   function sanitizeJSONText(s) {
     // Make invalid newlines in quoted strings JSON-safe (common GIS export issue)
