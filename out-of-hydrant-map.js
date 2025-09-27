@@ -220,3 +220,13 @@ function HFD_getSearchQuery(){
   });
 })();
 /* === end HFD Leaflet guard === */
+
+/* HFD bootstrap: DOM then Leaflet, then init() (desktop-safe) */
+HFD.whenDOMReady().then(() => HFD.whenLeafletReady()).then(() => {
+  try { init(); } catch(e) { console.error('[HFD] init() failed:', e); }
+  if (window.map && window.map.invalidateSize) {
+    setTimeout(() => window.map.invalidateSize(), 200);
+    setTimeout(() => window.map.invalidateSize(), 500);
+    window.addEventListener('orientationchange', () => setTimeout(() => window.map.invalidateSize(), 180));
+  }
+});
