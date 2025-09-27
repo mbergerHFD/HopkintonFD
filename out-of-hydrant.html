@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Out of Hydrant District — Hopkinton Fire Department</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23ef4444'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-  <link rel="stylesheet" href="maps-shared.css?v=2" />
+  <link rel="stylesheet" href="maps-shared.css" />
 <style id="hfd-map-clean">
 /* Center the whole map section */
-.map-section{margin:0 auto 24px;padding:0 12px;box-sizing:border-box;}
+.map-section{max-width:760px;margin:0 auto 24px;padding:0 12px;box-sizing:border-box;}
 /* Toolbar full width with breathing room below header */
 .map-section .map-toolbar, .map-section #mapToolbar{position:relative !important;z-index:1 !important;width:100%;margin:16px 0 12px;}
 .map-section .map-toolbar form, .map-section #mapToolbar form{display:flex;gap:10px;width:100%;}
@@ -71,7 +71,7 @@
     <button type="submit" title="Search">Search</button>
   </form>
 </div>
-
+    </div>
     <div class="map-wrapper"><div class="map-card">
 <div id="map" class="map-viewport" aria-label="Out of Hydrant District map"></div>
 <div class="map-legend mt-3">
@@ -82,17 +82,15 @@
   </ul>
 </div>
 </div>
-  
 </div>
   </main>
 
   <footer class="site-footer">
     <div class="container"><p><strong>© Hopkinton Fire Department</strong></p></div>
   </footer>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-  <script src="maps-boot.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="maps-boot.js"></script>
 <script defer src="out-of-hydrant-map.js"></script>
 </body>
 </html>
