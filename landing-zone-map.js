@@ -1,4 +1,57 @@
 
+/* === HFD Leaflet guard: run page script only after Leaflet + DOM are ready (mobile-safe) === */
+;(function(){
+  function whenLeafletReady(fn){
+    var tries = 0;
+    (function tick(){
+      if (window.L && typeof L.map === 'function'){
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, {once:true});
+        else fn();
+        return;
+      }
+      if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
+      setTimeout(tick, 25);
+    })();
+  }
+  whenLeafletReady(function(){
+// === HFD mobile-safe Leaflet guard (JS-only, no layout changes) ===
+(function(){
+  function domReady(cb){
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cb, {once:true});
+    else cb();
+  }
+  function afterLeaflet(run){
+    var tries = 0;
+    function tick(){
+      if (window.L && typeof L.map === 'function'){ domReady(run); return; }
+      if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
+      setTimeout(tick, 25);
+    }
+    tick();
+  }
+  afterLeaflet(function(){
+
+// === HFD: Leaflet-ready page-local guard (JS-only) ===
+(function(){
+  function waitForLeaflet(run){
+    if (window.L && typeof L.map === 'function'){ run(); return; }
+    var tries = 0, t = setInterval(function(){
+      if (window.L && typeof L.map === 'function'){ clearInterval(t); run(); }
+      else if (++tries > 400){ clearInterval(t); console.warn('[HFD] Leaflet not ready'); }
+    }, 25);
+  }
+  waitForLeaflet(function(){
+    // Expose created Leaflet map as window.map (safe shim)
+    if (window.L && typeof L.map === 'function' && !L.map.__hfd_shimmed){
+      var _orig = L.map;
+      L.map = function(){
+        var m = _orig.apply(this, arguments);
+        try { window.map = m; } catch(e){}
+        return m;
+      };
+      L.map.__hfd_shimmed = true;
+    }
+
 // HFD: Shim L.map to expose the created map as window.map (for search + tooling)
 (function(){
   if (window.L && typeof L.map === 'function' && !L.map.__hfd_shimmed){
@@ -366,3 +419,34 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, at
   }
 })();
 
+
+    // Post-init: nudge Leaflet to paint on small screens
+    try {
+      if (window.map && typeof window.map.invalidateSize === 'function'){
+        setTimeout(function(){ window.map.invalidateSize(); }, 120);
+        setTimeout(function(){ window.map.invalidateSize(); }, 400);
+      }
+      window.addEventListener('orientationchange', function(){
+        if (window.map && window.map.invalidateSize){
+          setTimeout(function(){ window.map.invalidateSize(); }, 180);
+        }
+      });
+    } catch(e){}
+  });
+})();
+// === HFD end guard ===
+
+    try {
+      if (window.map && typeof window.map.invalidateSize === 'function'){
+        setTimeout(function(){ window.map.invalidateSize(); }, 120);
+        setTimeout(function(){ window.map.invalidateSize(); }, 400);
+        window.addEventListener('orientationchange', function(){ setTimeout(function(){ window.map.invalidateSize(); }, 180); });
+      }
+    } catch(e){}
+  });
+})();
+// === end HFD guard ===
+
+  });
+})();
+/* === end HFD Leaflet guard === */

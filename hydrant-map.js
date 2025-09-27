@@ -1,29 +1,56 @@
 
-// HFD: Shim L.map to expose the created map as window.map (for search + tooling)
-(function(){
-  if (window.L && typeof L.map === 'function' && !L.map.__hfd_shimmed){
-    var _orig = L.map;
-    L.map = function(){
-      var m = _orig.apply(this, arguments);
-      try { window.map = m; } catch(e){}
-      return m;
-    };
-    L.map.__hfd_shimmed = true;
+/* === HFD Leaflet guard: run page script only after Leaflet + DOM are ready (mobile-safe) === */
+;(function(){
+  function whenLeafletReady(fn){
+    var tries = 0;
+    (function tick(){
+      if (window.L && typeof L.map === 'function'){
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, {once:true});
+        else fn();
+        return;
+      }
+      if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
+      setTimeout(tick, 25);
+    })();
   }
-})();
+  whenLeafletReady(function(){
+// === HFD mobile-safe Leaflet guard (JS-only, no layout changes) ===
+(function(){
+  function domReady(cb){
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cb, {once:true});
+    else cb();
+  }
+  function afterLeaflet(run){
+    var tries = 0;
+    function tick(){
+      if (window.L && typeof L.map === 'function'){ domReady(run); return; }
+      if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
+      setTimeout(tick, 25);
+    }
+    tick();
+  }
+  afterLeaflet(function(){
 
-
-// === HFD safe query helper ===
-function HFD_getSearchQuery(){
-  var s = document.getElementById('mapSearchStreet');
-  var c = document.getElementById('mapSearchCity');
-  var x = document.getElementById('mapSearchInput');
-  var street = s && typeof s.value === 'string' ? s.value.trim() : '';
-  var city   = c && typeof c.value === 'string' ? c.value.trim() : 'Hopkinton';
-  if (street) return (street + ', ' + (city||'Hopkinton')).trim();
-  return x && typeof x.value === 'string' ? x.value.trim() : '';
-}
-
+// === HFD: Leaflet-ready page-local guard (JS-only) ===
+(function(){
+  function waitForLeaflet(run){
+    if (window.L && typeof L.map === 'function'){ run(); return; }
+    var tries = 0, t = setInterval(function(){
+      if (window.L && typeof L.map === 'function'){ clearInterval(t); run(); }
+      else if (++tries > 400){ clearInterval(t); console.warn('[HFD] Leaflet not ready'); }
+    }, 25);
+  }
+  waitForLeaflet(function(){
+    // Expose created Leaflet map as window.map (safe shim)
+    if (window.L && typeof L.map === 'function' && !L.map.__hfd_shimmed){
+      var _orig = L.map;
+      L.map = function(){
+        var m = _orig.apply(this, arguments);
+        try { window.map = m; } catch(e){}
+        return m;
+      };
+      L.map.__hfd_shimmed = true;
+    }
 // hydrant-map.js — diagnostic build (logs + safe fallbacks)
 (function(){
   const center = [42.2289, -71.5223]; let map, searchMarker;
@@ -133,9 +160,7 @@ function HFD_getSearchQuery(){
   function init(){
     const el = document.getElementById("map"); if(!el){ console.error("#map missing"); return; }
     map = L.map(el).setView(center, 13);
-    
-  try{ window.HFD_bindToolbarSearch && window.HFD_bindToolbarSearch(map, { zoom: 16, defaultCity: 'Hopkinton' }); }catch(e){ console.warn('bind search failed', e); }
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, attribution:'&copy; OpenStreetMap contributors'}).addTo(map);
 
     // Mobile sizing fix
     function fixSizeSoon(d=0){ setTimeout(()=> map.invalidateSize(true), d); }
@@ -184,107 +209,33 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, at
 
   if (document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
 })();
-
-// === HFD: late binder to ensure toolbar search is wired ===
-(function(){
-  function tryBind(){
-    if (typeof window.HFD_bindToolbarSearch !== 'function') return false;
-    var m = window.map;
-    if (!m || typeof m.setView !== 'function') return false;
+    // Post-init: nudge Leaflet to paint on small screens
     try {
-      window.HFD_bindToolbarSearch(m, { zoom: 16, defaultCity: 'Hopkinton' });
-      return true;
-    } catch(e){ console.warn('HFD_bindToolbarSearch failed', e); return false; }
-  }
-  if (!tryBind()){
-    var attempts = 0;
-    var t = setInterval(function(){
-      attempts++;
-      if (tryBind() || attempts > 200){ clearInterval(t); }
-    }, 50);
-  }
-})();
-
-// === HFD late binder call (guards missing function) ===
-(function(){
-  function attempt(){
-    if (window.map && typeof window.map.setView === 'function' && typeof window.HFD_bindToolbarSearch === 'function'){
-      try { window.HFD_bindToolbarSearch(window.map, { zoom: 16, defaultCity: 'Hopkinton' }); } catch(e){ console.warn('bind search failed', e); }
-      return true;
-    }
-    return false;
-  }
-  if (!attempt()){
-    var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
-  }
-})();
-
-// === HFD: robust late binder to avoid race with maps-boot.js ===
-(function(){
-  function attempt(){
-    if (window.map && typeof window.map.setView === 'function' &&
-        typeof window.HFD_bindToolbarSearch === 'function'){
-      try { window.HFD_bindToolbarSearch(window.map, { zoom: 16, defaultCity: 'Hopkinton' }); }
-      catch(e){ console.warn('[HFD] bind search failed', e); }
-      return true;
-    }
-    return false;
-  }
-  if (!attempt()){
-    var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
-  }
-})();
-
-// === HFD: local search fallback (works without maps-boot.js) ===
-(function(){
-  function pickForm(){
-    return document.getElementById('mapSearchForm') ||
-           document.querySelector('.map-search') ||
-           document.querySelector('.map-toolbar form') ||
-           null;
-  }
-  function ensureMarker(m, lat, lon){
-    if (!m.__hfd_search_marker){ m.__hfd_search_marker = L.marker([lat, lon]).addTo(m); }
-    else { m.__hfd_search_marker.setLatLng([lat, lon]); }
-  }
-  function doSearch(m, query){
-    if (!query) return;
-    var url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&addressdetails=0&namedetails=0&email=' +
-              encodeURIComponent('webmaster@hopkintonfd.org') + '&q=' + encodeURIComponent(query);
-    fetch(url, { headers: {Accept:'application/json'}, referrerPolicy:'no-referrer' })
-      .then(function(r){ return r.json(); })
-      .then(function(rows){
-        if (!rows || !rows.length) return;
-        var r0 = rows[0], lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
-        if (!isFinite(lat) || !isFinite(lon)) return;
-        m.setView([lat, lon], 16);
-        ensureMarker(m, lat, lon);
-      })
-      .catch(function(err){ console.warn('[HFD] local search failed', err); });
-  }
-  function attach(){
-    var form = pickForm();
-    if (!form || !window.map) return false;
-    if (form.__hfd_local_bound) return true;
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var q = (typeof HFD_getSearchQuery === 'function') ? HFD_getSearchQuery() : '';
-      doSearch(window.map, q);
-    });
-    var btn = form.querySelector('button[type="submit"], button');
-    if (btn){
-      btn.addEventListener('click', function(e){
-        e.preventDefault();
-        var q = (typeof HFD_getSearchQuery === 'function') ? HFD_getSearchQuery() : '';
-        doSearch(window.map, q);
+      if (window.map && typeof window.map.invalidateSize === 'function'){
+        setTimeout(function(){ window.map.invalidateSize(); }, 120);
+        setTimeout(function(){ window.map.invalidateSize(); }, 400);
+      }
+      window.addEventListener('orientationchange', function(){
+        if (window.map && window.map.invalidateSize){
+          setTimeout(function(){ window.map.invalidateSize(); }, 180);
+        }
       });
-    }
-    form.__hfd_local_bound = true;
-    return true;
-  }
-  // If the global binder exists, it will also bind; we bind locally as a safety net.
-  if (!attach()){
-    var tries = 0, t = setInterval(function(){ if (attach() || ++tries > 200) clearInterval(t); }, 50);
-  }
+    } catch(e){}
+  });
 })();
+// === HFD end guard ===
 
+    try {
+      if (window.map && typeof window.map.invalidateSize === 'function'){
+        setTimeout(function(){ window.map.invalidateSize(); }, 120);
+        setTimeout(function(){ window.map.invalidateSize(); }, 400);
+        window.addEventListener('orientationchange', function(){ setTimeout(function(){ window.map.invalidateSize(); }, 180); });
+      }
+    } catch(e){}
+  });
+})();
+// === end HFD guard ===
+
+  });
+})();
+/* === end HFD Leaflet guard === */
