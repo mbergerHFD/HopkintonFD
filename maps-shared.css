@@ -221,3 +221,66 @@
   box-shadow:0 4px 14px rgba(37,99,235,.35);
 }
 .map-section .map-search button[type="submit"]:hover{ filter:brightness(1.05); }
+
+
+
+/* Layout container for all map pages */
+.map-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 0 56px;
+}
+
+/* Page title spacing */
+.page-title,
+.section-title {
+  text-align: center;
+  margin: 8px 0 20px;
+}
+
+/* Search bar: same width as the map card */
+.map-toolbar {
+  margin: 8px 0 16px;
+}
+.map-search {
+  display: grid;
+  grid-template-columns: 1fr 260px auto;
+  gap: 12px;
+  max-width: 100%;
+}
+.map-search input {
+  height: 44px;
+  border-radius: 999px;
+  padding: 0 16px;
+}
+.map-search button {
+  height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+}
+
+/* Map "card" look */
+.map-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.10);
+  overflow: hidden;              /* keeps Leaflet tiles clipped to rounded corners */
+}
+
+/* The map canvas itself */
+.map-canvas,
+#map {
+  width: 100%;
+  height: 60vh;                  /* responsive height */
+  min-height: 480px;             /* good desktop minimum */
+}
+
+/* Ensure Leaflet controls don’t overlap rounded corners */
+.leaflet-container {
+  border-radius: 16px;
+}
+@media (max-width: 720px) {
+  .map-search { grid-template-columns: 1fr 1fr; }
+  .map-search button { grid-column: 1 / -1; }
+  .map-canvas, #map { min-height: 380px; height: 55vh; }
+}

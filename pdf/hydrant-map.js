@@ -129,7 +129,7 @@
               const lat = parseFloat(arr[0].lat), lon = parseFloat(arr[0].lon);
               if (!isNaN(lat) && !isNaN(lon)){
                 if (searchMarker) { try{ map.removeLayer(searchMarker);}catch{} }
-                searchMarker = L.circleMarker([lat, lon], {radius: 10, color:'#2563eb', weight:3, fillColor:'#60a5fa', fillOpacity:0.9, pane: 'markerPane'}).addTo(map).bindPopup('Search location').openPopup(); try{ searchMarker.bringToFront(); }catch{}
+                searchMarker = L.marker([lat, lon]).addTo(map).bindPopup("Search location").openPopup();
                 map.setView([lat, lon], 16);
               }
             } else {

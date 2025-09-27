@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hydrant Map • Hopkinton FD</title>
+  <title>Hydrant Map</title>
 
+  <!-- Site styles -->
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="maps-shared.css" />
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <!-- Leaflet CSS (no integrity to avoid SRI blocks) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 </head>
 <body>
   <header class="site-header">
     <div class="container">
-      <nav class="nav nav--stack">
+      <nav class="nav">
         <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
         <ul class="nav__links">
           <li><a href="home.html">Home</a></li>
@@ -31,18 +31,20 @@
 
   <main class="container">
     <section class="map-section">
-      <h1 class="section-title">Hydrant Map</h1>
+      <h1 class="page-title">Hydrant Map</h1>
 
+      <!-- Search toolbar -->
       <div class="map-toolbar" role="search">
         <form id="mapSearchForm" class="map-search" autocomplete="off">
           <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address" />
-          <input id="mapSearchCity"   type="search" value="Hopkinton" placeholder="City" aria-label="City" />
+          <input id="mapSearchCity"   type="search" value="Hopkinton"  aria-label="City" />
           <button type="submit" title="Search">Search</button>
         </form>
       </div>
 
+      <!-- Map card -->
       <div class="map-card">
-        <div id="map" class="map-canvas" aria-label="Hydrant Map"></div>
+        <div id="map" class="map-canvas" aria-label="Hydrant map"></div>
       </div>
     </section>
   </main>
@@ -51,6 +53,10 @@
     <div class="container"><p>© Hopkinton Fire Department</p></div>
   </footer>
 
+  <!-- Leaflet JS must load BEFORE your map scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <!-- Your scripts -->
   <script src="maps-boot.js" defer></script>
   <script src="hydrant-map.js" defer></script>
 </body>
