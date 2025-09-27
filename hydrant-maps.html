@@ -13,94 +13,91 @@
 
   <!-- Shared map styles -->
   <link rel="stylesheet" href="maps-shared.css?v=2" />
-<style id="hfd-map-clean">
-/* Center the whole map section */
-.map-section{max-width:760px;margin:0 auto 24px;padding:0 12px;box-sizing:border-box;}
-/* Toolbar full width with breathing room below header */
-.map-section .map-toolbar, .map-section #mapToolbar{position:relative !important;z-index:1 !important;width:100%;margin:16px 0 12px;}
-.map-section .map-toolbar form, .map-section #mapToolbar form{display:flex;gap:10px;width:100%;}
-.map-section .map-toolbar input[type="search"], .map-section #mapToolbar input[type="search"],
-.map-section .map-toolbar input[type="text"],   .map-section #mapToolbar input[type="text"]{flex:1;min-width:0;border:1px solid #cfcfcf;border-radius:9999px;padding:10px 14px;outline:none;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.12);}
-.map-section .map-toolbar button, .map-section #mapToolbar button{padding:10px 16px;border-radius:9999px;border:1px solid #cfcfcf;background:#2d6cdf;color:#fff;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.12);}
-/* Map card clamps size and clips overflow */
-.map-card{width:100%;height:400px;border:1px solid #ddd;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
-.map-card #map, .map-card .leaflet-container{width:100% !important;height:100% !important;display:block;position:relative !important;}
-.map-card .leaflet-top{top:12px !important;}
+  <style id="hfd-map-clean">
+  /* Page-local tweaks to match other maps and fix desktop full-bleed */
+  .map-section{max-width:1100px;margin:0 auto 24px;padding:0 12px;box-sizing:border-box;}
+  .map-toolbar,.map-legend{max-width:1100px;margin:16px auto 12px;padding:0 12px;box-sizing:border-box;}
+  .map-toolbar{position:relative !important;z-index:1 !important;}
+  .map-toolbar form{display:flex;gap:10px;width:100%;}
+  .map-toolbar input[type="search"], .map-toolbar input[type="text"]{flex:1;min-width:0;border:1px solid #cfcfcf;border-radius:9999px;padding:10px 14px;outline:none;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.12);}
+  .map-toolbar button{padding:10px 16px;border-radius:9999px;border:1px solid #cfcfcf;background:#2d6cdf;color:#fff;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.12);}
 
-/* Split search inputs: street + city */
-.map-section #mapSearchStreet,
-.map-section #mapSearchCity{
-  border:1px solid #cfcfcf; border-radius:9999px; padding:10px 14px;
-  outline:none; background:#fff; box-shadow:0 3px 10px rgba(0,0,0,.12);
-}
-.map-section #mapSearchStreet{ flex:2; min-width:160px; }
-.map-section #mapSearchCity{ flex:1; min-width:120px; }
-.map-section .map-search button{
-  padding:10px 16px; border-radius:9999px; border:1px solid #cfcfcf; background:#2d6cdf; color:#fff; cursor:pointer;
-  box-shadow:0 3px 10px rgba(0,0,0,.12);
-}
+  /* Split search inputs: street + city */
+  #mapSearchStreet,#mapSearchCity{
+    border:1px solid #cfcfcf;border-radius:9999px;padding:10px 14px;outline:none;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.12);
+  }
+  #mapSearchStreet{flex:2;min-width:160px;}
+  #mapSearchCity{flex:1;min-width:120px;}
 
+  /* Map card clamps size and clips overflow */
+  .map-card{max-width:1100px;margin:0 auto;border:1px solid #ddd;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  .map-card #map,.map-card .leaflet-container{width:100% !important;height:520px !important;display:block;position:relative !important;}
+  .leaflet-top{top:12px !important;}
+  @media (max-width: 768px){
+    .map-card #map,.map-card .leaflet-container{height:60vh !important;min-height:420px;}
+  }
 
-.map-section .map-legend{border:1px solid #e3e3e3;border-radius:10px;padding:10px 12px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.07);}
-.map-section .map-legend .legend-title{font-size:14px;margin:0 0 6px 0;font-weight:600;}
-.map-section .map-legend ul{margin:0;padding-left:18px;}
-.map-section .map-legend li{margin:4px 0;line-height:1.25;}
-
-</style>
+  .map-legend{border:1px solid #e3e3e3;border-radius:10px;padding:10px 12px;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.07);}
+  .map-legend .legend-title{font-size:14px;margin:0 0 6px 0;font-weight:600;}
+  .map-legend ul{margin:0;padding-left:18px;}
+  .map-legend li{margin:4px 0;line-height:1.25;}
+  </style>
 </head>
 <body>
   <header class="site-header">
-		<div class="container">
-			<nav class="nav nav--stack">
-				<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
-				<ul class="nav__links">
-					<li><a href="home.html">Home</a></li>
-					<li><a href="apparatus.html">Apparatus</a></li>
-					<li><a href="maps.html">Maps</a></li>
-					<li><a href="run-cards.html">Run Cards</a></li>
-					<li><a href="erg.html">ERG</a></li>
-					<li><a href="administrative.html">Administrative</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
+    <div class="container">
+      <nav class="nav nav--stack">
+        <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
+        <ul class="nav__links">
+          <li><a href="home.html">Home</a></li>
+          <li><a href="apparatus.html">Apparatus</a></li>
+          <li><a href="maps.html">Maps</a></li>
+          <li><a href="run-cards.html">Run Cards</a></li>
+          <li><a href="erg.html">ERG</a></li>
+          <li><a href="administrative.html">Administrative</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
   <main class="container">
     <h1 class="page-title">Hydrant Map</h1>
 
     <!-- Search bar -->
-    <div class="map-section">
-<div class="map-toolbar mt-3" role="search">
-  <form id="mapSearchForm" class="map-search map-search" autocomplete="off">
-    <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address">
-    <input id="mapSearchCity" type="search" value="Hopkinton" placeholder="City" aria-label="City">
-    <button type="submit" title="Search">Search</button>
-  </form>
-</div>
+    <div class="map-toolbar" role="search">
+      <form id="mapSearchForm" class="map-search" autocomplete="off">
+        <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address">
+        <input id="mapSearchCity" type="search" value="Hopkinton" placeholder="City" aria-label="City">
+        <button type="submit" title="Search">Search</button>
+      </form>
+    </div>
 
-    <!-- Map container (with inline height fallback for iOS Safari) -->
-    <div class="map-wrapper"><div class="map-card">
-<div id="map" class="map-viewport" aria-label="Hydrant map"></div>
-<div class="map-legend mt-3">
-  <h3 class="legend-title">Legend</h3>
-  <ul>
-    <li>Search result marker</li>
-    <li>Hydrant layer</li>
-  </ul>
-</div>
-</div>
-</div>
+    <!-- Map container -->
+    <section class="map-section">
+      <div class="map-card">
+        <div id="map" class="map-viewport" aria-label="Hydrant map"></div>
+      </div>
+    </section>
+
+    <!-- Legend below the map (outside the clipped card) -->
+    <div class="map-legend">
+      <h3 class="legend-title">Legend</h3>
+      <ul>
+        <li>Search result marker</li>
+        <li>Hydrant layer</li>
+      </ul>
+    </div>
   </main>
 
   <!-- Leaflet core JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Your hydrant map script -->
+  <!-- Your scripts -->
   <script src="maps-boot.js"></script>
-<script src="hydrant-map.js?v=2" defer></script>
+  <script src="hydrant-map.js?v=2" defer></script>
 
   <script>
-    // Extra mobile safeguard if iOS reports tiny map height
+    // Mobile safeguard if iOS reports tiny map height
     document.addEventListener("DOMContentLoaded", () => {
       const el = document.getElementById("map");
       if (el && el.clientHeight < 150) {
