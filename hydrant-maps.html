@@ -11,63 +11,9 @@
   <!-- Leaflet core CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- Shared map styles -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Shared map styles -->
   <link rel="stylesheet" href="maps-shared.css?v=2" />
-<style id="hfd-map-inline">
-/* Force maps to be centered panels, not full-screen */
-.map-wrapper{display:flex;justify-content:center;margin:1rem auto;}
-.map-wrapper #map,
-.map-wrapper .leaflet-container{
-  width:100% !important;
-  max-width:800px !important;                 /* narrower panel */
-  height:clamp(320px, 60vh, 560px) !important;/* shorter panel */
-  border:2px solid #ccc; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.1);
-  position:relative !important; top:auto !important; left:auto !important; right:auto !important; bottom:auto !important;
-}
-/* Keep Leaflet controls below header */
-.leaflet-control-container .leaflet-top{ top: calc(var(--hfd-header-h, 80px) + 8px) !important; }
-</style>
-
-<script id="hfd-header-size">
-(function(){
-  function headerHeight(){
-    var sels = ['.site-header','header.site-header','header','.nav','.navbar','.site-nav'];
-    var h = 0;
-    for (var i=0;i<sels.length;i++){
-      var el = document.querySelector(sels[i]); if (el) h = Math.max(h, el.offsetHeight||0);
-    }
-    return h||0;
-  }
-  function apply(){
-    var h = headerHeight();
-    document.documentElement.style.setProperty('--hfd-header-h', h + 'px');
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', apply);
-  } else { apply(); }
-  window.addEventListener('resize', apply, {passive:true});
-})();
-</script>
-<!-- HFD inline map layout (fixed) -->
-<style id="hfd-map-fixed">
-  /* Centered toolbar above map with spacing */
-  .map-toolbar, #mapToolbar {
-    display:flex; gap:8px; align-items:center;
-    max-width:1000px; margin:0 auto 12px;
-  }
-  .map-toolbar input, #mapToolbar input { flex:1; }
-  /* Map panel constraints */
-  .map-wrapper{ display:flex; justify-content:center; margin:0 auto 16px; }
-  .map-wrapper #map, .map-wrapper .leaflet-container{
-    width:100% !important;
-    max-width:1000px !important;
-    height:clamp(320px, 58vh, 540px) !important;
-    border:2px solid #ddd; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,.08);
-    position:relative !important; top:auto !important; left:auto !important; right:auto !important; bottom:auto !important;
-  }
-  /* Keep leaflet controls slightly down from the map edge; don't use header offset here */
-  .map-wrapper .leaflet-top{ top:12px !important; }
-</style>
 </head>
 <body>
   <header class="site-header">
@@ -83,7 +29,7 @@
 					<li><a href="administrative.html">Administrative</a></li>
 				</ul>
 			</nav>
-		</div></div>
+		</div>
 	</header>
 
   <main class="container">
@@ -98,14 +44,13 @@
     </div>
 
     <!-- Map container (with inline height fallback for iOS Safari) -->
-    <div class="map-wrapper"><div id="map" class="map-viewport" style="" aria-label="Hydrant map"></div>
+    <div id="map" class="map-viewport" style="height:70svh; min-height:420px;" aria-label="Hydrant map"></div>
   </main>
 
   <!-- Leaflet core JS -->
 
   <!-- Your hydrant map script -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="hydrant-map.js?v=2" defer></script>
+  <script src="hydrant-map.js?v=2" defer></script>
 
   <script>
     // Extra mobile safeguard if iOS reports tiny map height
