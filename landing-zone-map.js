@@ -1,4 +1,18 @@
 
+// HFD: Shim L.map to expose the created map as window.map (for search + tooling)
+(function(){
+  if (window.L && typeof L.map === 'function' && !L.map.__hfd_shimmed){
+    var _orig = L.map;
+    L.map = function(){
+      var m = _orig.apply(this, arguments);
+      try { window.map = m; } catch(e){}
+      return m;
+    };
+    L.map.__hfd_shimmed = true;
+  }
+})();
+
+
 // === HFD safe query helper ===
 function HFD_getSearchQuery(){
   var s = document.getElementById('mapSearchStreet');
@@ -296,6 +310,59 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, at
   }
   if (!attempt()){
     var tries = 0, t = setInterval(function(){ if (attempt() || ++tries > 200) clearInterval(t); }, 50);
+  }
+})();
+
+// === HFD: local search fallback (works without maps-boot.js) ===
+(function(){
+  function pickForm(){
+    return document.getElementById('mapSearchForm') ||
+           document.querySelector('.map-search') ||
+           document.querySelector('.map-toolbar form') ||
+           null;
+  }
+  function ensureMarker(m, lat, lon){
+    if (!m.__hfd_search_marker){ m.__hfd_search_marker = L.marker([lat, lon]).addTo(m); }
+    else { m.__hfd_search_marker.setLatLng([lat, lon]); }
+  }
+  function doSearch(m, query){
+    if (!query) return;
+    var url = 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&addressdetails=0&namedetails=0&email=' +
+              encodeURIComponent('webmaster@hopkintonfd.org') + '&q=' + encodeURIComponent(query);
+    fetch(url, { headers: {Accept:'application/json'}, referrerPolicy:'no-referrer' })
+      .then(function(r){ return r.json(); })
+      .then(function(rows){
+        if (!rows || !rows.length) return;
+        var r0 = rows[0], lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
+        if (!isFinite(lat) || !isFinite(lon)) return;
+        m.setView([lat, lon], 16);
+        ensureMarker(m, lat, lon);
+      })
+      .catch(function(err){ console.warn('[HFD] local search failed', err); });
+  }
+  function attach(){
+    var form = pickForm();
+    if (!form || !window.map) return false;
+    if (form.__hfd_local_bound) return true;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var q = (typeof HFD_getSearchQuery === 'function') ? HFD_getSearchQuery() : '';
+      doSearch(window.map, q);
+    });
+    var btn = form.querySelector('button[type="submit"], button');
+    if (btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        var q = (typeof HFD_getSearchQuery === 'function') ? HFD_getSearchQuery() : '';
+        doSearch(window.map, q);
+      });
+    }
+    form.__hfd_local_bound = true;
+    return true;
+  }
+  // If the global binder exists, it will also bind; we bind locally as a safety net.
+  if (!attach()){
+    var tries = 0, t = setInterval(function(){ if (attach() || ++tries > 200) clearInterval(t); }, 50);
   }
 })();
 
