@@ -11,42 +11,16 @@
 <style id="hfd-map-clean">
 /* Center the whole map section */
 .map-section{max-width:760px;margin:0 auto 24px;padding:0 12px;box-sizing:border-box;}
-/* Toolbar is full width of the section and above the map */
-.map-section .map-toolbar, .map-section #mapToolbar{
-  position: relative !important;
-  z-index: 1 !important;
-  width:100%;
-  margin:16px 0 12px; /* top margin to separate from header */
-}
-.map-section .map-toolbar form, .map-section #mapToolbar form{ 
-  display:flex; gap:10px; width:100%; 
-}
-.map-section .map-toolbar input[type="search"],
-.map-section #mapToolbar input[type="search"],
-.map-section .map-toolbar input[type="text"],
-.map-section #mapToolbar input[type="text"]{
-  flex:1; min-width:0;
-  border:1px solid #cfcfcf; border-radius:9999px; padding:10px 14px; outline:none;
-  background:#fff; box-shadow:0 3px 10px rgba(0,0,0,.12);
-}
-.map-section .map-toolbar button, .map-section #mapToolbar button{
-  padding:10px 16px; border-radius:9999px; border:1px solid #cfcfcf; background:#2d6cdf; color:#fff; cursor:pointer;
-  box-shadow:0 3px 10px rgba(0,0,0,.12);
-}
-/* Map card holds the map with a firm height and clipped overflow */
-.map-card{width:100%;height:420px;border:1px solid #ddd;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
-.map-card #map,.map-card .leaflet-container{width:100% !important;height:100% !important;display:block;position:relative !important;}
-/* Keep Leaflet controls inside the map */
+/* Toolbar full width with breathing room below header */
+.map-section .map-toolbar, .map-section #mapToolbar{position:relative !important;z-index:1 !important;width:100%;margin:16px 0 12px;}
+.map-section .map-toolbar form, .map-section #mapToolbar form{display:flex;gap:10px;width:100%;}
+.map-section .map-toolbar input[type="search"], .map-section #mapToolbar input[type="search"],
+.map-section .map-toolbar input[type="text"],   .map-section #mapToolbar input[type="text"]{flex:1;min-width:0;border:1px solid #cfcfcf;border-radius:9999px;padding:10px 14px;outline:none;background:#fff;box-shadow:0 3px 10px rgba(0,0,0,.12);}
+.map-section .map-toolbar button, .map-section #mapToolbar button{padding:10px 16px;border-radius:9999px;border:1px solid #cfcfcf;background:#2d6cdf;color:#fff;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.12);}
+/* Map card clamps size and clips overflow */
+.map-card{width:100%;height:400px;border:1px solid #ddd;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.map-card #map, .map-card .leaflet-container{width:100% !important;height:100% !important;display:block;position:relative !important;}
 .map-card .leaflet-top{top:12px !important;}
-</style>
-<style id="hfd-toolbar-reset">
-/* Force toolbar to participate in normal flow (no fixed/absolute) */
-.map-section #mapToolbar, .map-section .map-toolbar {
-  position: relative !important;
-  top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
-  transform: none !important;
-  z-index: 1 !important;
-}
 </style>
 </head>
 <body>
@@ -67,23 +41,25 @@
 	</header>
 
   <main class="container">
-    <h1 style="text-align:center; margin: 1rem 0;">Landing Zone Map</h1><div class="map-section">
+    <h1 class="page-title">Landing Zone Map</h1>
 
-
-    <div id="mapToolbar">
-      <form id="mapSearchForm">
-        <input type="text" id="mapSearchInput" placeholder="Search address or place..." />
-        <button type="submit">Search</button>
+    <div class="map-section">
+<div class="map-toolbar" role="search">
+      <form id="mapSearchForm" class="map-search" autocomplete="off">
+        <input id="mapSearchInput" type="search" placeholder="Search address or place..." aria-label="Search address">
+        <button type="submit" title="Search">Search</button>
       </form>
-    </div>
+      <div class="map-legend"><span class="legend-item"><span class="swatch ooH"></span></span></div>
 
     <div class="map-wrapper"><div class="map-card">
-<div id="map" class="map-viewport" style="height:70svh; min-height:420px;" aria-label="Landing Zone map"></div>
+<div id="map" class="map-viewport" aria-label="Landing Zone map"></div>
+</div>
 </div>
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="landing-zone-map.js?v=2" defer></script>
+  <script src="maps-boot.js"></script>
+<script src="landing-zone-map.js?v=2" defer></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const el = document.getElementById("map");

@@ -34,38 +34,35 @@
   window.ensureMapHeight = ensureMapHeight;
 })();
 
-// Neutralize any old helpers that tried to move the toolbar into the map
-window.HFD_embedToolbarInLeaflet = function(){ /* no-op */ };
-window.addLeafletSearchControl = function(){ /* no-op */ };
-
 // === HFD reusable toolbar search binder ===
-function HFD_bindToolbarSearch(map, opts){
-  opts = opts || {};
-  var form = document.getElementById(opts.formId || 'mapSearchForm');
-  var input = document.getElementById(opts.inputId || 'mapSearchInput');
-  if (!form || !input || !map) return;
-
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    var q = (input.value || '').trim();
-    if (!q) return;
-    // Basic Nominatim search
-    var url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&limit=1';
-    fetch(url, { headers: { 'Accept': 'application/json' }, referrerPolicy: 'no-referrer' })
-      .then(function(r){ return r.json(); })
-      .then(function(rows){
-        if (!rows || !rows.length) return;
-        var r0 = rows[0];
-        var lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
-        if (isFinite(lat) && isFinite(lon)){
-          map.setView([lat, lon], opts.zoom || 16);
-          if (!map.__hfd_search_marker){
-            map.__hfd_search_marker = L.marker([lat, lon]).addTo(map);
-          } else {
-            map.__hfd_search_marker.setLatLng([lat, lon]);
+if (typeof window.HFD_bindToolbarSearch !== 'function') {
+  window.HFD_bindToolbarSearch = function(map, opts){
+    opts = opts || {};
+    var form = document.getElementById(opts.formId || 'mapSearchForm');
+    var input = document.getElementById(opts.inputId || 'mapSearchInput');
+    if (!form || !input || !map || form.__hfd_bound) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var q = (input.value || '').trim();
+      if (!q) return;
+      var url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(q) + '&limit=1';
+      fetch(url, { headers: { 'Accept': 'application/json' }, referrerPolicy: 'no-referrer' })
+        .then(function(r){ return r.json(); })
+        .then(function(rows){
+          if (!rows || !rows.length) return;
+          var r0 = rows[0]; var lat = parseFloat(r0.lat), lon = parseFloat(r0.lon);
+          if (isFinite(lat) && isFinite(lon)){
+            map.setView([lat, lon], opts.zoom || 16);
+            if (!map.__hfd_search_marker){
+              map.__hfd_search_marker = L.marker([lat, lon]).addTo(map);
+            } else {
+              map.__hfd_search_marker.setLatLng([lat, lon]);
+            }
           }
-        }
-      }).catch(function(err){ console.warn('Search error', err); });
-  });
+        })
+        .catch(function(err){ console.warn('Search error', err); });
+    });
+    form.__hfd_bound = true;
+  };
 }
 

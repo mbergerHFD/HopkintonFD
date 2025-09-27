@@ -236,8 +236,3 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, at
 
   if (document.readyState === "loading"){ document.addEventListener("DOMContentLoaded", init); } else { init(); }
 })();
-
-// Neutralize any old helpers that tried to move the toolbar into the map
-window.HFD_embedToolbarInLeaflet = function(){ /* no-op */ };
-window.addLeafletSearchControl = function(){ /* no-op */ };
-

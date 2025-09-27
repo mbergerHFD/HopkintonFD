@@ -616,3 +616,8 @@ img { max-width: 100%; height: auto; display: block; }
   .map-grid { grid-template-columns: 1fr; }
   .map-card img { height: 180px; }
 }
+
+.page-title {
+  text-align: center;
+  margin: 20px 0;
+}
