@@ -1,6 +1,17 @@
 
 /* === HFD Leaflet guard: run page script only after Leaflet + DOM are ready (mobile-safe) === */
-;
+;(function(){
+  function whenLeafletReady(fn){
+    var tries = 0;
+    (function tick(){
+      if (window.L && typeof L.map === 'function'){
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn, {once:true});
+        else fn();
+        return;
+      }
+      if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
+      setTimeout(tick, 25);
+    })();
   }
   whenLeafletReady(function(){
 // === HFD mobile-safe Leaflet guard (JS-only, no layout changes) ===
@@ -9,7 +20,11 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cb, {once:true});
     else cb();
   }
-  if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
+  function afterLeaflet(run){
+    var tries = 0;
+    function tick(){
+      if (window.L && typeof L.map === 'function'){ domReady(run); return; }
+      if (++tries > 400){ console.warn('[HFD] Leaflet not ready'); return; }
       setTimeout(tick, 25);
     }
     tick();
@@ -18,7 +33,9 @@
 
 // === HFD: Leaflet-ready page-local guard (JS-only) ===
 (function(){
-  var tries = 0, t = setInterval(function(){
+  function waitForLeaflet(run){
+    if (window.L && typeof L.map === 'function'){ run(); return; }
+    var tries = 0, t = setInterval(function(){
       if (window.L && typeof L.map === 'function'){ clearInterval(t); run(); }
       else if (++tries > 400){ clearInterval(t); console.warn('[HFD] Leaflet not ready'); }
     }, 25);
@@ -195,13 +212,3 @@ function HFD_getSearchQuery(){
   });
 })();
 /* === end HFD Leaflet guard === */
-
-/* HFD bootstrap: wait for Leaflet and DOM, then init() */
-HFD.whenLeafletReady().then(() => HFD.whenDOMReady()).then(() => {
-  try { init(); } catch(e) { console.error('[HFD] init() failed:', e); }
-  if (window.map && window.map.invalidateSize) {
-    setTimeout(() => window.map.invalidateSize(), 200);
-    setTimeout(() => window.map.invalidateSize(), 500);
-    window.addEventListener('orientationchange', () => setTimeout(() => window.map.invalidateSize(), 180));
-  }
-});
