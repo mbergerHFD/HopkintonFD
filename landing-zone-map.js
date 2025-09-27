@@ -274,7 +274,21 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19, at
 
     const icon = L.divIcon({
       className:"lz-pin",
-      html:'<svg viewBox="0 0 24 24" width="18" height="18" fill="#3b82f6" stroke="#1e40af" stroke-width="1.5"><polygon points="12,3 21,21 3,21"/></svg>'
+      html:`<svg viewBox="0 0 64 64" width="22" height="22" stroke="#1e40af" stroke-width="3" fill="#3b82f6" stroke-linecap="round" stroke-linejoin="round">
+  <!-- rotor -->
+  <line x1="18" y1="14" x2="46" y2="14"/>
+  <line x1="32" y1="14" x2="32" y2="20"/>
+  <!-- body -->
+  <rect x="18" y="24" width="26" height="14" rx="7"/>
+  <!-- tail boom -->
+  <rect x="40" y="28" width="14" height="6" rx="3"/>
+  <!-- tail rotor -->
+  <circle cx="56" cy="31" r="3"/>
+  <!-- skids -->
+  <line x1="22" y1="44" x2="42" y2="44"/>
+  <line x1="26" y1="38" x2="22" y2="44"/>
+  <line x1="38" y1="38" x2="42" y2="44"/>
+</svg>`
     });
 
     fetchAny(lzSources()).then(data => {

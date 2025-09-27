@@ -67,7 +67,18 @@ function HFD_getSearchQuery(){
   const center = [42.2289, -71.5223]; // Hopkinton approx
   let map, searchMarker;
 
-  function init(){
+  function isLandingZone(p = {}){
+  const id   = String(p.ID ?? p.id ?? p.hyd_id ?? '').toUpperCase();
+  const name = String(p.Name ?? p.name ?? '');
+  const desc = String(p.Description ?? p.description ?? '');
+  const type = String(p.Type ?? p.type ?? '');
+  return /^LZ\d*/.test(id)
+      || /\bLanding\s*Zone\b/i.test(name)
+      || /\bLanding\s*Zone\b/i.test(desc)
+      || /\bLanding\s*Zone\b/i.test(type);
+}
+
+function init(){
     const el = document.getElementById("map");
     if(!el){ console.error("Map container #map not found"); return; }
 
@@ -116,10 +127,113 @@ function HFD_getSearchQuery(){
       html:'<svg viewBox="0 0 24 24" width="18" height="18" fill="#10b981" stroke="#065f46" stroke-width="1.5"><rect x="6" y="6" width="12" height="12" rx="3"/></svg>'
     });
     fetch(files[0]).then(r=>r.json()).then(geojson=>{
-      const layer = L.geoJSON(geojson, {
-        pointToLayer: (_, latlng) => L.marker(latlng, {icon}),
-        onEachFeature: (f, l)=> l.bindPopup(f.properties?.name || "Cistern")
-      }).addTo(map);
+const esc = v => (v == null ? "" :
+  String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+
+
+const layer = L.geoJSON(geojson, {
+  filter: (f) => {
+    const g = f && f.geometry && f.geometry.type;
+    if (g !== 'Point') return false;
+    return !isLandingZone(f.properties || {});
+  },
+  pointToLayer: (_, latlng) => L.marker(latlng, {icon}),
+  onEachFeature: (f, l) => {
+    const p = f.properties || {};
+    const esc = v => (v == null ? "" : String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+    const pick = (...keys) => {
+      for (const k of keys) {
+        if (p.hasOwnProperty(k) && p[k] != null && String(p[k]).trim() !== "") return p[k];
+        const kc = Object.keys(p).find(x => x.toLowerCase() === String(k).toLowerCase());
+        if (kc && p[kc] != null && String(p[kc]).trim() !== "") return p[kc];
+      }
+      return "";
+    };
+const name = pick("Name","name");
+const location  = pick("Location","location","street_location","street_loc","Address","address");
+    const type      = pick("Type","type");
+    const capacity  = pick("Capacity (gal)","Capacity_gal","capacity_gal","capacity");
+    const status    = pick("Status","status");
+    const access    = pick("Access","access");
+    const depth     = pick("Depth","depth");
+    const diameter  = pick("Diameter","diameter");
+    const year      = pick("Year","year");
+    const descMerged = [pick("Description"), pick("description")]
+      .filter((v,i,a)=>v && (i===0 || v!==a[0]))
+      .join(" / ")
+      .replace(/^\s*$/,"");
+// -- Clean unwanted labels from description --
+let description = descMerged
+  .replace(/ID:\s*\S+/gi, "")
+  .replace(/Description:\s*/gi, "")
+  .replace(/Latitude:[^<\n]*/gi, "")
+  .replace(/Longitude:[^<\n]*/gi, "")
+  .replace(/<br\s*\/?>/gi, " ")
+  .replace(/\s{2,}/g, " ")
+  .trim();
+
+
+    let lat = pick("Latitude","latitude"), lon = pick("Longitude","longitude");
+    if (lat === "" || lon === "") {
+      const coords = f.geometry && Array.isArray(f.geometry.coordinates) ? f.geometry.coordinates : null;
+      if (coords) { lon = lon || coords[0]; lat = lat || coords[1]; }
+    }
+    const coord = (lat !== "" && lon !== "") ? `${lat}, ${lon}` : "—";
+
+    const rows = [];
+    const addRow = (label, value) => rows.push(
+      `<tr><td style="padding:4px 6px; color:#374151;"><b>${label}</b></td><td style="padding:4px 6px;">${esc(value)}</td></tr>`
+    );
+if (location)  addRow("Location", location);
+    if (type)      addRow("Type", type);
+    if (capacity)  addRow("Capacity (gal)", capacity);
+    if (status)    addRow("Status", status);
+    if (access)    addRow("Access", access);
+    if (depth)     addRow("Depth", depth);
+    if (diameter)  addRow("Diameter", diameter);
+    if (year)      addRow("Year", year);
+    if (description) addRow("Description", description);
+addRow("Coordinates", coord);
+
+    const used = new Set(["ID","id","CISTERN_ID","cistern_id",
+                          "Location","location","street_location","street_loc","Address","address",
+                          "Type","type",
+                          "Capacity (gal)","Capacity_gal","capacity_gal","capacity",
+                          "Status","status",
+                          "Access","access",
+                          "Depth","depth",
+                          "Diameter","diameter",
+                          "Year","year",
+                          "Name","name",
+                          "Description","description",
+                          "Latitude","latitude","Longitude","longitude"]);
+    const otherRows = [];
+    for (const [k,v] of Object.entries(p)) {
+  if (used.has(k)) continue;
+  if (v == null || String(v).trim() === "") continue;
+  if (String(k).toLowerCase() === 'cistern') {
+    otherRows.push(`<tr><td style="padding:4px 6px; color:#b91c1c; font-weight:700;">${esc(k)}</td><td style="padding:4px 6px; color:#b91c1c; font-weight:700;">${esc(v)}</td></tr>`);
+  } else {
+    otherRows.push(`<tr><td style="padding:4px 6px; color:#6b7280;">${esc(k)}</td><td style="padding:4px 6px;">${esc(v)}</td></tr>`);
+  }
+}
+    const otherSection = otherRows.length ?
+      `<tr><td colspan="2" style="padding:8px 6px 2px; color:#374151;"><b>Other</b></td></tr>${otherRows.join("")}` : "";
+
+    const html = `
+      <div class="cistern-popup">
+        <div style="font-weight:700; font-size:1rem; margin-bottom:4px;"> ${esc(name || "Cistern")}</div>
+        <table style="width:100%; border-collapse:collapse; font-size:.95rem;">
+          ${rows.join("")}
+          ${otherSection}
+        </table>
+      </div>
+    `;
+    l.bindPopup(html);
+  }
+}).addTo(map);
+
+
       try{ map.fitBounds(layer.getBounds(), {padding:[20,20]}); }catch{}
     }).catch(()=> console.warn("Cistern GeoJSON not found."));
   }
