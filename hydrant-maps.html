@@ -15,6 +15,23 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
+  <!-- Header (matches home.html nav style/classes) -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="nav nav--stack">
+        <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
+        <ul class="nav__links">
+          <li><a href="home.html">Home</a></li>
+          <li><a href="apparatus.html">Apparatus</a></li>
+          <li><a href="maps.html">Maps</a></li>
+          <li><a href="run-cards.html">Run Cards</a></li>
+          <li><a href="erg.html">ERG</a></li>
+          <li><a href="administrative.html">Administrative</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
   <main class="container">
     <h1 class="page-title">Hydrant Map</h1>
 
@@ -36,6 +53,13 @@
 
     <div class="map-legend" aria-hidden="true"></div>
   </main>
+
+  <!-- Footer (matches site footer classes) -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>© Hopkinton Fire Department</p>
+    </div>
+  </footer>
 
   <!-- Page scripts (safe to defer; Leaflet already loaded) -->
   <script src="maps-boot.js"></script>
