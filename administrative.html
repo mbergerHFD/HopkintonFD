@@ -78,6 +78,19 @@
   white-space: normal;
 }
 
+
+/* CRR grid styles */
+
+.town-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width: 900px){ .town-grid{ grid-template-columns:repeat(2,1fr);} }
+@media (max-width: 520px){ .town-grid{ grid-template-columns:1fr; } }
+.town-card{ position:relative; border-radius:16px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); background:#eee; cursor:pointer; }
+.town-card__media{ aspect-ratio: 4 / 3; width:100%; height:auto; background:#ddd; }
+.town-card__media img{ width:100%; height:100%; object-fit:cover; display:block; }
+.town-card__label{ display:flex; align-items:center; justify-content:center; height:54px;
+  background:rgba(0,0,0,.65); color:#fff; font-weight:700; text-transform:uppercase; letter-spacing:.3px; }
+.town-card:hover .town-card__label{ background:rgba(0,0,0,.75); }
+
 </style>
 </head>
 <body>
@@ -88,36 +101,69 @@
     <h2 class="section-title">Administrative</h2>
 
     <!-- Picture Grid (3 x 4) -->
-    <div class="admin-grid">
-      <a class="tile" href="#modal-checks-chores" data-modal="#modal-checks-chores" aria-label="Open Check and Chores">
-        <img class="tile__img" src="images/admin/checks-chores.jpg" alt="Check & Chores thumbnail">
-        <div class="tile__overlay"><span class="tile__label">Checks &amp; Chores</span></div>
-      </a>
+    <div class="town-grid">
 
-      <a class="tile" href="#modal-phone-tree" data-modal="#modal-phone-tree" aria-label="Open Phone Tree">
-        <img class="tile__img" src="images/admin/phone-tree.jpg" alt="Phone Tree thumbnail">
-        <div class="tile__overlay"><span class="tile__label">Phone Tree</span></div>
-      </a>
+<div class="town-card" data-modal="#modal-checks-chores" tabindex="0" role="button" aria-label="Check & Chores">
+  <div class="town-card__media"><img src="images/admin/checks-chores.jpg" alt="Check & Chores"></div>
+  <div class="town-card__label">Check & Chores</div>
+</div>
 
-      <a class="tile" href="https://docs.google.com/a/hopkintonma.gov/forms/d/e/1FAIpQLSca22_Ou2xyFxLpLRGcEwS-3KuCErNxfVe7ciRcDvtfJausaA/viewform" target="_blank" rel="noopener noreferrer" aria-label="Time off Request"><img class="tile__img" src="images/admin/time-off.jpg" alt="Time off Request"><div class="tile__overlay"><span class="tile__label">Time off Request</span></div></a>
-      <a class="tile" href="https://docs.google.com/forms/d/e/1FAIpQLScASFJIeZmxePSFV1JjTHusRUBIYiU8KFyAKDQBylaQl6DNVw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Uniform Request"><img class="tile__img" src="images/admin/uniform-request.jpg" alt="Uniform Request"><div class="tile__overlay"><span class="tile__label">Uniform Request</span></div></a>
-      <a class="tile" href="https://calendar.google.com/calendar?authuser=1" target="_blank" rel="noopener noreferrer" aria-label="HFD Calendar"><img class="tile__img" src="images/admin/calendar.jpg" alt="HFD Calendar"><div class="tile__overlay"><span class="tile__label">HFD Calendar</span></div></a>
-      <a class="tile" href="https://hopkinton.munisselfservice.com/login.aspx" target="_blank" rel="noopener noreferrer" aria-label="Munis Self Service">
-        <img class="tile__img" src="images/admin/munis.jpg" alt="Munis self service">
-        <div class="tile__overlay"><span class="tile__label">Munis Self Service</span></div>
-      </a>
-      <a class="tile" href="https://www.wrrboard.org/" target="_blank" rel="noopener noreferrer" aria-label="Worcester County Retirement">
-        <img class="tile__img" src="images/admin/worcester-retirement.jpg" alt="Worcester County Retirement">
-        <div class="tile__overlay"><span class="tile__label">Worcester County Retirement</span></div>
-      </a>
-      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
-      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
-      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
-    </div>
+<div class="town-card" data-modal="#modal-phone-tree" tabindex="0" role="button" aria-label="Phone Tree">
+  <div class="town-card__media"><img src="images/admin/phone-tree.jpg" alt="Phone Tree"></div>
+  <div class="town-card__label">Phone Tree</div>
+</div>
 
- 
+<div class="town-card" onclick="window.open('https://docs.google.com/a/hopkintonma.gov/forms/d/e/1FAIpQLSca22_Ou2xyFxLpLRGcEwS-3KuCErNxfVe7ciRcDvtfJausaA/viewform','_blank')" tabindex="0" role="link" aria-label="Time off Request">
+  <div class="town-card__media"><img src="images/admin/time-off.jpg" alt="Time off Request"></div>
+  <div class="town-card__label">Time off Request</div>
+</div>
 
-    <p class="subtle" style="margin-top:14px;"><a href="home.html">← Back</a></p>
+<div class="town-card" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScASFJIeZmxePSFV1JjTHusRUBIYiU8KFyAKDQBylaQl6DNVw/viewform','_blank')" tabindex="0" role="link" aria-label="Uniform Request">
+  <div class="town-card__media"><img src="images/admin/uniform-request.jpg" alt="Uniform Request"></div>
+  <div class="town-card__label">Uniform Request</div>
+</div>
+
+<div class="town-card" onclick="window.open('https://calendar.google.com/calendar?authuser=1','_blank')" tabindex="0" role="link" aria-label="HFD Calendar">
+  <div class="town-card__media"><img src="images/admin/calendar.jpg" alt="HFD Calendar"></div>
+  <div class="town-card__label">HFD Calendar</div>
+</div>
+
+<div class="town-card" onclick="window.open('https://hopkinton.munisselfservice.com/login.aspx','_blank')" tabindex="0" role="link" aria-label="Munis Self Service">
+  <div class="town-card__media"><img src="images/admin/munis.jpg" alt="Munis Self Service"></div>
+  <div class="town-card__label">Munis Self Service</div>
+</div>
+
+<div class="town-card" onclick="window.open('https://www.wrrboard.org/','_blank')" tabindex="0" role="link" aria-label="Worcester County Retirement">
+  <div class="town-card__media"><img src="images/admin/worcester-retirement.jpg" alt="Worcester County Retirement"></div>
+  <div class="town-card__label">Worcester County Retirement</div>
+</div>
+
+<div class="town-card" onclick="window.open('https://docs.google.com/spreadsheets/d/1aRV0l0fQIxZx0zkylT7ajYKj3_e9A1D6SiXJVWrMkfc/edit?gid=169458997#gid=169458997','_blank')" tabindex="0" role="link" aria-label="EMS Rounds">
+  <div class="town-card__media"><img src="images/admin/ems-rounds.jpg" alt="EMS Rounds"></div>
+  <div class="town-card__label">EMS Rounds</div>
+</div>
+
+<div class="town-card" tabindex="0" role="link" aria-label="Coming Soon">
+  <div class="town-card__media"><img src="images/admin/coming-soon.jpg" alt="Coming Soon"></div>
+  <div class="town-card__label">Coming Soon</div>
+</div>
+
+<div class="town-card" tabindex="0" role="link" aria-label="Coming Soon">
+  <div class="town-card__media"><img src="images/admin/coming-soon.jpg" alt="Coming Soon"></div>
+  <div class="town-card__label">Coming Soon</div>
+</div>
+
+<div class="town-card" tabindex="0" role="link" aria-label="Coming Soon">
+  <div class="town-card__media"><img src="images/admin/coming-soon.jpg" alt="Coming Soon"></div>
+  <div class="town-card__label">Coming Soon</div>
+</div>
+
+<div class="town-card" tabindex="0" role="link" aria-label="Coming Soon">
+  <div class="town-card__media"><img src="images/admin/coming-soon.jpg" alt="Coming Soon"></div>
+  <div class="town-card__label">Coming Soon</div>
+</div>
+</div>
+<p class="subtle" style="margin-top:14px;"><a href="home.html">← Back</a></p>
   </section>
 </main>
 
@@ -247,5 +293,27 @@
 </script>
 
   <script src="js/include-header.js"></script>
+
+<script>
+document.addEventListener('click', function(e){
+  const card = e.target.closest('.town-card[data-modal]');
+  if (!card) return;
+  const sel = card.getAttribute('data-modal');
+  const dlg = document.querySelector(sel);
+  if (dlg && dlg.showModal) dlg.showModal();
+  else if (dlg) dlg.classList.add('is-open');
+});
+document.addEventListener('keydown', function(e){
+  if ((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.matches('.town-card')) {
+    const sel = document.activeElement.getAttribute('data-modal');
+    if (sel) {
+      const dlg = document.querySelector(sel);
+      if (dlg && dlg.showModal) dlg.showModal();
+      else if (dlg) dlg.classList.add('is-open');
+    }
+  }
+});
+</script>
+
 </body>
 </html>
