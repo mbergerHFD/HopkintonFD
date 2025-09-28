@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>CRR — Hopkinton Fire Department</title>
   <link href="styles.css" rel="stylesheet"/>
+  <style>
+    .town-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <div id="header-placeholder"></div>
@@ -12,15 +20,55 @@
   <main class="container">
   <h1 class="section-title">Community Risk Reduction Programs</h1>
   <section class="landing">
-    <div class="landing-grid">
-      <a class="landing-card" href="file-of-life.html"><img src="images/crr/file-of-life.jpg" alt="File of Life"/><div class="label">File of Life</div></a>
-      <a class="landing-card" href="community-cpr.html"><img src="images/crr/community-cpr.jpg" alt="Community CPR"/><div class="label">Community CPR</div></a>
-      <a class="landing-card" href="car-seat-safety.html"><img src="images/crr/car-seat.jpg" alt="Car Seat Safety Program"/><div class="label">Car Seat Safety Program</div></a>
-      <a class="landing-card" href="sand-for-seniors.html"><img src="images/crr/sand.jpg" alt="Sand For Seniors"/><div class="label">Sand For Seniors</div></a>
-      <a class="landing-card" href="fall-prevention.html"><img src="images/crr/fall-prevention.jpg" alt="Fall Prevention"/><div class="label">Fall Prevention</div></a>
-      <a class="landing-card" href="smoke-co-installation.html"><img src="images/crr/smoke-co.jpg" alt="Smoke / CO Installation"/><div class="label">Smoke / CO Installation</div></a>
-      <a class="landing-card" href="address-signs.html"><img src="images/crr/address-signs.jpg" alt="Address Indicator Signs"/><div class="label">Address Indicator Signs</div></a>
-      <a class="landing-card" href="home-safety-visit.html"><img src="images/crr/home-safety.jpg" alt="Home Safety Visit"/><div class="label">Home Safety Visit</div></a>
+    <div class="town-grid">
+      <div class="town-card" data-href="file-of-life.html" data-title="File of Life">
+  <div class="town-card__media">
+    <img src="images/crr/file-of-life.jpg" alt="File of Life"/>
+  </div>
+  <div class="town-card__label">File of Life</div>
+</div>
+      <div class="town-card" data-href="community-cpr.html" data-title="Community CPR">
+  <div class="town-card__media">
+    <img src="images/crr/community-cpr.jpg" alt="Community CPR"/>
+  </div>
+  <div class="town-card__label">Community CPR</div>
+</div>
+      <div class="town-card" data-href="car-seat-safety.html" data-title="Car Seat Safety Program">
+  <div class="town-card__media">
+    <img src="images/crr/car-seat.jpg" alt="Car Seat Safety Program"/>
+  </div>
+  <div class="town-card__label">Car Seat Safety Program</div>
+</div>
+      <div class="town-card" data-href="sand-for-seniors.html" data-title="Sand For Seniors">
+  <div class="town-card__media">
+    <img src="images/crr/sand.jpg" alt="Sand For Seniors"/>
+  </div>
+  <div class="town-card__label">Sand For Seniors</div>
+</div>
+      <div class="town-card" data-href="fall-prevention.html" data-title="Fall Prevention">
+  <div class="town-card__media">
+    <img src="images/crr/fall-prevention.jpg" alt="Fall Prevention"/>
+  </div>
+  <div class="town-card__label">Fall Prevention</div>
+</div>
+      <div class="town-card" data-href="smoke-co-installation.html" data-title="Smoke / CO Installation">
+  <div class="town-card__media">
+    <img src="images/crr/smoke-co.jpg" alt="Smoke / CO Installation"/>
+  </div>
+  <div class="town-card__label">Smoke / CO Installation</div>
+</div>
+      <div class="town-card" data-href="address-signs.html" data-title="Address Indicator Signs">
+  <div class="town-card__media">
+    <img src="images/crr/address-signs.jpg" alt="Address Indicator Signs"/>
+  </div>
+  <div class="town-card__label">Address Indicator Signs</div>
+</div>
+      <div class="town-card" data-href="home-safety-visit.html" data-title="Home Safety Visit">
+  <div class="town-card__media">
+    <img src="images/crr/home-safety.jpg" alt="Home Safety Visit"/>
+  </div>
+  <div class="town-card__label">Home Safety Visit</div>
+</div>
     </div>
   </section>
 </main>
