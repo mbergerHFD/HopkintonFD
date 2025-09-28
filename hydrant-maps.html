@@ -13,21 +13,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <nav class="nav">
-        <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
-        <ul class="nav__links">
-          <li><a href="home.html">Home</a></li>
-          <li><a href="apparatus.html">Apparatus</a></li>
-          <li><a href="maps.html">Maps</a></li>
-          <li><a href="run-cards.html">Run Cards</a></li>
-          <li><a href="erg.html">ERG</a></li>
-          <li><a href="administrative.html">Administrative</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <div id="header-placeholder"></div>
 
 <main class="container">
     <h1 class="page-title">Hydrant Map</h1>
@@ -51,7 +37,7 @@
 <!-- Keep your existing script tags as-is, in the same order as cistern -->
 
   <footer class="site-footer">
-    <div class="container"><p>© Hopkinton Fire Department</p></div>
+    <div class="container"><p>Â© Hopkinton Fire Department</p></div>
   </footer>
 
   <!-- Leaflet JS must load BEFORE your map scripts -->
@@ -60,5 +46,6 @@
   <!-- Your scripts -->
   <script src="maps-boot.js" defer></script>
   <script src="hydrant-map.js" defer></script>
+  <script src="js/include-header.js"></script>
 </body>
 </html>
