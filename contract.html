@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Contracts — Hopkinton Fire Department</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    
+    .grid-wrap {
+      display: flex;
+      justify-content: center; /* center the grid wrapper */
+    }
+
+    .town-grid {
+      display: grid;
+      grid-auto-flow: row;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      justify-content: center;   /* center grid items horizontally */
+      align-items: start;        /* keep items aligned at the top */
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main>
+    <section class="container">
+      <h2 class="section-title">Contracts</h2>
+      <div class="grid-wrap">
+        <div class="town-grid">
+
+          <div class="town-card" data-href="contract2025.html" data-title="2025–2028">
+            <div class="town-card__media">
+              <img src="images/contract/2025-thumb.jpg" alt="Contract 2025–2028"/>
+            </div>
+            <div class="town-card__label">2025–2028</div>
+          </div>
+
+          <div class="town-card" data-href="contract2022.html" data-title="2022–2025">
+            <div class="town-card__media">
+              <img src="images/contract/2022-thumb.jpg" alt="Contract 2022–2025"/>
+            </div>
+            <div class="town-card__label">2022–2025</div>
+          </div>
+
+        </div>
+      </div>
+      <p style="margin-top:20px;"><a href="home.html">← Back</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>© 2025 Hopkinton Fire Department</strong></p>
+    </div>
+  </footer>
+
+  <div class="modal" id="rc-modal" aria-hidden="true" role="dialog" aria-label="Contracts Viewer">
+    <div class="modal__dialog">
+      <div class="modal__bar">
+        <div class="modal__title" id="rc-modal-title">Contracts</div>
+        <button class="modal__close" id="rc-modal-close" type="button" aria-label="Close">Close ✕</button>
+      </div>
+      <div class="modal__body">
+        <iframe id="rc-modal-iframe" class="modal__iframe" src="" title="Contracts Content"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const modal = document.getElementById('rc-modal');
+      const iframe = document.getElementById('rc-modal-iframe');
+      const titleEl = document.getElementById('rc-modal-title');
+      const btnClose = document.getElementById('rc-modal-close');
+
+      const isIOS = /iP(hone|od|ad)/.test(navigator.platform) ||
+                    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+
+      function ensureViewport(html) {
+        if (!/name=["']viewport["']/i.test(html)) {
+          const insert = '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">';
+          const headClose = html.indexOf('</head>');
+          if (headClose !== -1) return html.slice(0, headClose) + insert + html.slice(headClose);
+          return '<head>' + insert + '</head>' + html;
+        }
+        return html;
+      }
+
+      function withBaseAndMobileCSS(html, baseHref) {
+        const fixCSS = `
+          <style id="ios-srcdoc-fix">
+            * { box-sizing: border-box; }
+            html, body { margin: 0; padding: 0; max-width: 100vw; overflow-x: hidden !important; -webkit-text-size-adjust: 100%; }
+            .container { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; padding: 0 8px !important; }
+            .rc-images { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; padding: 0 0 8px !important; }
+            .rc-images img, img { display: block; max-width: 100% !important; width: auto !important; height: auto !important; }
+            .rc-link { display:flex; justify-content:center; align-items:center; width:100%; text-align:center; }
+          </style>
+        `;
+        const baseTag = '<base href="' + baseHref + '">';
+        let out = ensureViewport(html);
+        const headClose = out.indexOf('</head>');
+        if (headClose !== -1) return out.slice(0, headClose) + baseTag + fixCSS + out.slice(headClose);
+        return '<head>' + baseTag + fixCSS + '</head>' + out;
+      }
+
+      async function openModalIOS(href, label) {
+        try {
+          let url = encodeURI(href);
+          url += (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
+          const res = await fetch(url, { credentials: 'same-origin' });
+          const text = await res.text();
+          const baseHref = href.replace(/[^/]+$/,'');
+          const htmlWithFix = withBaseAndMobileCSS(text, baseHref);
+          iframe.removeAttribute('src');
+          iframe.srcdoc = htmlWithFix;
+          titleEl.textContent = label || 'Contracts';
+          modal.classList.add('is-open');
+          modal.setAttribute('aria-hidden', 'false');
+          document.body.style.overflow = 'hidden';
+        } catch (e) {
+          const a = document.createElement('a');
+          a.href = encodeURI(href);
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        }
+      }
+
+      function openModalDesktop(href, label) {
+        let url = encodeURI(href);
+        url += (url.includes('?') ? '&' : '?') + 'v=' + Date.now();
+        iframe.removeAttribute('srcdoc');
+        iframe.src = url;
+        titleEl.textContent = label || 'Contracts';
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        iframe.removeAttribute('src');
+        iframe.removeAttribute('srcdoc');
+        document.body.style.overflow = '';
+      }
+
+      document.addEventListener('click', (e) => {
+        const card = e.target.closest('.town-card');
+        if (!card) return;
+        e.preventDefault();
+        const href = card.getAttribute('data-href');
+        const label = card.getAttribute('data-title') || 'Contracts';
+        if (!href) return;
+        if (isIOS) openModalIOS(href, label);
+        else openModalDesktop(href, label);
+      });
+
+      btnClose.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+    })();
+  </script>
+  <script src="js/include-header.js"></script>
+</body>
+</html>
