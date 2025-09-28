@@ -204,7 +204,7 @@ img { max-width: 100%; height: auto; display: block; }
   background: rgba(0,0,0,.55); color: #fff; font-weight: 700; text-align: center;
 }
 @media (max-width: 640px) { 
-  .landing-grid { grid-template-columns: 1fr; } 
+  .landing-grid { grid-template-columns: 2, 1fr; } 
   .landing-card img { height: 200px; } 
 }
 
