@@ -508,7 +508,7 @@ img { max-width: 100%; height: auto; display: block; }
 }
 @media (max-width: 900px) {
   .town-grid-top { grid-template-columns: 1fr; }
-  .town-grid { grid-template-columns: repeat(2, 1fr); }
+  .town-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 
