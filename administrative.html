@@ -5,62 +5,266 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Administrative — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
+  <style>
+    /* Picture grid */
+    .admin-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    @media (max-width: 900px){ .admin-grid{ grid-template-columns:repeat(2,1fr);} }
+    @media (max-width: 520px){ .admin-grid{ grid-template-columns:1fr; } }
+    .tile {
+      position:relative; display:block; border-radius:16px; overflow:hidden;
+      text-decoration:none; color:inherit; background:#eee; box-shadow:0 1px 3px rgba(0,0,0,.08);
+      aspect-ratio: 4 / 3;
+    }
+    .tile__img { width:100%; height:100%; object-fit:cover; display:block; }
+    .tile__overlay {
+      position:absolute; inset:auto 0 0 0; padding:12px 14px;
+      background: linear-gradient(transparent, rgba(0,0,0,.55));
+      color:#fff; font-weight:700; letter-spacing:.2px;
+    }
+    .tile__label { font-size:1.05rem; }
+    .tile:hover .tile__overlay { background: linear-gradient(transparent, rgba(0,0,0,.65)); }
+    .tile[data-modal] { cursor:pointer; }
 
-<style id="mobile-grid-override">
-  /* Force 4-up grid on small screens (quarter-size tiles) */
-  @media (max-width: 520px) {
-    body .container .admin-grid {
-      display: grid !important;
-      grid-template-columns: repeat(4, minmax(0,1fr)) !important;
-      gap: 8px !important;
+    /* Modal styles (scoped and hardened so they don't get overridden) */
+    dialog.modal {
+      width:min(900px,92vw);
+      border:none; border-radius:12px; padding:0;
+      background:#ffffff !important; color:#111827 !important; z-index:10000 !important;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
     }
-    body .container .admin-grid .tile {
-      aspect-ratio: 1 / 1 !important; /* square tiles so the images reduce cleanly */
+    dialog.modal[open], dialog.modal.is-open { display:block; }
+    dialog.modal::backdrop { background: rgba(0,0,0,.6) !important; }
+    .modal__header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 20px; border-bottom:1px solid #e5e7eb;
+      position:sticky; top:0; background:#fff; z-index:1;
     }
-    body .container .admin-grid .tile__overlay {
-      height: 40px !important;
+    .modal__body { padding:16px 20px 24px; max-height:min(70vh,70svh); overflow:auto; background:#fff !important; }
+    .modal__title{ margin:0; font-size:1.125rem; }
+    .modal__close{ background:transparent; border:0; font-size:1.5rem; cursor:pointer; line-height:1; }
+
+    /* Scoped chores table styles */
+    #modal-checks-chores .chores-doc table { border-collapse: collapse; width: 100%; }
+    #modal-checks-chores .chores-doc td {
+      border: 1px solid #000; padding: 6px 8px;
+      text-align: center; vertical-align: middle;
+      background:#fff; color:#111827; word-break: break-word;
+      font-size: 0.95rem;
     }
-    body .container .admin-grid .tile__label {
-      font-size: 0.72rem !important;
-      letter-spacing: .25px !important;
+    /* Header row (days of week) */
+    #modal-checks-chores .chores-doc tr:first-child td {
+      font-weight: bold; font-size: 1rem; text-align:center; background:#f0f0f0;
     }
-  }
+    /* Section titles between tables */
+    #modal-checks-chores .chores-doc h4 {
+      margin: 14px 0 10px; text-align:center; font-size:1.4em; text-decoration:underline;
+    }
+  
+/* Scoped Phone Tree table styles */
+#modal-phone-tree .phone-doc table { border-collapse: collapse; width: 100%; }
+#modal-phone-tree .phone-doc td { border: 1px solid #e5e7eb; padding: 6px 8px; vertical-align: top; }
+#modal-phone-tree .phone-doc td:first-child { font-weight: 600; } /* location column a bit bolder */
+
+
+
+
+/* Make only header row columns wider and prevent wrapping */
+#modal-checks-chores .chores-doc table tr:first-child td {
+  min-width: 120px;
+  white-space: nowrap;
+}
+/* Allow wrapping in body rows */
+#modal-checks-chores .chores-doc table tr:not(:first-child) td {
+  white-space: normal;
+}
+
 </style>
-
 </head>
 <body>
-  
 <header class="site-header">
-		<div class="container">
-			<nav class="nav nav--stack">
-				<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
-				<ul class="nav__links">
-					<li><a href="home.html">Home</a></li>
-					<li><a href="apparatus.html">Apparatus</a></li>
-					<li><a href="maps.html">Maps</a></li>
-					<li><a href="run-cards.html">Run Cards</a></li>
-					<li><a href="erg.html">ERG</a></li>
-					<li><a href="administrative.html">Administrative</a></li>
-				</ul>
-			</nav>
-		</div>
-	</header>
+  <div class="container">
+    <nav class="nav nav--stack">
+      <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
+      <ul class="nav__links">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="apparatus.html">Apparatus</a></li>
+        <li><a href="maps.html">Maps</a></li>
+        <li><a href="run-cards.html">Run Cards</a></li>
+        <li><a href="erg.html">ERG</a></li>
+        <li><a href="administrative.html">Administrative</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
 
-  <main>
-    
-    <section class="container">
-      <div class="coming-soon">
-        <h2 class="section-title">Administrative</h2>
-        <p>Coming Soon</p>
-        <p><a href="home.html">← Back</a></p>
-      </div>
-    </section>
-    
-  </main>
-  <footer class="site-footer">
-    <div class="container">
-      <p><strong>© 2025 Hopkinton Fire Department</strong></p>
+<main>
+  <section class="container">
+    <h2 class="section-title">Administrative</h2>
+
+    <!-- Picture Grid (3 x 4) -->
+    <div class="admin-grid">
+      <a class="tile" href="#modal-checks-chores" data-modal="#modal-checks-chores" aria-label="Open Check and Chores">
+        <img class="tile__img" src="images/admin/checks-chores.jpg" alt="Check & Chores thumbnail">
+        <div class="tile__overlay"><span class="tile__label">Check &amp; Chores</span></div>
+      </a>
+
+      <a class="tile" href="#modal-phone-tree" data-modal="#modal-phone-tree" aria-label="Open Phone Tree">
+        <img class="tile__img" src="images/admin/phone-tree.jpg" alt="Phone Tree thumbnail">
+        <div class="tile__overlay"><span class="tile__label">Phone Tree</span></div>
+      </a>
+
+      <a class="tile" href="https://docs.google.com/a/hopkintonma.gov/forms/d/e/1FAIpQLSca22_Ou2xyFxLpLRGcEwS-3KuCErNxfVe7ciRcDvtfJausaA/viewform" target="_blank" rel="noopener noreferrer" aria-label="Time off Request"><img class="tile__img" src="images/admin/time-off.jpg" alt="Time off Request"><div class="tile__overlay"><span class="tile__label">Time off Request</span></div></a>
+      <a class="tile" href="https://docs.google.com/forms/d/e/1FAIpQLScASFJIeZmxePSFV1JjTHusRUBIYiU8KFyAKDQBylaQl6DNVw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Uniform Request"><img class="tile__img" src="images/admin/uniform-request.jpg" alt="Uniform Request"><div class="tile__overlay"><span class="tile__label">Uniform Request</span></div></a>
+      <a class="tile" href="https://calendar.google.com/calendar?authuser=1" target="_blank" rel="noopener noreferrer" aria-label="HFD Calendar"><img class="tile__img" src="images/admin/calendar.jpg" alt="HFD Calendar"><div class="tile__overlay"><span class="tile__label">HFD Calendar</span></div></a>
+      <a class="tile" href="https://hopkinton.munisselfservice.com/login.aspx" target="_blank" rel="noopener noreferrer" aria-label="Munis Self Service">
+        <img class="tile__img" src="images/admin/munis.jpg" alt="Munis self service">
+        <div class="tile__overlay"><span class="tile__label">Munis Self Service</span></div>
+      </a>
+      <a class="tile" href="https://www.wrrboard.org/" target="_blank" rel="noopener noreferrer" aria-label="Worcester County Retirement">
+        <img class="tile__img" src="images/admin/worcester-retirement.jpg" alt="Worcester County Retirement">
+        <div class="tile__overlay"><span class="tile__label">Worcester County Retirement</span></div>
+      </a>
+      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
+      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
+      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
     </div>
-  </footer>
+
+      <!-- 5 Coming Soon placeholders -->
+      <a class="tile" href="#" aria-label="Coming Soon"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
+      <a class="tile" href="#" aria-label="Coming Soon"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
+      <a class="tile" href="#" aria-label="Coming Soon"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
+      <a class="tile" href="#" aria-label="Coming Soon"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
+      <a class="tile" href="#" aria-label="Coming Soon"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
+    </div>
+
+    <p class="subtle" style="margin-top:14px;"><a href="home.html">← Back</a></p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p><strong>© 2025 Hopkinton Fire Department</strong></p>
+  </div>
+</footer>
+
+<!-- Checks & Chores Modal -->
+<dialog id="modal-checks-chores" class="modal" aria-labelledby="modal-checks-chores-title">
+  <div class="modal__header">
+    <!-- Title intentionally removed per your request -->
+    <button class="modal__close" data-close aria-label="Close">&times;</button>
+  </div>
+  <div class="modal__body">
+    <div class="chores-doc">
+      <h4>Daily Truck Check</h4>
+      <table style="border-collapse:collapse;width:100%;">
+        <tr><td>Sunday</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td><td>Saturday</td></tr>
+        <tr><td style="background:#000;">&nbsp;</td><td>Primary Engine<br/>Check &amp; Wash</td><td>Ladder 1<br/>Check &amp; Wash</td><td>Secondary Engine<br/>Check &amp; Wash</td><td>Rescue 1<br/>Check &amp; Wash</td><td>Engine 3<br/>Check &amp; Wash</td><td style="background:#000;">&nbsp;</td></tr>
+        <tr><td style="background:#000;">&nbsp;</td><td>Primary Ambulance<br/>Check &amp; Wash</td><td>Secondary Ambulance<br/>Check &amp; Wash</td><td>Gator Light Tower Check</td><td>Car 3<br/>Check &amp; Wash</td><td>Brush 11<br/>Check &amp; Wash</td><td style="background:#000;">&nbsp;</td></tr>
+        <tr><td style="background:#000;">&nbsp;</td><td>Squad 1 Check &amp; Wash</td><td>&nbsp;</td><td>Brush 6<br/>Check</td><td>Boats<br/>Check</td><td>&nbsp;</td><td style="background:#000;">&nbsp;</td></tr>
+        <tr><td style="background:#000;">&nbsp;</td><td>Wash Primary Ambulance</td><td>&nbsp;</td><td>Wash Primary Ambulance</td><td>&nbsp;</td><td>Wash Primary Ambulance</td><td style="background:#000;">&nbsp;</td></tr>
+        <tr><td colspan="7" style="text-align:center; font-weight:bold;">CHECK FUEL &amp; DEF LEVELS EVERY SHIFT</td></tr>
+      </table>
+
+      <h4>Daily House Duties</h4>
+      <table style="border-collapse:collapse;width:100%;">
+        <tr><td>Sunday</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td><td>Saturday</td></tr>
+        <tr><td style="background:#000;">&nbsp;</td><td>Sweep Apparatus Bays</td><td>Clean Bathrooms</td><td>Station 2</td><td>Clean Bathrooms</td><td>Clean Training Room</td><td>Clean Bathrooms</td></tr>
+        <tr><td style="background:#000;">&nbsp;</td><td>Clean Employee Entrance</td><td>Sweep &amp; Mop Kitchen</td><td>Sweep &amp; Mop Gym</td><td>Sweep &amp; Mop Kitchen</td><td>Sweep &amp; Mop Public Entrance</td><td>Sweep &amp; Mop Kitchen</td></tr>
+        <tr><td style="background:#000;">&nbsp;</td><td>Wash Towels</td><td>Vacuum Second Floor</td><td>Clean Dispatch</td><td>Vacuum Second Floor</td><td>Wash Towels</td><td>Vacuum Second Floor</td></tr>
+      </table>
+    </div>
+  </div>
+</dialog>
+
+<!-- Phone Tree Modal (placeholder content) -->
+<dialog id="modal-phone-tree" class="modal" aria-labelledby="modal-phone-tree-title">
+  <div class="modal__header">
+    <h3 id="modal-phone-tree-title" class="modal__title">Phone Tree</h3>
+    <button class="modal__close" data-close aria-label="Close">&times;</button>
+  </div>
+  <div class="modal__body"><div class="phone-doc"><table class="phone-table" style="border-collapse:collapse;width:100%;">
+<tr><td>Location</td><td>Extension</td></tr>
+<tr><td>Chief’s Office</td><td>1321</td></tr>
+<tr><td>Deputy’s Officer</td><td>1322</td></tr>
+<tr><td>Lieutenant’s Office</td><td>1333</td></tr>
+<tr><td>Lieutenant’s Bunk</td><td>1332</td></tr>
+<tr><td>Joyce’s Office</td><td>1320</td></tr>
+<tr><td>Fire Prevention 1</td><td>1304</td></tr>
+<tr><td>Fire Prevention 2</td><td>1394</td></tr>
+<tr><td>Training Office</td><td>1300</td></tr>
+<tr><td>Training Room 1</td><td>1307</td></tr>
+<tr><td>Training Room 2</td><td>1318</td></tr>
+<tr><td></td><td></td></tr>
+<tr><td>Day Room 1</td><td>1315</td></tr>
+<tr><td>Day Room 2</td><td>1316</td></tr>
+<tr><td>Day Room 3</td><td>1325</td></tr>
+<tr><td>Kitchen</td><td>1331</td></tr>
+<tr><td>Gym</td><td>1314</td></tr>
+<tr><td>First Bunk Room</td><td>1319</td></tr>
+<tr><td>Second Bunk Room</td><td>1328</td></tr>
+<tr><td>Third Bunk Room</td><td>1329</td></tr>
+<tr><td>Fourth Bunk Room (Old EMS Room)</td><td>1351</td></tr>
+<tr><td>Men’s Bathroom (2nd Floor)</td><td>1313</td></tr>
+<tr><td></td><td></td></tr>
+</table>
+<hr/>
+<table class="phone-table" style="border-collapse:collapse;width:100%;">
+<tr><td>Location</td><td>Extension</td></tr>
+<tr><td>FD Dispatch 1</td><td>1301</td></tr>
+<tr><td>FD Dispatch 2</td><td>1302</td></tr>
+<tr><td>FD Dispatch Bathroom</td><td>1305</td></tr>
+<tr><td></td><td></td></tr>
+<tr><td>West Bay Front</td><td></td></tr>
+<tr><td>West Bay Rear</td><td>1312</td></tr>
+<tr><td>Rear Hallway</td><td>1309</td></tr>
+<tr><td>East Bay Front</td><td>1308</td></tr>
+<tr><td>East Bay Rear</td><td>1306</td></tr>
+<tr><td></td><td></td></tr>
+<tr><td>Fire Dispatcher</td><td>1222</td></tr>
+<tr><td>Police Dispatcher</td><td>1221</td></tr>
+<tr><td></td><td></td></tr>
+<tr><td>Car Seats</td><td>Car Seats</td></tr>
+<tr><td>pgross@hopkintonfd.org</td><td>tdoolin@hopkintonfd.org</td></tr>
+<tr><td>csayles@hopkintonfd.org</td><td></td></tr>
+</table></div></div>
+</dialog>
+
+<script>
+  (function () {
+    function openModal(sel, ev) {
+      var dlg = document.querySelector(sel);
+      if (!dlg) return;
+      if (ev) ev.preventDefault();
+      if (dlg.showModal) { dlg.showModal(); }
+      else { dlg.classList.add('is-open'); }
+    }
+    // Open modals
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('[data-modal]');
+      if (!trigger) return;
+      openModal(trigger.getAttribute('data-modal'), e);
+    }, { passive: false });
+    // Close buttons
+    document.addEventListener('click', function (e) {
+      if (!e.target.matches('[data-close]')) return;
+      var dlg = e.target.closest('dialog');
+      if (!dlg) return;
+      if (dlg.close) dlg.close();
+      dlg.classList.remove('is-open');
+    });
+    // Backdrop click to close
+    document.querySelectorAll('dialog.modal').forEach(function (dlg) {
+      dlg.addEventListener('click', function (e) {
+        var r = dlg.getBoundingClientRect();
+        var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+        if (!inside) {
+          if (dlg.close) dlg.close();
+          dlg.classList.remove('is-open');
+        }
+      });
+    });
+  })();
+</script>
+
 </body>
 </html>
