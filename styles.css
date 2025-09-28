@@ -613,7 +613,7 @@ img { max-width: 100%; height: auto; display: block; }
   .map-card img { height: 190px; }
 }
 @media (max-width: 600px) {
-  .map-grid { grid-template-columns: 1fr; }
+  .map-grid { grid-template-columns: 1fr, 1fr; }
   .map-card img { height: 180px; }
 }
 
