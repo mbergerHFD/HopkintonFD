@@ -5,81 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Administrative — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
-  <style>
-    .admin-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
-    @media (max-width: 900px){ .admin-grid{ grid-template-columns:repeat(2,1fr);} }
-    @media (max-width: 520px){ .admin-grid{ grid-template-columns:1fr; } }
-    .tile {
-      position:relative; display:block; border-radius:16px; overflow:hidden;
-      text-decoration:none; color:inherit; background:#eee; box-shadow:0 1px 3px rgba(0,0,0,.08);
-      aspect-ratio: 4 / 3;
+
+<style id="mobile-grid-override">
+  /* Force 4-up grid on small screens (quarter-size tiles) */
+  @media (max-width: 520px) {
+    body .container .admin-grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0,1fr)) !important;
+      gap: 8px !important;
     }
-    .tile__img { width:100%; height:100%; object-fit:cover; display:block; }
-    .tile__overlay {
-      position:absolute; left:0; right:0; bottom:0; height:54px;
-      display:flex; align-items:center; justify-content:center;
-      background: rgba(0,0,0,.65);
-      color:#fff; font-weight:700; text-transform:uppercase;
+    body .container .admin-grid .tile {
+      aspect-ratio: 1 / 1 !important; /* square tiles so the images reduce cleanly */
     }
-    .tile__label { font-size:1rem; letter-spacing:.3px; }
-    .tile:hover .tile__overlay { background: rgba(0,0,0,.75); }
-  </style>
+    body .container .admin-grid .tile__overlay {
+      height: 40px !important;
+    }
+    body .container .admin-grid .tile__label {
+      font-size: 0.72rem !important;
+      letter-spacing: .25px !important;
+    }
+  }
+</style>
+
 </head>
 <body>
+  
 <header class="site-header">
-  <div class="container">
-    <nav class="nav nav--stack">
-      <a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
-      <ul class="nav__links">
-        <li><a href="home.html">Home</a></li>
-        <li><a href="apparatus.html">Apparatus</a></li>
-        <li><a href="maps.html">Maps</a></li>
-        <li><a href="run-cards.html">Run Cards</a></li>
-        <li><a href="erg.html">ERG</a></li>
-        <li><a href="administrative.html">Administrative</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+		<div class="container">
+			<nav class="nav nav--stack">
+				<a class="nav__brand" href="home.html">Hopkinton Fire Department</a>
+				<ul class="nav__links">
+					<li><a href="home.html">Home</a></li>
+					<li><a href="apparatus.html">Apparatus</a></li>
+					<li><a href="maps.html">Maps</a></li>
+					<li><a href="run-cards.html">Run Cards</a></li>
+					<li><a href="erg.html">ERG</a></li>
+					<li><a href="administrative.html">Administrative</a></li>
+				</ul>
+			</nav>
+		</div>
+	</header>
 
-<main>
-  <section class="container">
-    <h2 class="section-title">Administrative</h2>
-    <div class="admin-grid">
-      <a class="tile" href="#modal-checks-chores" data-modal="#modal-checks-chores">
-        <img class="tile__img" src="images/admin/checks-chores.jpg" alt="Check & Chores">
-        <div class="tile__overlay"><span class="tile__label">Check &amp; Chores</span></div>
-      </a>
-      <a class="tile" href="#modal-phone-tree" data-modal="#modal-phone-tree">
-        <img class="tile__img" src="images/admin/phone-tree.jpg" alt="Phone Tree">
-        <div class="tile__overlay"><span class="tile__label">Phone Tree</span></div>
-      </a>
-      <a class="tile" href="https://docs.google.com/a/hopkintonma.gov/forms/d/e/1FAIpQLSca22_Ou2xyFxLpLRGcEwS-3KuCErNxfVe7ciRcDvtfJausaA/viewform" target="_blank" rel="noopener noreferrer" aria-label="Time off Request"><img class="tile__img" src="images/admin/time-off.jpg" alt="Time off Request"><div class="tile__overlay"><span class="tile__label">Time off Request</span></div></a>
-      <a class="tile" href="https://docs.google.com/forms/d/e/1FAIpQLScASFJIeZmxePSFV1JjTHusRUBIYiU8KFyAKDQBylaQl6DNVw/viewform" target="_blank" rel="noopener noreferrer" aria-label="Uniform Request"><img class="tile__img" src="images/admin/uniform-request.jpg" alt="Uniform Request"><div class="tile__overlay"><span class="tile__label">Uniform Request</span></div></a>
-      <a class="tile" href="https://calendar.google.com/calendar?authuser=1" target="_blank" rel="noopener noreferrer" aria-label="HFD Calendar"><img class="tile__img" src="images/admin/calendar.jpg" alt="HFD Calendar"><div class="tile__overlay"><span class="tile__label">HFD Calendar</span></div></a>
-      <a class="tile" href="https://hopkinton.munisselfservice.com/login.aspx" target="_blank" rel="noopener noreferrer" aria-label="Munis Self Service">
-        <img class="tile__img" src="images/admin/munis.jpg" alt="Munis self service">
-        <div class="tile__overlay"><span class="tile__label">Munis Self Service</span></div>
-      </a>
-      <a class="tile" href="https://www.wrrboard.org/" target="_blank" rel="noopener noreferrer" aria-label="Worcester County Retirement">
-        <img class="tile__img" src="images/admin/worcester-retirement.jpg" alt="Worcester County Retirement">
-        <div class="tile__overlay"><span class="tile__label">Worcester County Retirement</span></div>
-      </a>
-      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
-      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
-      <a class="tile" href="#"><img class="tile__img" src="images/admin/coming-soon.jpg" alt=""><div class="tile__overlay"><span class="tile__label">Coming Soon</span></div></a>
+  <main>
+    
+    <section class="container">
+      <div class="coming-soon">
+        <h2 class="section-title">Administrative</h2>
+        <p>Coming Soon</p>
+        <p><a href="home.html">← Back</a></p>
+      </div>
+    </section>
+    
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>© 2025 Hopkinton Fire Department</strong></p>
     </div>
-    <p style="margin-top:14px;"><a href="home.html">← Back</a></p>
-  </section>
-</main>
-
-<footer class="site-footer">
-  <div class="container">
-    <p><strong>© 2025 Hopkinton Fire Department</strong></p>
-  </div>
-</footer>
-
-<!-- (modals for Checks & Chores and Phone Tree would go here) -->
-
+  </footer>
 </body>
 </html>
