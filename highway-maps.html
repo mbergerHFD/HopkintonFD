@@ -5,27 +5,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Highway Maps — Hopkinton Fire Department</title>
   <link rel="stylesheet" href="styles.css"/>
+  <style>
+/* Match Administrative/CRR grid styles */
+.town-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+@media (max-width: 900px){ .town-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; } }
+@media (max-width: 520px){ .town-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; } }
+.town-card{ position:relative; border-radius:16px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); background:#eee; cursor:pointer; }
+.town-card__media{aspect-ratio: 4 / 3; width:100%; height:auto; background:#ddd;}
+.town-card__media img{ width:100%; height:100%; object-fit:cover; display:block; }
+.town-card__label{display:flex;align-items:center;justify-content:center;height:54px;background:rgba(0,0,0,.65);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
+.town-card:hover .town-card__label{display:flex;align-items:center;justify-content:center;height:54px;background:rgba(0,0,0,.65);color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.3px;}
+
+/* Modal styles (same pattern as Administrative) */
+
+dialog.modal[open], dialog.modal.is-open { display:block; }
+
+
+  
+
+
+
+.modal__close:hover{ filter:brightness(1.05); }
+.modal__close:focus-visible{ outline:2px solid rgba(255,255,255,.6); outline-offset:2px; }
+.modal__close:hover{ background:#f3f4f6; }
+.modal__close:focus-visible{ box-shadow:0 0 0 3px rgba(59,130,246,.45); border-radius:8px; }
+.modal__close:hover{
+  background:#f3f4f6;
+}
+
+
+
+
+  </style>
 </head>
 <body>
-  
-<div id="header-placeholder"></div>
+  <div id="header-placeholder"></div>
 
-  <main>
-    
-    <section class="container">
-      <div class="coming-soon">
-        <h2 class="section-title">Highway Maps</h2>
-        <p>Coming Soon</p>
-        <p><a href="apparatus.html">← Back</a></p>
+  <main class="container">
+    <h1 class="section-title">Highway Maps</h1>
+
+    <div class="town-grid">
+      <!-- Mass Pike -->
+      <div class="town-card" data-modal="#modal-mass-pike" tabindex="0" role="button" aria-label="Mass Pike">
+        <div class="town-card__media">
+          <img src="images/highway/mass-pike-thumb.jpg" alt="Mass Pike thumbnail">
+        </div>
+        <div class="town-card__label">Mass Pike</div>
       </div>
-    </section>
-    
+
+      <!-- I-495 -->
+      <div class="town-card" data-modal="#modal-495" tabindex="0" role="button" aria-label="I-495">
+        <div class="town-card__media">
+          <img src="images/highway/495-thumb.jpg" alt="I-495 thumbnail">
+        </div>
+        <div class="town-card__label">I-495</div>
+      </div>
+    </div>
+
+    <p class="subtle" style="margin-top:14px;"><a href="maps.html">← Back</a></p>
   </main>
+
   <footer class="site-footer">
     <div class="container">
       <p><strong>© 2025 Hopkinton Fire Department</strong></p>
     </div>
   </footer>
+
+  <!-- Modals -->
+  <dialog id="modal-mass-pike" class="modal" aria-labelledby="modal-mass-pike-title">
+    <div class="modal__bar">
+      <h3 id="modal-mass-pike-title" class="modal__title">Mass Pike</h3>
+      <button class="modal__close" data-close aria-label="Close">Close ×</button>
+    </div>
+    <div class="modal__body">
+      <img src="images/highway/mass-pike.jpg" alt="Mass Pike full map">
+    </div>
+  </dialog>
+
+  <dialog id="modal-495" class="modal" aria-labelledby="modal-495-title">
+    <div class="modal__bar">
+      <h3 id="modal-495-title" class="modal__title">I-495</h3>
+      <button class="modal__close" data-close aria-label="Close">Close ×</button>
+    </div>
+    <div class="modal__body">
+      <img src="images/highway/495.jpg" alt="I-495 full map">
+    </div>
+  </dialog>
+
   <script src="js/include-header.js"></script>
+  <script>
+  (function () {
+    function openModal(sel, ev) {
+      var dlg = document.querySelector(sel);
+      if (!dlg) return;
+      if (ev) ev.preventDefault();
+      if (dlg.showModal) { dlg.showModal(); }
+      else { dlg.classList.add('is-open'); }
+    }
+    // Open modals
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('[data-modal]');
+      if (!trigger) return;
+      openModal(trigger.getAttribute('data-modal'), e);
+    }, { passive: false });
+
+    // Keyboard access (Enter/Space)
+    document.addEventListener('keydown', function(e){
+      if ((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.matches('.town-card')) {
+        var sel = document.activeElement.getAttribute('data-modal');
+        if (!sel) return;
+        var dlg = document.querySelector(sel);
+        if (dlg && dlg.showModal) dlg.showModal();
+        else if (dlg) dlg.classList.add('is-open');
+      }
+    });
+
+    // Close buttons
+    document.addEventListener('click', function (e) {
+      if (!e.target.matches('[data-close]')) return;
+      var dlg = e.target.closest('dialog');
+      if (!dlg) return;
+      if (dlg.close) dlg.close();
+      dlg.classList.remove('is-open');
+    });
+
+    // Click backdrop to close
+    document.querySelectorAll('dialog.modal').forEach(function (dlg) {
+      dlg.addEventListener('click', function (e) {
+        var r = dlg.getBoundingClientRect();
+        var inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+        if (!inside) {
+          if (dlg.close) dlg.close();
+          dlg.classList.remove('is-open');
+        }
+      });
+    });
+  })();
+  </script>
 </body>
 </html>
