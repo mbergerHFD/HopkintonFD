@@ -4,9 +4,10 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Contracts — Hopkinton Fire Department</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="popup.css"/>
   <style>
-    .grid-wrap { display:flex; justify-content:center; }
+.grid-wrap { display:flex; justify-content:center; }
     .town-grid {
       display:grid;
       grid-auto-flow:row;
@@ -20,14 +21,7 @@
     /* Optional safety styles in case modal CSS is missing */
     .modal { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; }
     .modal.is-open { display:block; }
-    .modal__dialog { position:relative; width:min(1000px, 96vw); height:min(85vh, 900px); margin:4vh auto; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.35); }
-    .modal__bar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 12px; border-bottom:1px solid #ddd; background:#f8f8f8; }
-    .modal__title { font-weight:600; }
-    .modal__close { border:0; background:#eaeaea; padding:6px 10px; border-radius:6px; cursor:pointer; }
-    .modal__body { height:calc(100% - 46px); }
-    .modal__iframe { width:100%; height:100%; border:0; display:block; }
-    .town-card { cursor:pointer; }
-  </style>
+    .town-card { cursor:pointer; }</style>
 </head>
 <body>
   <div id="header-placeholder"></div>
@@ -131,8 +125,7 @@
             .container { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; padding: 0 8px !important; }
             .rc-images { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; padding: 0 0 8px !important; }
             .rc-images img, img { display: block; max-width: 100% !important; width: auto !important; height: auto !important; }
-            .rc-link { display:flex; justify-content:center; align-items:center; width:100%; text-align:center; }
-          </style>
+            .rc-link { display:flex; justify-content:center; align-items:center; width:100%; text-align:center; }</style>
         `;
         const baseTag = '<base href="' + baseHref + '">';
         let out = ensureViewport(html);
@@ -203,5 +196,24 @@
   </script>
 
   <script src="js/include-header.js"></script>
+
+<script>
+(function(){
+  function setModalOffset(){
+    var header = document.querySelector('.site-header') || document.querySelector('header');
+    var h = header ? Math.ceil(header.getBoundingClientRect().height) : 84;
+    document.documentElement.style.setProperty('--modal-offset', h + 'px');
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setModalOffset);
+  } else {
+    setModalOffset();
+  }
+  window.addEventListener('resize', setModalOffset);
+  // also adjust after header gets injected asynchronously
+  setTimeout(setModalOffset, 100);
+})();
+</script>
+
 </body>
 </html>
