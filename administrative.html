@@ -1,185 +1,98 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Administrative — Hopkinton Fire Department</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="popup.css"/>
-  <style>
-    /* Picture grid */
-    .admin-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
-    @media (max-width: 900px){ .admin-grid{ grid-template-columns:repeat(2,1fr);} }
-    @media (max-width: 520px){ .admin-grid{ grid-template-columns:1fr,1fr; } }
-    .tile {
-      position:relative; display:block; border-radius:16px; overflow:hidden;
-      text-decoration:none; color:inherit; background:#eee; box-shadow:0 1px 3px rgba(0,0,0,.08);
-      aspect-ratio: 4 / 3;
-    }
-    .tile__img { width:100%; height:100%; object-fit:cover; display:block; }
-    .tile__overlay {
-      position:absolute; inset:auto 0 0 0; padding:12px 14px;
-      background: linear-gradient(transparent, rgba(0,0,0,.55));
-      color:#fff; font-weight:700; letter-spacing:.2px;
-    }
-    .tile__label { font-size:1.05rem; }
-    .tile:hover .tile__overlay { background: linear-gradient(transparent, rgba(0,0,0,.65)); }
-    .tile[data-modal] { cursor:pointer; }
-
-    /* Scoped chores table styles */
-    #modal-checks-chores .chores-doc table { border-collapse: collapse; width: 100%; }
-    #modal-checks-chores .chores-doc td {
-      border: 1px solid #000; padding: 6px 8px;
-      text-align: center; vertical-align: middle;
-      background:#fff; color:#111827; word-break: break-word;
-      font-size: 0.95rem;
-    }
-    /* Header row (days of week) */
-    #modal-checks-chores .chores-doc tr:first-child td {
-      font-weight: bold; font-size: 1rem; text-align:center; background:#f0f0f0;
-    }
-    /* Section titles between tables */
-    #modal-checks-chores .chores-doc h4 {
-      margin: 14px 0 10px; text-align:center; font-size:1.4em; text-decoration:underline;
-    }
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Administrative — Hopkinton Fire Department</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="popup.css" rel="stylesheet"/><link href="grid.css" rel="stylesheet"/><link href="mobile.css" rel="stylesheet"/>\n
   
-/* Scoped Phone Tree table styles */
-#modal-phone-tree .phone-doc table { border-collapse: collapse; width: 100%; }
-#modal-phone-tree .phone-doc td { border: 1px solid #e5e7eb; padding: 6px 8px; vertical-align: top; }
-#modal-phone-tree .phone-doc td:first-child { font-weight: 600; } /* location column a bit bolder */
-
-
-
-
-/* Make only header row columns wider and prevent wrapping */
-#modal-checks-chores .chores-doc table tr:first-child td {
-  min-width: 120px;
-  white-space: nowrap;
-}
-/* Allow wrapping in body rows */
-#modal-checks-chores .chores-doc table tr:not(:first-child) td {
-  white-space: normal;
-}
-
-
-/* CRR grid styles */
-
-.town-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-@media (max-width: 900px){ .town-grid{ grid-template-columns:repeat(2,1fr);} }
-@media (max-width: 520px){ .town-grid{ grid-template-columns:1fr; } }
-.town-card{ position:relative; border-radius:16px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.08); background:#eee; cursor:pointer; }
-.town-card__media{ aspect-ratio: 4 / 3; width:100%; height:auto; background:#ddd; }
-.town-card__media img{ width:100%; height:100%; object-fit:cover; display:block; }
-.town-card__label{ display:flex; align-items:center; justify-content:center; height:54px;
-  background:rgba(0,0,0,.65); color:#fff; font-weight:700; text-transform:uppercase; letter-spacing:.3px; }
-.town-card:hover .town-card__label{ background:rgba(0,0,0,.75); }</style>
 </head>
 <body>
 <div id="header-placeholder"></div>
-
 <main>
-  <section class="container">
-    <h2 class="section-title">Administrative</h2>
+<section class="container">
+<h2 class="section-title">Administrative</h2>
+<!-- Picture Grid (3 x 4) -->
+<div class="town-grid">
+<div aria-label="Check &amp; Chores" class="town-card" data-modal="#modal-checks-chores" role="button" tabindex="0">
+<div class="town-card__media"><img alt="Check &amp; Chores" src="images/admin/checks-chores.jpg"/></div>
 
-    <!-- Picture Grid (3 x 4) -->
-    <div class="town-grid">
+<div class="town-card__label">Check &amp; Chores</div></div>
+<div aria-label="Phone Tree" class="town-card" data-modal="#modal-phone-tree" role="button" tabindex="0">
+<div class="town-card__media"><img alt="Phone Tree" src="images/admin/phone-tree.jpg"/></div>
 
-<div class="town-card" data-modal="#modal-checks-chores" tabindex="0" role="button" aria-label="Check & Chores">
-  <div class="town-card__media"><img src="images/admin/checks-chores.jpg" alt="Check & Chores"></div>
-  <div class="town-card__label">Check & Chores</div>
-</div>
+<div class="town-card__label">Phone Tree</div></div>
+<div aria-label="Time off Request" class="town-card" onclick="window.open('https://docs.google.com/a/hopkintonma.gov/forms/d/e/1FAIpQLSca22_Ou2xyFxLpLRGcEwS-3KuCErNxfVe7ciRcDvtfJausaA/viewform','_blank')" role="link" tabindex="0">
+<div class="town-card__media"><img alt="Time off Request" src="images/admin/time-off.jpg"/></div>
 
-<div class="town-card" data-modal="#modal-phone-tree" tabindex="0" role="button" aria-label="Phone Tree">
-  <div class="town-card__media"><img src="images/admin/phone-tree.jpg" alt="Phone Tree"></div>
-  <div class="town-card__label">Phone Tree</div>
-</div>
+<div class="town-card__label">Time off Request</div></div>
+<div aria-label="Uniform Request" class="town-card" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScASFJIeZmxePSFV1JjTHusRUBIYiU8KFyAKDQBylaQl6DNVw/viewform','_blank')" role="link" tabindex="0">
+<div class="town-card__media"><img alt="Uniform Request" src="images/admin/uniform-request.jpg"/></div>
 
-<div class="town-card" onclick="window.open('https://docs.google.com/a/hopkintonma.gov/forms/d/e/1FAIpQLSca22_Ou2xyFxLpLRGcEwS-3KuCErNxfVe7ciRcDvtfJausaA/viewform','_blank')" tabindex="0" role="link" aria-label="Time off Request">
-  <div class="town-card__media"><img src="images/admin/time-off.jpg" alt="Time off Request"></div>
-  <div class="town-card__label">Time off Request</div>
-</div>
+<div class="town-card__label">Uniform Request</div></div>
+<div aria-label="HFD Calendar" class="town-card" onclick="window.open('https://calendar.google.com/calendar?authuser=1','_blank')" role="link" tabindex="0">
+<div class="town-card__media"><img alt="HFD Calendar" src="images/admin/calendar.jpg"/></div>
 
-<div class="town-card" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLScASFJIeZmxePSFV1JjTHusRUBIYiU8KFyAKDQBylaQl6DNVw/viewform','_blank')" tabindex="0" role="link" aria-label="Uniform Request">
-  <div class="town-card__media"><img src="images/admin/uniform-request.jpg" alt="Uniform Request"></div>
-  <div class="town-card__label">Uniform Request</div>
-</div>
+<div class="town-card__label">HFD Calendar</div></div>
+<div aria-label="Munis Self Service" class="town-card" onclick="window.open('https://hopkinton.munisselfservice.com/login.aspx','_blank')" role="link" tabindex="0">
+<div class="town-card__media"><img alt="Munis Self Service" src="images/admin/munis.jpg"/></div>
 
-<div class="town-card" onclick="window.open('https://calendar.google.com/calendar?authuser=1','_blank')" tabindex="0" role="link" aria-label="HFD Calendar">
-  <div class="town-card__media"><img src="images/admin/calendar.jpg" alt="HFD Calendar"></div>
-  <div class="town-card__label">HFD Calendar</div>
-</div>
+<div class="town-card__label">Munis Self Service</div></div>
+<div aria-label="Worcester County Retirement" class="town-card" onclick="window.open('https://www.wrrboard.org/','_blank')" role="link" tabindex="0">
+<div class="town-card__media"><img alt="Worcester County Retirement" src="images/admin/worcester-retirement.jpg"/></div>
 
-<div class="town-card" onclick="window.open('https://hopkinton.munisselfservice.com/login.aspx','_blank')" tabindex="0" role="link" aria-label="Munis Self Service">
-  <div class="town-card__media"><img src="images/admin/munis.jpg" alt="Munis Self Service"></div>
-  <div class="town-card__label">Munis Self Service</div>
-</div>
+<div class="town-card__label">Worcester County Retirement</div></div>
+<div aria-label="EMS Rounds" class="town-card" onclick="window.open('https://docs.google.com/spreadsheets/d/1aRV0l0fQIxZx0zkylT7ajYKj3_e9A1D6SiXJVWrMkfc/edit?gid=169458997#gid=169458997','_blank')" role="link" tabindex="0">
+<div class="town-card__media"><img alt="EMS Rounds" src="images/admin/ems-rounds.jpg"/></div>
 
-<div class="town-card" onclick="window.open('https://www.wrrboard.org/','_blank')" tabindex="0" role="link" aria-label="Worcester County Retirement">
-  <div class="town-card__media"><img src="images/admin/worcester-retirement.jpg" alt="Worcester County Retirement"></div>
-  <div class="town-card__label">Worcester County Retirement</div>
-</div>
+<div class="town-card__label">EMS Rounds</div></div>
+<div aria-label="Coming Soon" class="town-card" role="link" tabindex="0">
+<div class="town-card__media"><img alt="Coming Soon" src="images/admin/coming-soon.jpg"/></div>
 
-<div class="town-card" onclick="window.open('https://docs.google.com/spreadsheets/d/1aRV0l0fQIxZx0zkylT7ajYKj3_e9A1D6SiXJVWrMkfc/edit?gid=169458997#gid=169458997','_blank')" tabindex="0" role="link" aria-label="EMS Rounds">
-  <div class="town-card__media"><img src="images/admin/ems-rounds.jpg" alt="EMS Rounds"></div>
-  <div class="town-card__label">EMS Rounds</div>
-</div>
+<div class="town-card__label">Coming Soon</div></div>
+<div aria-label="Coming Soon" class="town-card" role="link" tabindex="0">
+<div class="town-card__media"><img alt="Coming Soon" src="images/admin/coming-soon.jpg"/></div>
 
-<div class="town-card" tabindex="0" role="link" aria-label="Coming Soon">
-  <div class="town-card__media"><img src="images/admin/coming-soon.jpg" alt="Coming Soon"></div>
-  <div class="town-card__label">Coming Soon</div>
-</div>
+<div class="town-card__label">Coming Soon</div></div>
+<div aria-label="Coming Soon" class="town-card" role="link" tabindex="0">
+<div class="town-card__media"><img alt="Coming Soon" src="images/admin/coming-soon.jpg"/></div>
 
-<div class="town-card" tabindex="0" role="link" aria-label="Coming Soon">
-  <div class="town-card__media"><img src="images/admin/coming-soon.jpg" alt="Coming Soon"></div>
-  <div class="town-card__label">Coming Soon</div>
-</div>
+<div class="town-card__label">Coming Soon</div></div>
+<div aria-label="Coming Soon" class="town-card" role="link" tabindex="0">
+<div class="town-card__media"><img alt="Coming Soon" src="images/admin/coming-soon.jpg"/></div>
 
-<div class="town-card" tabindex="0" role="link" aria-label="Coming Soon">
-  <div class="town-card__media"><img src="images/admin/coming-soon.jpg" alt="Coming Soon"></div>
-  <div class="town-card__label">Coming Soon</div>
-</div>
-
-<div class="town-card" tabindex="0" role="link" aria-label="Coming Soon">
-  <div class="town-card__media"><img src="images/admin/coming-soon.jpg" alt="Coming Soon"></div>
-  <div class="town-card__label">Coming Soon</div>
-</div>
+<div class="town-card__label">Coming Soon</div></div>
 </div>
 <p class="subtle" style="margin-top:14px;"><a href="home.html">← Back</a></p>
-  </section>
+</section>
 </main>
-
 <footer class="site-footer">
-  <div class="container">
-    <p><strong>© 2025 Hopkinton Fire Department</strong></p>
-  </div>
+<div class="container">
+<p><strong>© 2025 Hopkinton Fire Department</strong></p>
+</div>
 </footer>
-
 <!-- Checks & Chores Modal -->
-<dialog id="modal-checks-chores" class="modal" aria-labelledby="modal-checks-chores-title"><div class="modal__dialog"><div class="modal__bar"><div class="modal__title">Check & Chores</div><button class="modal__close" data-close>Close ×</button></div><div class="modal__body">
-    <div class="chores-doc">
-      <h4>Daily Truck Check</h4>
-      <table style="border-collapse:collapse;width:100%;">
-        <tr><td>Sunday</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td><td>Saturday</td></tr>
-        <tr><td style="background:#000;">&nbsp;</td><td>Primary Engine<br/>Check &amp; Wash</td><td>Ladder 1<br/>Check &amp; Wash</td><td>Secondary Engine<br/>Check &amp; Wash</td><td>Rescue 1<br/>Check &amp; Wash</td><td>Engine 3<br/>Check &amp; Wash</td><td style="background:#000;">&nbsp;</td></tr>
-        <tr><td style="background:#000;">&nbsp;</td><td>Primary Ambulance<br/>Check &amp; Wash</td><td>Secondary Ambulance<br/>Check &amp; Wash</td><td>Gator Light Tower Check</td><td>Car 3<br/>Check &amp; Wash</td><td>Brush 11<br/>Check &amp; Wash</td><td style="background:#000;">&nbsp;</td></tr>
-        <tr><td style="background:#000;">&nbsp;</td><td>Squad 1 Check &amp; Wash</td><td>&nbsp;</td><td>Brush 6<br/>Check</td><td>Boats<br/>Check</td><td>&nbsp;</td><td style="background:#000;">&nbsp;</td></tr>
-        <tr><td style="background:#000;">&nbsp;</td><td>Wash Primary Ambulance</td><td>&nbsp;</td><td>Wash Primary Ambulance</td><td>&nbsp;</td><td>Wash Primary Ambulance</td><td style="background:#000;">&nbsp;</td></tr>
-        <tr><td colspan="7" style="text-align:center; font-weight:bold;">CHECK FUEL &amp; DEF LEVELS EVERY SHIFT</td></tr>
-      </table>
-
-      <h4>Daily House Duties</h4>
-      <table style="border-collapse:collapse;width:100%;">
-        <tr><td>Sunday</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td><td>Saturday</td></tr>
-        <tr><td style="background:#000;">&nbsp;</td><td>Sweep Apparatus Bays</td><td>Clean Bathrooms</td><td>Station 2</td><td>Clean Bathrooms</td><td>Clean Training Room</td><td>Clean Bathrooms</td></tr>
-        <tr><td style="background:#000;">&nbsp;</td><td>Clean Employee Entrance</td><td>Sweep &amp; Mop Kitchen</td><td>Sweep &amp; Mop Gym</td><td>Sweep &amp; Mop Kitchen</td><td>Sweep &amp; Mop Public Entrance</td><td>Sweep &amp; Mop Kitchen</td></tr>
-        <tr><td style="background:#000;">&nbsp;</td><td>Wash Towels</td><td>Vacuum Second Floor</td><td>Clean Dispatch</td><td>Vacuum Second Floor</td><td>Wash Towels</td><td>Vacuum Second Floor</td></tr>
-      </table>
-    </div>
-  </div>
-</div></div></dialog>
-
+<dialog aria-labelledby="modal-checks-chores-title" class="modal" id="modal-checks-chores"><div class="modal__dialog"><div class="modal__bar"><div class="modal__title">Daily Truck Check</div><button aria-label="Close" class="modal__close" data-close="">Close ×</button></div><div class="modal__body"><div class="modal__body">
+<div class="chores-doc">
+<table style="border-collapse:collapse;width:100%;">
+<tr><td>Sunday</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td><td>Saturday</td></tr>
+<tr><td style="background:#000;"> </td><td>Primary Engine<br/>Check &amp; Wash</td><td>Ladder 1<br/>Check &amp; Wash</td><td>Secondary Engine<br/>Check &amp; Wash</td><td>Rescue 1<br/>Check &amp; Wash</td><td>Engine 3<br/>Check &amp; Wash</td><td style="background:#000;"> </td></tr>
+<tr><td style="background:#000;"> </td><td>Primary Ambulance<br/>Check &amp; Wash</td><td>Secondary Ambulance<br/>Check &amp; Wash</td><td>Gator Light Tower Check</td><td>Car 3<br/>Check &amp; Wash</td><td>Brush 11<br/>Check &amp; Wash</td><td style="background:#000;"> </td></tr>
+<tr><td style="background:#000;"> </td><td>Squad 1 Check &amp; Wash</td><td> </td><td>Brush 6<br/>Check</td><td>Boats<br/>Check</td><td> </td><td style="background:#000;"> </td></tr>
+<tr><td style="background:#000;"> </td><td>Wash Primary Ambulance</td><td> </td><td>Wash Primary Ambulance</td><td> </td><td>Wash Primary Ambulance</td><td style="background:#000;"> </td></tr>
+<tr><td colspan="7" style="text-align:center; font-weight:bold;">CHECK FUEL &amp; DEF LEVELS EVERY SHIFT</td></tr>
+</table>
+<h4>Daily House Duties</h4>
+<table style="border-collapse:collapse;width:100%;">
+<tr><td>Sunday</td><td>Monday</td><td>Tuesday</td><td>Wednesday</td><td>Thursday</td><td>Friday</td><td>Saturday</td></tr>
+<tr><td style="background:#000;"> </td><td>Sweep Apparatus Bays</td><td>Clean Bathrooms</td><td>Station 2</td><td>Clean Bathrooms</td><td>Clean Training Room</td><td>Clean Bathrooms</td></tr>
+<tr><td style="background:#000;"> </td><td>Clean Employee Entrance</td><td>Sweep &amp; Mop Kitchen</td><td>Sweep &amp; Mop Gym</td><td>Sweep &amp; Mop Kitchen</td><td>Sweep &amp; Mop Public Entrance</td><td>Sweep &amp; Mop Kitchen</td></tr>
+<tr><td style="background:#000;"> </td><td>Wash Towels</td><td>Vacuum Second Floor</td><td>Clean Dispatch</td><td>Vacuum Second Floor</td><td>Wash Towels</td><td>Vacuum Second Floor</td></tr>
+</table></div></div></div></div></dialog>
 <!-- Phone Tree Modal (placeholder content) -->
-<dialog id="modal-phone-tree" class="modal" aria-labelledby="modal-phone-tree-title"><div class="modal__dialog"><div class="modal__bar"><div class="modal__title">Phone Tree</div><button class="modal__close" data-close>Close ×</button></div><div class="modal__body"><div class="phone-doc"><table class="phone-table" style="border-collapse:collapse;width:100%;">
+<dialog aria-labelledby="modal-phone-tree-title" class="modal" id="modal-phone-tree"><div class="modal__dialog"><div class="modal__bar"><div class="modal__title">Phone Tree</div><button aria-label="Close" class="modal__close" data-close="">Close ×</button></div><div class="modal__body"><div class="modal__body"><div class="phone-doc"><table class="phone-table" style="border-collapse:collapse;width:100%;">
 <tr><td>Location</td><td>Extension</td></tr>
 <tr><td>Chief’s Office</td><td>1321</td></tr>
 <tr><td>Deputy’s Officer</td><td>1322</td></tr>
@@ -223,9 +136,7 @@
 <tr><td>Car Seats</td><td>Car Seats</td></tr>
 <tr><td>pgross@hopkintonfd.org</td><td>tdoolin@hopkintonfd.org</td></tr>
 <tr><td>csayles@hopkintonfd.org</td><td></td></tr>
-</table></div></div>
-</div></div></dialog>
-
+</table></div></div></div></div></dialog>
 <script>
   (function () {
     function openModal(sel, ev) {
@@ -262,9 +173,7 @@
     });
   })();
 </script>
-
-  <script src="js/include-header.js"></script>
-
+<script src="js/include-header.js"></script>
 <script>
 document.addEventListener('click', function(e){
   const card = e.target.closest('.town-card[data-modal]');
@@ -285,21 +194,5 @@ document.addEventListener('keydown', function(e){
   }
 });
 </script>
-
-
-<script>
-(function(){
-  function setModalOffset(){
-    var header = document.querySelector('.site-header') || document.querySelector('header');
-    var h = header ? Math.ceil(header.getBoundingClientRect().height) : 96;
-    document.documentElement.style.setProperty('--modal-offset', h + 'px');
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setModalOffset);
-  else setModalOffset();
-  window.addEventListener('resize', setModalOffset);
-  setTimeout(setModalOffset, 150);
-})();
-</script>
-
 </body>
 </html>

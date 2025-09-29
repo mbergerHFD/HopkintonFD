@@ -1,103 +1,62 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Contracts — Hopkinton Fire Department</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="popup.css"/>
-  <style>
-.grid-wrap { display:flex; justify-content:center; }
-    .town-grid {
-      display:grid;
-      grid-auto-flow:row;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:20px;
-      justify-content:center;
-      align-items:start;
-      max-width:900px;
-      margin:0 auto;
-    }
-    /* Optional safety styles in case modal CSS is missing */
-    .modal { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; }
-    .modal.is-open { display:block; }
-    .town-card { cursor:pointer; }</style>
-</head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Contracts — Hopkinton Fire Department</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="popup.css" rel="stylesheet"/>
+<link href="grid.css" rel="stylesheet"/><link href="mobile.css" rel="stylesheet"/></head>
 <body>
-  <div id="header-placeholder"></div>
+<div id="header-placeholder"></div>
+<main>
+<section class="container">
+<h2 class="section-title">Contracts</h2>
+<div class="town-grid">
 
-  <main>
-    <section class="container">
-      <h2 class="section-title">Contracts</h2>
-      <div class="grid-wrap">
-        <div class="town-grid">
-
-          <!-- 2025 -->
-          <div class="town-card" data-href="contract2025.html" data-title="HFD Contract 2025–2028">
-            <div class="town-card__media">
-              <img src="images/contract/2025-thumb.jpg" alt="Contract 2025–2028"/>
-            </div>
-            <div class="town-card__label">2025–2028</div>
-          </div>
-
-          <!-- 2022 -->
-          <div class="town-card" data-href="contract2022.html" data-title="HFD Contract 2022–2025">
-            <div class="town-card__media">
-              <img src="images/contract/2022-thumb.jpg" alt="Contract 2022–2025"/>
-            </div>
-            <div class="town-card__label">2022–2025</div>
-          </div>
-
-          <!-- 2021 -->
-          <div class="town-card" data-href="contract2021.html" data-title="HFD Contract 2021–2022">
-            <div class="town-card__media">
-              <img src="images/contract/2021-thumb.jpg" alt="Contract 2021–2022"/>
-            </div>
-            <div class="town-card__label">2021–2022</div>
-          </div>
-
-          <!-- 2018 -->
-          <div class="town-card" data-href="contract2018.html" data-title="HFD Contract 2018–2021">
-            <div class="town-card__media">
-              <img src="images/contract/2018-thumb.jpg" alt="Contract 2018–2021"/>
-            </div>
-            <div class="town-card__label">2018–2021</div>
-          </div>
-
-          <!-- 2015 -->
-          <div class="town-card" data-href="contract2015.html" data-title="HFD Contract 2015–2018">
-            <div class="town-card__media">
-              <img src="images/contract/2015-thumb.jpg" alt="Contract 2015–2018"/>
-            </div>
-            <div class="town-card__label">2015–2018</div>
-          </div>
-
-        </div>
-      </div>
-      <p style="margin-top:20px;"><a href="home.html">← Back</a></p>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p><strong>© 2025 Hopkinton Fire Department</strong></p>
-    </div>
-  </footer>
-
-  <!-- Modal Viewer -->
-  <div class="modal" id="rc-modal" aria-hidden="true" role="dialog" aria-label="Contracts Viewer">
-    <div class="modal__dialog">
-      <div class="modal__bar">
-        <div class="modal__title" id="rc-modal-title">Contracts</div>
-        <button class="modal__close" id="rc-modal-close" type="button" aria-label="Close">Close ✕</button>
-      </div>
-      <div class="modal__body">
-        <iframe id="rc-modal-iframe" class="modal__iframe" src="" title="Contracts Content"></iframe>
-      </div>
-    </div>
-  </div>
-
-  <script>
+<div class="town-card" data-href="contract2025.html" data-title="HFD Contract 2025–2028">
+<div class="town-card__media">
+<img alt="Contract 2025–2028" src="images/contract/2025-thumb.jpg"/>
+</div>
+<div class="town-card__label">Contract 2025–2028</div></div><div class="town-card" data-href="contract2022.html" data-title="HFD Contract 2022–2025">
+<div class="town-card__media">
+<img alt="Contract 2022–2025" src="images/contract/2022-thumb.jpg"/>
+</div>
+<div class="town-card__label">2022–2025</div></div><div class="town-card" data-href="contract2021.html" data-title="HFD Contract 2021–2022">
+<div class="town-card__media">
+<img alt="Contract 2021–2022" src="images/contract/2021-thumb.jpg"/>
+</div>
+<div class="town-card__label">2021–2022</div></div><div class="town-card" data-href="contract2018.html" data-title="HFD Contract 2018–2021">
+<div class="town-card__media">
+<img alt="Contract 2018–2021" src="images/contract/2018-thumb.jpg"/>
+</div>
+<div class="town-card__label">2018–2021</div></div><div class="town-card" data-href="contract2015.html" data-title="HFD Contract 2015–2018">
+<div class="town-card__media">
+<img alt="Contract 2015–2018" src="images/contract/2015-thumb.jpg"/>
+</div>
+<div class="town-card__label">2015–2018</div></div></div>
+<p style="margin-top:20px;"><a href="home.html">← Back</a></p>
+</section>
+</main>
+<footer class="site-footer">
+<div class="container">
+<p><strong>© 2025 Hopkinton Fire Department</strong></p>
+</div>
+</footer>
+<!-- Modal Viewer -->
+<div aria-hidden="true" aria-label="Contracts Viewer" class="modal" id="rc-modal" role="dialog">
+<div class="modal__dialog">
+<div class="modal__bar">
+<div class="modal__title" id="rc-modal-title">Contracts</div>
+<button aria-label="Close" class="modal__close" id="rc-modal-close" type="button">Close ✕</button>
+</div>
+<div class="modal__body">
+<iframe class="modal__iframe" id="rc-modal-iframe" src="" title="Contracts Content"></iframe>
+</div>
+</div>
+</div>
+<script>
     (function() {
       const modal = document.getElementById('rc-modal');
       const iframe = document.getElementById('rc-modal-iframe');
@@ -194,9 +153,7 @@
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
     })();
   </script>
-
-  <script src="js/include-header.js"></script>
-
+<script src="js/include-header.js"></script>
 <script>
 (function(){
   function setModalOffset(){
@@ -214,6 +171,5 @@
   setTimeout(setModalOffset, 100);
 })();
 </script>
-
 </body>
 </html>

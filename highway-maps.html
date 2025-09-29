@@ -1,78 +1,86 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Highway Maps</title>
-  <link rel="stylesheet" href="styles.css"/>
-  <link rel="stylesheet" href="popup.css"/>
-  <style>
-    .tile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:1100px;margin:24px auto;}
-    .tile{background:#fff;border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.12);overflow:hidden;cursor:pointer;transition:transform .15s ease}
-    .tile:focus,.tile:hover{transform:translateY(-2px)}
-    .tile img{display:block;width:100%;height:180px;object-fit:cover}
-    .tile .label{padding:12px 14px;font-weight:800;text-align:center}
-  </style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Highway Maps</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="popup.css" rel="stylesheet"/><link href="grid.css" rel="stylesheet"/><link href="mobile.css" rel="stylesheet"/>
 </head>
 <body>
-  <div id="header-placeholder"></div>
-
-  
-  <main>
-
+<div id="header-placeholder"></div>
+<header class="site-header"></header>
+<main>
 <section class="container">
-  <h2 class="section-title">Highway Maps</h2>
-  <div class="town-grid">
-    <div class="town-card" data-modal="#modal-mspike" tabindex="0" role="button" aria-label="Mass Pike">
-      <div class="town-card__media"><img src="images/highway/mass-pike-thumb.jpg" alt="Mass Pike"></div>
-      <div class="town-card__label">Mass Pike</div>
-    </div>
+<h2 class="section-title">Highway Maps</h2>
+<div class="town-grid">
+<div aria-label="Mass Pike" class="town-card" data-modal="#modal-mspike" role="button" tabindex="0">
+<div class="town-card__media"><img alt="Mass Pike" src="images/highway/mass-pike-thumb.jpg"/></div>
 
-    <div class="town-card" data-modal="#modal-495" tabindex="0" role="button" aria-label="I‑495">
-      <div class="town-card__media"><img src="images/highway/495-thumb.jpg" alt="I‑495"></div>
-      <div class="town-card__label">I‑495</div>
-    </div>
-  </div>
+<div class="town-card__label">Mass Pike</div></div>
+<div aria-label="I‑495" class="town-card" data-modal="#modal-495" role="button" tabindex="0">
+<div class="town-card__media"><img alt="I‑495" src="images/highway/495-thumb.jpg"/></div>
+
+<div class="town-card__label">I‑495</div></div>
+</div>
 </section>
-
+<!-- Mass Pike -->
+<dialog class="modal" id="modal-mspike">
+<div class="modal__dialog">
+<div class="modal__bar">
+<div class="modal__title">Mass Pike</div>
+<button class="modal__close" data-close="">Close ×</button>
+</div>
+<div class="modal__body">
+<img alt="Mass Pike map" src="images/highway/mass-pike.jpg"/>
+</div>
+</div>
+</dialog>
+<!-- I‑495 -->
+<dialog class="modal" id="modal-495">
+<div class="modal__dialog">
+<div class="modal__bar">
+<div class="modal__title">I‑495</div>
+<button class="modal__close" data-close="">Close ×</button>
+</div>
+<div class="modal__body">
+<img alt="I‑495 map" src="images/highway/495.jpg"/>
+</div>
+</div>
+</dialog>
 </main>
-
-  <footer class="site-footer">
-    <div class="container">
-      <p><strong>© 2025 Hopkinton Fire Department</strong></p>
-    </div>
-  </footer>
-
-  
-
-
-  <!-- Mass Pike dialog -->
-  <dialog id="modal-mspike" class="modal">
-    <div class="modal__dialog">
-      <div class="modal__bar">
-        <div class="modal__title">Mass Pike</div>
-        <button class="modal__close" data-close>Close ×</button>
-      </div>
-      <div class="modal__body">
-        <img src="images/highway/mass-pike.jpg" alt="Mass Pike map"/>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- I‑495 dialog -->
-  <dialog id="modal-495" class="modal">
-    <div class="modal__dialog">
-      <div class="modal__bar">
-        <div class="modal__title">I‑495</div>
-        <button class="modal__close" data-close>Close ×</button>
-      </div>
-      <div class="modal__body">
-        <img src="images/highway/495.jpg" alt="I‑495 map"/>
-      </div>
-    </div>
-  </dialog>
-
-  <script>
+<footer class="site-footer">
+<div class="container">
+<p><strong>© 2025 Hopkinton Fire Department</strong></p>
+</div>
+</footer>
+<div id="footer-placeholder"></div>
+<!-- Mass Pike dialog -->
+<dialog class="modal" id="modal-mspike">
+<div class="modal__dialog">
+<div class="modal__bar">
+<div class="modal__title">Mass Pike</div>
+<button class="modal__close" data-close="">Close ×</button>
+</div>
+<div class="modal__body">
+<img alt="Mass Pike map" src="images/highway/mass-pike.jpg"/>
+</div>
+</div>
+</dialog>
+<!-- I‑495 dialog -->
+<dialog class="modal" id="modal-495">
+<div class="modal__dialog">
+<div class="modal__bar">
+<div class="modal__title">I‑495</div>
+<button class="modal__close" data-close="">Close ×</button>
+</div>
+<div class="modal__body">
+<img alt="I‑495 map" src="images/highway/495.jpg"/>
+</div>
+</div>
+</dialog>
+<script>
     // Simple modal opener/closer
     document.addEventListener('click', function(e){
       var t = e.target.closest('[data-modal]');
@@ -90,19 +98,6 @@
       }
     });
   </script>
-  <script>
-  (function(){
-    function setModalOffset(){
-      var header = document.querySelector('.site-header') || document.querySelector('header');
-      var h = header ? Math.ceil(header.getBoundingClientRect().height) : 96;
-      document.documentElement.style.setProperty('--modal-offset', h + 'px');
-    }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', setModalOffset);
-    else setModalOffset();
-    window.addEventListener('resize', setModalOffset);
-    setTimeout(setModalOffset, 150);
-  })();
-  </script>
-  <script src="js/include-header.js"></script>
+<script src="js/include-header.js"></script>
 </body>
 </html>

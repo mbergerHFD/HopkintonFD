@@ -1,51 +1,42 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hydrant Map</title>
-
-  <!-- Site styles -->
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="maps-shared.css" />
-
-  <!-- Leaflet CSS (no integrity to avoid SRI blocks) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Hydrant Map</title>
+<!-- Site styles -->
+<link href="styles.css" rel="stylesheet"/>
+<link href="maps-shared.css" rel="stylesheet"/>
+<!-- Leaflet CSS (no integrity to avoid SRI blocks) -->
+<link crossorigin="" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/><link href="grid.css" rel="stylesheet"/><link href="mobile.css" rel="stylesheet"/>
 </head>
 <body>
-  <div id="header-placeholder"></div>
-
+<div id="header-placeholder"></div>
 <main class="container">
-    <h1 class="page-title">Hydrant Map</h1>
-
-    <div class="map-section">
+<h1 class="page-title">Hydrant Map</h1>
+<div class="map-section">
 <div class="map-toolbar" role="search">
-  <form id="mapSearchForm" class="map-search" autocomplete="off">
-    <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address">
-    <input id="mapSearchCity" type="search" value="Hopkinton" placeholder="City" aria-label="City">
-    <button type="submit" title="Search">Search</button>
-  </form>
+<form autocomplete="off" class="map-search" id="mapSearchForm">
+<input aria-label="Street address" id="mapSearchStreet" placeholder="Street address" type="search"/>
+<input aria-label="City" id="mapSearchCity" placeholder="City" type="search" value="Hopkinton"/>
+<button title="Search" type="submit">Search</button>
+</form>
 </div>
-
-
-    <div class="map-wrapper"><div class="map-card">
-<div id="map" class="map-viewport" aria-label="Hydrant map"></div>
+<div class="map-wrapper"><div class="map-card">
+<div aria-label="Hydrant map" class="map-viewport" id="map"></div>
 </div>
 </div>
-  </main>
-
+</div></main>
 <!-- Keep your existing script tags as-is, in the same order as cistern -->
-
-  <footer class="site-footer">
-    <div class="container"><p>Â© Hopkinton Fire Department</p></div>
-  </footer>
-
-  <!-- Leaflet JS must load BEFORE your map scripts -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-
-  <!-- Your scripts -->
-  <script src="maps-boot.js" defer></script>
-  <script src="hydrant-map.js" defer></script>
-  <script src="js/include-header.js"></script>
+<footer class="site-footer">
+<div class="container"><p>Â© Hopkinton Fire Department</p></div>
+</footer>
+<!-- Leaflet JS must load BEFORE your map scripts -->
+<script crossorigin="" src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Your scripts -->
+<script defer="" src="maps-boot.js"></script>
+<script defer="" src="hydrant-map.js"></script>
+<script src="js/include-header.js"></script>
 </body>
 </html>

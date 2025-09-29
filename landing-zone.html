@@ -1,39 +1,35 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Landing Zone Map - Hopkinton Fire Department</title>
-
-  <link rel="stylesheet" href="styles.css?v=2" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="maps-shared.css?v=2" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Landing Zone Map - Hopkinton Fire Department</title>
+<link href="styles.css?v=2" rel="stylesheet"/>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<link href="maps-shared.css?v=2" rel="stylesheet"/><link href="styles.css" rel="stylesheet"/><link href="grid.css" rel="stylesheet"/><link href="mobile.css" rel="stylesheet"/>
 </head>
 <body>
-  <div id="header-placeholder"></div>
-
-  <main class="container">
-    <h1 class="page-title">Landing Zone Map</h1>
-
-    <div class="map-section">
+<div id="header-placeholder"></div>
+<main class="container">
+<h1 class="page-title">Landing Zone Map</h1>
+<div class="map-section">
 <div class="map-toolbar" role="search">
-  <form id="mapSearchForm" class="map-search" autocomplete="off">
-    <input id="mapSearchStreet" type="search" placeholder="Street address" aria-label="Street address">
-    <input id="mapSearchCity" type="search" value="Hopkinton" placeholder="City" aria-label="City">
-    <button type="submit" title="Search">Search</button>
-  </form>
+<form autocomplete="off" class="map-search" id="mapSearchForm">
+<input aria-label="Street address" id="mapSearchStreet" placeholder="Street address" type="search"/>
+<input aria-label="City" id="mapSearchCity" placeholder="City" type="search" value="Hopkinton"/>
+<button title="Search" type="submit">Search</button>
+</form>
 </div>
-
-
-    <div class="map-wrapper"><div class="map-card">
-<div id="map" class="map-viewport" aria-label="Landing Zone map"></div>
+<div class="map-wrapper"><div class="map-card">
+<div aria-label="Landing Zone map" class="map-viewport" id="map"></div>
 </div>
 </div>
-  </main>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</div></main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="maps-boot.js"></script>
-<script src="landing-zone-map.js?v=2" defer></script>
-  <script>
+<script defer="" src="landing-zone-map.js?v=2"></script>
+<script>
     document.addEventListener("DOMContentLoaded", () => {
       const el = document.getElementById("map");
       if (el && el.clientHeight < 150) {
@@ -42,6 +38,6 @@
       }
     });
   </script>
-  <script src="js/include-header.js"></script>
+<script src="js/include-header.js"></script>
 </body>
 </html>
