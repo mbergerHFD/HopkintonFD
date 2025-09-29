@@ -57,3 +57,36 @@ div.modal.is-open{ display: flex; }
 .modal__bar .modal__close{-webkit-appearance:none;appearance:none;background:#e11d48!important;color:#fff;border:0;border-radius:9999px;padding:8px 14px;font-weight:800;font-size:1rem;line-height:1;cursor:pointer;box-shadow:0 1px 0 rgba(255,255,255,.06) inset;}
 
 .modal__body > :first-child{ margin-top: 0; }
+
+/* ===== Popup position & scrolling overrides (safe) ===== */
+
+/* Always anchor dialog below the header and center horizontally */
+dialog.modal,
+div.modal {
+  align-items: flex-start !important;   /* top-align the popup */
+  justify-content: center !important;   /* center horizontally */
+  padding-top: 0 !important;
+}
+
+/* Use your header height (falls back to 96px if not set) */
+:root { --modal-offset: var(--site-header-height, 96px); }
+
+/* The panel itself */
+.modal__dialog {
+  margin-top: var(--modal-offset) !important;
+  max-height: calc(100dvh - var(--modal-offset) - var(--modal-gutter, 24px)) !important;
+  overflow: hidden !important;          /* keep header/action bar visible */
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Scroll the body/content area, not the whole page */
+.modal__body {
+  overflow-y: auto !important;
+}
+
+/* When a modal is open, stop background page from scrolling */
+body:has(dialog.modal[open]),
+body.modal-open {
+  overflow: hidden !important;
+}
