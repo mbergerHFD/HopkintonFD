@@ -1,54 +1,79 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta content="width=device-width, initial-scale=1" name="viewport" />
-		<title>Home — Hopkinton Fire Department</title>
-		<link href="styles.css" rel="stylesheet" type="text/css" />
-		<link href="grid.css" rel="stylesheet" type="text/css" />
-		<link href="mobile.css" rel="stylesheet" type="text/css" />
-	</head>
-	<body class="page-home">
-		<div id="header-placeholder"></div>
-		<h1 class="section-title">Welcome
-</h1>
-		<div class="town-grid">
-			<a class="town-card" href="apparatus.html"></a>
-			<div class="town-card__media">
-				<img alt="Apparatus" src="images/apparatus.jpg" />
-			</div>
-			<div class="town-card__label">Apparatus
-</div>
-			<a class="town-card" href="maps.html"></a>
-			<div class="town-card__media">
-				<img alt="Maps" src="images/maps.jpg" />
-			</div>
-			<div class="town-card__label">Maps
-</div>
-			<a class="town-card" href="run-cards.html"></a>
-			<div class="town-card__media">
-				<img alt="Run Cards" src="images/run-cards.jpg" />
-			</div>
-			<div class="town-card__label">Run Cards
-</div>
-			<a class="town-card" href="erg.html"></a>
-			<div class="town-card__media">
-				<img alt="ERG" src="images/erg.jpg" />
-			</div>
-			<div class="town-card__label">ERG
-</div>
-			<a class="town-card" href="administrative.html"></a>
-			<div class="town-card__media">
-				<img alt="Administrative" src="images/administrative.jpg" />
-			</div>
-			<div class="town-card__label">Administrative
-</div>
-		</div>
-		<div class="container">
-			<p>
-				<strong>© Hopkinton Fire Department</strong>
-			</p>
-		</div>
-		<script src="js/include-header.js" type="text/javascript"></script>
-	</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Home — Hopkinton Fire Department</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" type="text/css" />
+    <link rel="stylesheet" href="grid.css" type="text/css" />
+    <link rel="stylesheet" href="mobile.css" type="text/css" />
+  </head>
+  <body>
+    <!-- Header gets injected into this placeholder -->
+    <div id="header-placeholder"></div>
+
+    <main class="container" id="main-content">
+      <h1 class="section-title">Welcome</h1>
+
+      <div class="town-grid" role="list">
+        <a class="town-card" href="apparatus.html" role="listitem" aria-label="Go to Apparatus">
+          <div class="town-card__media">
+            <img src="images/apparatus.jpg" alt="Fire apparatus lineup" />
+          </div>
+          <div class="town-card__label">Apparatus</div>
+        </a>
+
+        <a class="town-card" href="maps.html" role="listitem" aria-label="Go to Maps">
+          <div class="town-card__media">
+            <img src="images/maps.jpg" alt="Operational maps overview" />
+          </div>
+          <div class="town-card__label">Maps</div>
+        </a>
+
+        <a class="town-card" href="run-cards.html" role="listitem" aria-label="Go to Run Cards">
+          <div class="town-card__media">
+            <img src="images/run-cards.jpg" alt="Run cards grid preview" />
+          </div>
+          <div class="town-card__label">Run Cards</div>
+        </a>
+
+        <a class="town-card" href="erg.html" role="listitem" aria-label="Go to ERG">
+          <div class="town-card__media">
+            <img src="images/erg.jpg" alt="Emergency Response Guidebook" />
+          </div>
+          <div class="town-card__label">ERG</div>
+        </a>
+
+        <a class="town-card" href="administrative.html" role="listitem" aria-label="Go to Administrative">
+          <div class="town-card__media">
+            <img src="images/administrative.jpg" alt="Administrative resources" />
+          </div>
+          <div class="town-card__label">Administrative</div>
+        </a>
+
+        <a class="town-card" href="crr.html" role="listitem" aria-label="Go to Community Risk Reduction">
+          <div class="town-card__media">
+            <img src="images/crr.jpg" alt="Community Risk Reduction resources" />
+          </div>
+          <div class="town-card__label">CRR</div>
+        </a>
+
+        <a class="town-card" href="contract.html" role="listitem" aria-label="Go to Contract">
+          <div class="town-card__media">
+            <!-- Ensure this path exists: images/contract/contract.jpg -->
+            <img src="images/contract/contract.jpg" alt="Collective bargaining contract" />
+          </div>
+          <div class="town-card__label">Contract</div>
+        </a>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <p><strong>© Hopkinton Fire Department</strong></p>
+    </footer>
+
+    <script src="js/include-header.js"></script>
+  </body>
 </html>
