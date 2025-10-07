@@ -1,25 +1,35 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Franklin — Hopkinton Fire Department</title>
-<link href="../../styles.css" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Franklin Run Cards</title>
+  <style>
+    html, body { margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    h1 { text-align: center; margin: 12px 0 20px; font-size: 1.6rem; }
+    .run-cards a { display:block; text-decoration:none; margin-bottom: 20px; }
+    .run-cards img {
+      display:block;
+      width:100%;
+      height:auto;
+      border:1px solid #ddd;
+      box-shadow:0 2px 6px rgba(0,0,0,0.08);
+      background:#fff;
+    }
+  </style>
 </head>
 <body>
-
-<main class="container">
-<h1 style="text-align:center; margin: 20px 0;">Franklin Run Cards</h1>
-<div class="rc-link">
-<a href="https://www.meccdispatch.org/sites/g/files/vyhlif3446/f/uploads/franklin_fire_run_cards_0.pdf" target="_blank">
-        District 4 Run Card: Franklin Fire Department
-      </a>
-</div>
-<div class="rc-images">
-<img alt="Franklin 1" src="./franklin1.jpg"/>
-<img alt="Franklin 2" src="./franklin2.jpg"/>
-</div>
-</main>
+  <div class="container">
+    <h1>Franklin Run Cards</h1>
+    <div class="run-cards">
+      <a href="franklin1.jpg" target="_blank" rel="noopener">
+  <img src="franklin1.jpg" alt="Franklin Run Card">
+</a>
+      <a href="franklin2.jpg" target="_blank" rel="noopener">
+  <img src="franklin2.jpg" alt="Franklin Run Card">
+</a>
+    </div>
+  </div>
 </body>
 </html>

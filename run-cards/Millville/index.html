@@ -1,27 +1,38 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
-<title>Millville — Hopkinton Fire Department</title>
-<link href="../../styles.css" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Millville Run Cards</title>
+  <style>
+    html, body { margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; background:#f7f7f7; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    h1 { text-align: center; margin: 12px 0 20px; font-size: 1.6rem; }
+    .run-cards a { display:block; text-decoration:none; margin-bottom: 20px; }
+    .run-cards img {
+      display:block;
+      width:100%;
+      height:auto;
+      border:1px solid #ddd;
+      box-shadow:0 2px 6px rgba(0,0,0,0.08);
+      background:#fff;
+    }
+  </style>
 </head>
 <body>
-
-<main class="container">
-<h1 style="text-align:center; margin: 20px 0;">Millville Run Cards</h1>
-<div class="rc-link">
-<a href="https://www.meccdispatch.org/sites/g/files/vyhlif3446/f/uploads/millville_fire_run_cards.pdf" target="_blank">
-        District 14 Run Card: Millville Fire Department
-      </a>
-</div>
-<div class="rc-images">
-<img alt="Millville 1" src="./millville1.jpg"/>
-<img alt="Millville 2" src="./millville2.jpg"/>
-<img alt="Millville 3" src="./millville3.jpg"/>
-
-</div>
-</main>
+  <div class="container">
+    <h1>Millville Run Cards</h1>
+    <div class="run-cards">
+      <a href="millville1.jpg" target="_blank" rel="noopener">
+  <img src="millville1.jpg" alt="Millville Run Card">
+</a>
+      <a href="millville2.jpg" target="_blank" rel="noopener">
+  <img src="millville2.jpg" alt="Millville Run Card">
+</a>
+      <a href="millville3.jpg" target="_blank" rel="noopener">
+  <img src="millville3.jpg" alt="Millville Run Card">
+</a>
+    </div>
+  </div>
 </body>
 </html>
