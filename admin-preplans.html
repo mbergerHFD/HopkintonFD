@@ -922,14 +922,16 @@
     };
 
     // === Utils ===
-      function escapeHtml(s = '') {
-        return String(s)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#39;');
-      }
+    function escapeHtml(s = ''){
+      // simpler, no inline object literal (avoids any parser edge-cases)
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }[m]));
+    }
     function escapeVal(s = ''){
       return escapeHtml(String(s));
     }
