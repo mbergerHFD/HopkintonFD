@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HFD Preplans Admin</title>
+  <style>
+    :root {
+      --bg:#0b1220; --card:#111827; --muted:#6b7280; --text:#e5e7eb; --accent:#60a5fa; --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
+    }
+    html,body { height:100%; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; background:var(--bg); color:var(--text); }
+    header { position:sticky; top:0; z-index:10; backdrop-filter:saturate(180%) blur(8px); background:rgba(11,18,32,.8); border-bottom:1px solid #1f2937; }
+    header .wrap { max-width:1100px; margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:14px; }
+    header h1 { font-size:18px; margin:0; letter-spacing:.4px; }
+    main { max-width:1100px; margin:0 auto; padding:18px 16px 40px; }
+
+    .card { background:var(--card); border:1px solid #1f2937; border-radius:16px; padding:16px; }
+    .grid { display:grid; gap:12px; }
+
+    .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    @media (max-width:700px){ .row{ grid-template-columns:1fr; } }
+
+    label { display:grid; gap:6px; font-size:14px; color:#cbd5e1; }
+    input, select, textarea { background:#0f172a; color:var(--text); border:1px solid #243045; border-radius:10px; padding:10px 12px; font:inherit; }
+    textarea { min-height:80px; }
+    button { background:#0f172a; color:var(--text); border:1px solid #243045; border-radius:10px; padding:10px 12px; cursor:pointer; }
+    button.primary { background:var(--accent); color:#08101d; border-color:transparent; }
+    button.ghost { background:transparent; border-color:#334155; }
+    button.warn { background:var(--warn); color:#0b0b0b; border-color:transparent; }
+    button.bad { background:var(--bad); color:#0b0b0b; border-color:transparent; }
+
+    .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .toolbar .grow { flex:1 1 auto; min-width:200px; }
+
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    thead th { text-align:left; font-weight:600; color:#cbd5e1; border-bottom:1px solid #1f2937; padding:10px 8px; white-space:nowrap; }
+    tbody td { border-bottom:1px solid #1f2937; padding:10px 8px; vertical-align:top; }
+    tbody tr:hover { background:#0f172a; }
+    .badge { display:inline-block; padding:3px 8px; border-radius:999px; font-size:12px; border:1px solid #334155; }
+    .badge.approved { background:rgba(16,185,129,.12); border-color:rgba(16,185,129,.35); color:#86efac; }
+    .badge.in_review { background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.35); color:#fde68a; }
+    .badge.draft { background:rgba(59,130,246,.12); border-color:rgba(59,130,246,.35); color:#93c5fd; }
+
+    .muted { color:var(--muted); }
+    .pill { padding:6px 10px; border-radius:999px; border:1px solid #2b3a55; background:#0f172a; }
+
+    .flex { display:flex; gap:10px; align-items:center; }
+    .right { margin-left:auto; }
+
+    dialog.modal { width:min(900px, 92vw); border:none; border-radius:16px; padding:0; background:#0b1220; color:var(--text); }
+    .modal__header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #1f2937; position:sticky; top:0; background:#0b1220; }
+    .modal__body { padding:16px; max-height:min(70vh, 70svh); overflow:auto; }
+    .modal__footer { padding:12px 16px; border-top:1px solid #1f2937; display:flex; gap:8px; justify-content:flex-end; }
+
+    .hint { font-size:13px; color:#9aa5b1; }
+    .spacer { height:12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>HFD Preplans Admin</h1>
+      <div class="right flex" id="userBar" hidden>
+        <span id="whoami" class="muted"></span>
+        <button id="logoutBtn" class="ghost">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- AUTH -->
+    <section id="authCard" class="card grid">
+      <h2>Sign in</h2>
+      <form id="signInForm" class="grid">
+        <div class="row">
+          <label>Email <input type="email" name="email" required /></label>
+          <label>Password <input type="password" name="password" required /></label>
+        </div>
+        <div class="flex">
+          <button class="primary">Sign in</button>
+          <span id="authMsg" class="hint"></span>
+        </div>
+      </form>
+      <p class="hint">Create users in Supabase → Auth → Users. This page uses your Supabase Auth and Row Level Security.</p>
+    </section>
+
+    <!-- SEARCH & REVIEW -->
+    <section id="reviewCard" class="card grid" hidden>
+      <div class="toolbar">
+        <input id="q" class="grow" placeholder="Search name or address…" />
+        <select id="status">
+          <option value="">All statuses</option>
+          <option value="approved">Approved</option>
+          <option value="in_review">In review</option>
+          <option value="draft">Draft</option>
+        </select>
+        <input id="city" placeholder="City (optional)" />
+        <select id="sort">
+          <option value="name">Sort: Name</option>
+          <option value="city">Sort: City</option>
+          <option value="last_reviewed">Sort: Last reviewed</option>
+          <option value="risk_score">Sort: Risk score</option>
+          <option value="id">Sort: ID</option>
+        </select>
+        <select id="dir">
+          <option value="asc">Asc</option>
+          <option value="desc">Desc</option>
+        </select>
+        <button id="searchBtn" class="primary">Search</button>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="flex">
+        <div class="muted" id="count"></div>
+        <div class="right flex">
+          <button id="prevPage" class="ghost" disabled>Prev</button>
+          <button id="nextPage" class="ghost" disabled>Next</button>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <div class="tableWrap">
+        <table id="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>City</th>
+              <th>Status</th>
+              <th>Risk</th>
+              <th>Last Reviewed</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- QUICK ADD SITE (optional) -->
+    <section id="quickAdd" class="card grid" hidden>
+      <h2>Quick add site</h2>
+      <form id="siteForm" class="grid">
+        <div class="row">
+          <label>Site name <input name="name" required /></label>
+          <label>Status
+            <select name="status">
+              <option>draft</option>
+              <option>in_review</option>
+              <option>approved</option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <label>Address 1 <input name="address_line1" required /></label>
+          <label>City <input name="city" required /></label>
+        </div>
+        <div class="row">
+          <label>Latitude <input name="latitude" type="number" step="any" /></label>
+          <label>Longitude <input name="longitude" type="number" step="any" /></label>
+        </div>
+        <div class="row">
+          <label>Occupancy <input name="occupancy_type" /></label>
+          <label>Construction <input name="construction_type" /></label>
+        </div>
+        <label>Special Instructions <textarea name="special_instructions"></textarea></label>
+        <div class="flex">
+          <button class="primary">Save Site</button>
+          <span id="siteMsg" class="hint"></span>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- DETAILS / EDIT MODAL -->
+  <dialog id="details" class="modal">
+    <div class="modal__header">
+      <strong id="detailsTitle">Site</strong>
+      <button id="closeDetails" class="ghost">Close</button>
+    </div>
+    <div class="modal__body">
+      <div id="detailsBody" class="grid"></div>
+    </div>
+    <div class="modal__footer">
+      <button id="saveEdit" class="primary">Save changes</button>
+      <button id="deleteSite" class="bad">Delete</button>
+    </div>
+  </dialog>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    // Supabase project credentials (provided by you)
+    const SUPABASE_URL = "https://loppyxebzoyrcgqwdxee.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvcHB5eGViem95cmNncXdkeGVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5NjAwNDMsImV4cCI6MjA3NTUzNjA0M30.syk6wL25hBg5enkaI6oTbfAcoKNuvXdyRO8IHQT9X5c";
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // === UI refs ===
+    const authCard = document.getElementById('authCard');
+    const reviewCard = document.getElementById('reviewCard');
+    const quickAdd = document.getElementById('quickAdd');
+    const userBar = document.getElementById('userBar');
+    const whoami = document.getElementById('whoami');
+
+    const q = document.getElementById('q');
+    const statusSel = document.getElementById('status');
+    const city = document.getElementById('city');
+    const sortSel = document.getElementById('sort');
+    const dirSel = document.getElementById('dir');
+    const countEl = document.getElementById('count');
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const tbody = document.querySelector('#table tbody');
+
+    const PAGE_SIZE = 25;
+    let page = 0; // zero-based
+
+    // Escape wildcard characters for ILIKE patterns
+    function escapeLike(val){
+      return String(val).replace(/[%_]/g, (m) => `\\${m}`);
+    }
+
+    // === Auth state ===
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) onAuthed(session.user); else onSignedOut();
+
+    supabase.auth.onAuthStateChange((_evt, session) => {
+      if (session?.user) onAuthed(session.user); else onSignedOut();
+    });
+
+    function onAuthed(user){
+      authCard.hidden = true;
+      reviewCard.hidden = false;
+      quickAdd.hidden = false;
+      userBar.hidden = true; // hide email on shared screens
+      whoami.textContent = user.email || user.id;
+      loadPage(0);
+    }
+    function onSignedOut(){
+      authCard.hidden = false;
+      reviewCard.hidden = true;
+      quickAdd.hidden = true;
+      userBar.hidden = true;
+    }
+
+    // === Sign in ===
+    document.getElementById('signInForm').onsubmit = async (e)=>{
+      e.preventDefault();
+      const f = new FormData(e.target);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: f.get('email'), password: f.get('password')
+      });
+      document.getElementById('authMsg').textContent = error ? error.message : 'Signed in.';
+    };
+
+    document.getElementById('logoutBtn')?.addEventListener('click', async ()=>{
+      await supabase.auth.signOut();
+    });
+
+    // === Search controls ===
+    document.getElementById('searchBtn').onclick = ()=> loadPage(0);
+    q.addEventListener('keydown', (e)=>{ if (e.key==='Enter') loadPage(0); });
+    statusSel.onchange = ()=> loadPage(0);
+    city.addEventListener('keydown', (e)=>{ if (e.key==='Enter') loadPage(0); });
+    sortSel.onchange = ()=> loadPage(page);
+    dirSel.onchange = ()=> loadPage(page);
+
+    prevBtn.onclick = ()=> loadPage(Math.max(0,page-1));
+    nextBtn.onclick = ()=> loadPage(page+1);
+
+    async function loadPage(p){
+      page = p;
+      const from = p*PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      let query = supabase.from('sites')
+        .select('id,name,city,status,risk_score,last_reviewed,address_line1', { count: 'exact' })
+
+      // Filters
+      const text = q.value.trim();
+      if (text) {
+        const pat = `%${escapeLike(text)}%`;
+        // name OR address_line1 OR city
+        query = query.or(`name.ilike.${pat},address_line1.ilike.${pat},city.ilike.${pat}`);
+      }
+      const st = statusSel.value.trim();
+      if (st) query = query.eq('status', st);
+      const c = city.value.trim();
+      if (c) query = query.ilike('city', `%${escapeLike(c)}%`);
+
+      // Sorting
+      const sortCol = sortSel.value;
+      const ascending = dirSel.value === 'asc';
+      query = query.order(sortCol, { ascending });
+
+      // Range / pagination
+      query = query.range(from, to);
+
+      const { data, error, count } = await query;
+      if (error){ console.error(error); tbody.innerHTML = `<tr><td colspan="7">Error: ${error.message}</td></tr>`; return; }
+
+      renderRows(data || []);
+      countEl.textContent = `${count ?? 0} result${(count??0)===1?'':'s'} • Page ${page+1}`;
+      prevBtn.disabled = page === 0;
+      nextBtn.disabled = (data?.length ?? 0) < PAGE_SIZE || ((from + (data?.length||0)) >= (count ?? 0));
+    }
+
+    function renderRows(rows){
+      tbody.innerHTML = '';
+      if (!rows.length){
+        tbody.innerHTML = '<tr><td colspan="7" class="muted">No results</td></tr>';
+        return;
+      }
+      for (const r of rows){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.id}</td>
+          <td>${escapeHtml(r.name || '')}</td>
+          <td>${escapeHtml(r.city || '')}</td>
+          <td>${statusBadge(r.status)}</td>
+          <td>${r.risk_score ?? ''}</td>
+          <td>${r.last_reviewed ? new Date(r.last_reviewed).toLocaleDateString() : '<span class="muted">—</span>'}</td>
+          <td class="flex">
+            <button class="ghost" data-view="${r.id}">View</button>
+            <button class="ghost" data-edit="${r.id}">Edit</button>
+          </td>`;
+        tbody.appendChild(tr);
+      }
+      // actions
+      tbody.querySelectorAll('[data-view]').forEach(btn=> btn.addEventListener('click', ()=> openDetails(btn.dataset.view, false)));
+      tbody.querySelectorAll('[data-edit]').forEach(btn=> btn.addEventListener('click', ()=> openDetails(btn.dataset.edit, true)));
+    }
+
+    function statusBadge(s){
+      const cls = s==='approved'?'approved':(s==='in_review'?'in_review':'draft');
+      return `<span class="badge ${cls}">${s||'draft'}</span>`;
+    }
+
+    // === Quick add site ===
+    document.getElementById('siteForm').onsubmit = async (e)=>{
+      e.preventDefault();
+      const f = Object.fromEntries(new FormData(e.target).entries());
+      if (f.latitude === "") f.latitude = null; else f.latitude = Number(f.latitude);
+      if (f.longitude === "") f.longitude = null; else f.longitude = Number(f.longitude);
+      const { data, error } = await supabase.from('sites').insert([f]).select('id').single();
+      const msg = document.getElementById('siteMsg');
+      if (error){ msg.textContent = error.message; return; }
+      msg.textContent = `Saved site id ${data.id}`;
+      e.target.reset();
+      loadPage(0);
+    };
+
+    // === Details modal (view/edit) ===
+    const dlg = document.getElementById('details');
+    const detailsTitle = document.getElementById('detailsTitle');
+    const detailsBody = document.getElementById('detailsBody');
+    const closeDetails = document.getElementById('closeDetails');
+    const saveEdit = document.getElementById('saveEdit');
+    const deleteSiteBtn = document.getElementById('deleteSite');
+
+    let currentSiteId = null;
+
+    closeDetails.onclick = ()=> dlg.close();
+
+    async function openDetails(id, editable){
+      currentSiteId = Number(id);
+      const { data: site, error } = await supabase.from('sites').select('*').eq('id', currentSiteId).single();
+      if (error){ alert(error.message); return; }
+      detailsTitle.textContent = `Site #${site.id} — ${site.name}`;
+
+      // Load related counts quickly
+      const [haz, water, docs] = await Promise.all([
+        supabase.from('hazards').select('id,hazard_type,description,floor,room').eq('site_id', currentSiteId),
+        supabase.from('water_supplies').select('id,source_type,distance_ft,flow_gpm').eq('site_id', currentSiteId),
+        supabase.from('documents').select('id,doc_type,file_path,caption,uploaded_at').eq('site_id', currentSiteId)
+      ]);
+
+      detailsBody.innerHTML = editable ? editForm(site, haz.data||[], water.data||[], docs.data||[]) : readOnly(site, haz.data||[], water.data||[], docs.data||[]);
+      saveEdit.style.display = editable ? 'inline-block' : 'none';
+      deleteSiteBtn.style.display = 'inline-block';
+      dlg.showModal();
+    }
+
+    function readOnly(site, hazards, water, docs){
+      return `
+        <div class="grid">
+          <div class="row">
+            <div class="card">
+              <h3>Overview</h3>
+              <p><strong>Name:</strong> ${escapeHtml(site.name)}</p>
+              <p><strong>Address:</strong> ${escapeHtml(site.address_line1||'')}, ${escapeHtml(site.city||'')} ${escapeHtml(site.state||'')}</p>
+              <p><strong>Status:</strong> ${statusBadge(site.status)}</p>
+              <p><strong>Occupancy:</strong> ${escapeHtml(site.occupancy_type||'')}</p>
+              <p><strong>Construction:</strong> ${escapeHtml(site.construction_type||'')}</p>
+              <p><strong>Risk:</strong> ${site.risk_score ?? '—'}</p>
+              <p><strong>Last reviewed:</strong> ${site.last_reviewed ? new Date(site.last_reviewed).toLocaleDateString() : '—'}</p>
+            </div>
+            <div class="card">
+              <h3>Counts</h3>
+              <p>Hazards: ${hazards.length}</p>
+              <p>Water supplies: ${water.length}</p>
+              <p>Documents: ${docs.length}</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Recent documents</h3>
+            ${docs.slice(0,6).map(d=>`<div class="flex"><span class="pill">${escapeHtml(d.doc_type)}</span><span class="muted">${new Date(d.uploaded_at).toLocaleString()}</span><span class="right">${escapeHtml(d.caption||'')}</span></div>`).join('') || '<p class="muted">No documents</p>'}
+          </div>
+
+          <div class="row">
+            <div class="card">
+              <h3>Hazards</h3>
+              ${hazards.slice(0,10).map(h=>`<div class="flex"><span class="pill">${escapeHtml(h.hazard_type)}</span><span>${escapeHtml(h.description||'')}</span></div>`).join('') || '<p class="muted">No hazards</p>'}
+            </div>
+            <div class="card">
+              <h3>Water</h3>
+              ${water.slice(0,10).map(w=>`<div class="flex"><span class="pill">${escapeHtml(w.source_type)}</span><span>${w.distance_ft?`${w.distance_ft} ft`:'—'}</span><span class="right">${w.flow_gpm?`${w.flow_gpm} gpm`:''}</span></div>`).join('') || '<p class="muted">No water points</p>'}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function editForm(site, hazards, water, docs){
+      // Build a compact edit form for core site fields only (related tables managed elsewhere)
+      return `
+        <form id="editForm" class="grid">
+          <div class="row">
+            <label>Name <input name="name" value="${escapeVal(site.name)}" required /></label>
+            <label>Status
+              <select name="status">
+                ${['draft','in_review','approved'].map(s=>`<option ${site.status===s?'selected':''}>${s}</option>`).join('')}
+              </select>
+            </label>
+          </div>
+          <div class="row">
+            <label>Address 1 <input name="address_line1" value="${escapeVal(site.address_line1||'')}" required /></label>
+            <label>City <input name="city" value="${escapeVal(site.city||'')}" required /></label>
+          </div>
+          <div class="row">
+            <label>State <input name="state" value="${escapeVal(site.state||'MA')}" /></label>
+            <label>Risk score <input name="risk_score" type="number" min="0" max="5" value="${site.risk_score??''}" /></label>
+          </div>
+          <div class="row">
+            <label>Latitude <input name="latitude" type="number" step="any" value="${site.latitude??''}" /></label>
+            <label>Longitude <input name="longitude" type="number" step="any" value="${site.longitude??''}" /></label>
+          </div>
+          <div class="row">
+            <label>Occupancy <input name="occupancy_type" value="${escapeVal(site.occupancy_type||'')}" /></label>
+            <label>Construction <input name="construction_type" value="${escapeVal(site.construction_type||'')}" /></label>
+          </div>
+          <label>Special instructions <textarea name="special_instructions">${escapeVal(site.special_instructions||'')}</textarea></label>
+        </form>
+        <p class="hint">Related tables (hazards, water, documents) aren’t edited here; we’ll add dedicated editors next if you want.</p>
+      `;
+    }
+
+    saveEdit.onclick = async ()=>{
+      const form = document.getElementById('editForm');
+      if (!form) return;
+      const f = Object.fromEntries(new FormData(form).entries());
+      // Cast numbers
+      for (const k of ['risk_score','latitude','longitude']){
+        if (f[k] === '' || f[k] === null) f[k] = null; else f[k] = Number(f[k]);
+      }
+      const { error } = await supabase.from('sites').update(f).eq('id', currentSiteId);
+      if (error){ alert(error.message); return; }
+      dlg.close();
+      loadPage(page);
+    };
+
+    deleteSiteBtn.onclick = async ()=>{
+      if (!currentSiteId) return;
+      if (!confirm('Delete this site? This also deletes related hazards/water/docs (ON DELETE CASCADE).')) return;
+      const { error } = await supabase.from('sites').delete().eq('id', currentSiteId);
+      if (error){ alert(error.message); return; }
+      dlg.close();
+      loadPage(0);
+    };
+
+    // === Utils ===
+    function escapeHtml(s = ''){
+      return String(s).replace(/[&<>"']/g, (m) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+    }
+    function escapeVal(s = ''){
+      return escapeHtml(String(s));
+    }
+  </script>
+</body>
+</html>
