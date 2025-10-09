@@ -183,29 +183,89 @@
     </section>
   </main>
 
-  <!-- DETAILS / EDIT MODAL -->
-  <dialog id="details" class="modal">
-    <div class="modal__header">
-      <strong id="detailsTitle">Site</strong>
-      <button id="closeDetails" class="ghost">Close</button>
-    </div>
-    <div class="modal__body">
-      <div id="detailsBody" class="grid"></div>
-    </div>
-    <div class="modal__footer">
-      <button id="saveEdit" class="primary">Save changes</button>
-      <button id="deleteSite" class="bad">Delete</button>
-    </div>
-  </dialog>
-
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    // Supabase project credentials (provided by you)
+    // Supabase project credentials
     const SUPABASE_URL = "https://loppyxebzoyrcgqwdxee.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxvcHB5eGViem95cmNncXdkeGVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk5NjAwNDMsImV4cCI6MjA3NTUzNjA0M30.syk6wL25hBg5enkaI6oTbfAcoKNuvXdyRO8IHQT9X5c";  // Replace with your key
+    const SUPABASE_ANON_KEY = "your-supabase-key";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // === Search Controls ===
+    document.getElementById('searchBtn').onclick = () => loadPage(0); // Trigger search on click
+    document.getElementById('q').addEventListener('keydown', (e) => { if (e.key === 'Enter') loadPage(0); }); // Trigger on Enter key
+    document.getElementById('status').onchange = () => loadPage(0); // Trigger on status change
+    document.getElementById('city').addEventListener('keydown', (e) => { if (e.key === 'Enter') loadPage(0); }); // Trigger on city input change
+    document.getElementById('sort').onchange = () => loadPage(0); // Trigger on sort change
+    document.getElementById('dir').onchange = () => loadPage(0); // Trigger on sort direction change
+
+    async function loadPage(p) {
+      const PAGE_SIZE = 25;
+      let page = p;
+      const from = p * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      let query = supabase.from('sites')
+        .select('id,name,city,status,risk_score,last_reviewed,address_line1', { count: 'exact' });
+
+      // Apply filters
+      const text = document.getElementById('q').value.trim();
+      if (text) {
+        const pat = `%${escapeLike(text)}%`;
+        query = query.or(`name.ilike.${pat},address_line1.ilike.${pat},city.ilike.${pat}`);
+      }
+      const st = document.getElementById('status').value.trim();
+      if (st) query = query.eq('status', st);
+      const c = document.getElementById('city').value.trim();
+      if (c) query = query.ilike('city', `%${escapeLike(c)}%`);
+
+      // Sorting
+      const sortCol = document.getElementById('sort').value;
+      const ascending = document.getElementById('dir').value === 'asc';
+      query = query.order(sortCol, { ascending });
+
+      // Range / pagination
+      query = query.range(from, to);
+
+      const { data, error, count } = await query;
+      if (error) {
+        console.error("Error fetching data", error);
+        return;
+      }
+
+      renderRows(data, count);
+    }
+
+    function escapeLike(val) {
+      return String(val).replace(/[%_]/g, '\\$&');
+    }
+
+    function renderRows(rows, totalCount) {
+      const tbody = document.querySelector('#table tbody');
+      tbody.innerHTML = '';
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">No results found</td></tr>';
+        return;
+      }
+
+      rows.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${row.id}</td>
+          <td>${row.name}</td>
+          <td>${row.city}</td>
+          <td>${row.status}</td>
+          <td>${row.risk_score}</td>
+          <td>${row.last_reviewed ? new Date(row.last_reviewed).toLocaleDateString() : '—'}</td>
+          <td><button class="ghost">View</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Update result count
+      document.getElementById('count').textContent = `${totalCount} results`;
+    }
   </script>
 </body>
 </html>
