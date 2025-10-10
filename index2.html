@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css"/>
 
     <style>
       :root { --pad-x: 40px; }
@@ -29,8 +30,6 @@
       /* Keep all columns visible: allow horizontal scroll */
       .dataTables_wrapper .dataTables_scroll { overflow: auto; }
       .dataTables_wrapper .dataTables_scrollBody { overflow-x: auto !important; }
-      table.dataTable.nowrap th, table.dataTable.nowrap td { white-space: nowrap; }
-
       #example tbody tr { cursor: pointer; }
       #example tbody tr:hover { background: #f4f6f8; }
 
@@ -78,6 +77,21 @@
         .chip { font-size: 12px; padding: 6px 10px; }
         table.dataTable { width: 100% !important; }
       }
+    
+      /* MOBILE TWEAKS */
+      @media (max-width: 640px) {
+        /* Let text wrap on small screens */
+        table.dataTable td, table.dataTable th { white-space: normal !important; }
+        table.dataTable tbody td, table.dataTable thead th { padding: 8px 10px; }
+        /* Search input fits smaller screens */
+        .dataTables_wrapper .dataTables_filter input[type="search"] { min-width: 0; max-width: 100%; }
+        /* Modal uses most of the screen */
+        dialog.modal { inset: 2vh 0 auto 0; width: 96vw; }
+        .modal__body { max-height: 75vh; }
+        /* Hero image block expands to full width */
+        .hero-box { width: 100%; max-height: 150px; }
+        img.thumb { height: 40px; max-width: 120px; }
+      }
     </style>
   </head>
   <body>
@@ -85,7 +99,7 @@
     <div id="dataError"></div>
 
     <div class="table-container">
-      <table id="example" class="display nowrap" style="width:100%">
+      <table id="example" class="display" style="width:100%">
         <thead>
           <tr>
             <th>Photo:</th>
@@ -116,6 +130,7 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script>
       function showError(msg) {
         const b = document.getElementById('dataError');
@@ -228,11 +243,18 @@
       // Create DataTable with horizontal scroll (no column hiding)
       const table = new DataTable('#example', {
         columns,
+        responsive: { details: false },
+        columnDefs: [
+          { targets: 0, responsivePriority: 1 },   // Photo
+          { targets: 1, responsivePriority: 1 },   // Business Name
+          { targets: 2, responsivePriority: 2 },   // Address
+          { targets: 3, responsivePriority: 3 },   // Closest Hydrant
+          { targets: 4, responsivePriority: 4 }    // Knox Box
+        ],
         pageLength: 15,
         deferRender: true,
         autoWidth: false,
         processing: true,
-        scrollX: true,
         dom: 'ftip'
       });
 
