@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pre Fire Plans</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
+
+    <style>
+      body { padding: 20px 40px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      #example tbody tr { cursor: pointer; }
+      #example tbody tr:hover { background: #f4f6f8; }
+
+      dialog.modal {
+        width: min(960px, 92vw);
+        border: none; border-radius: 14px; padding: 0;
+        box-shadow: 0 24px 72px rgba(0,0,0,.35);
+      }
+      dialog::backdrop { background: rgba(0,0,0,.55); }
+
+      .modal__header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 20px; border-bottom: 1px solid #e5e7eb;
+      }
+      .modal__title { margin: 0; font-size: 18px; font-weight: 700; }
+
+      .modal__body { padding: 18px 20px 22px; max-height: min(70vh, 70svh); overflow: auto; }
+
+      /* Hero region supports either <img> or Drive <iframe> */
+      .hero { margin: 0 0 12px; }
+      .hero-box {
+        width: 100%;
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .hero-box img {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 480px;
+        object-fit: contain;
+      }
+      .hero-box .drive-frame {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border: 0;
+      }
+      .hero__caption { margin-top: 6px; font-size: 12px; color: #6b7280; }
+
+      .kv {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 8px 16px;
+        align-items: start;
+      }
+      .kv dt { font-weight: 600; color: #374151; background: #f8fafc; padding: 8px 10px; border-radius: 8px; }
+      .kv dd { margin: 0; background: #fff; border: 1px solid #e5e7eb; padding: 8px 12px; border-radius: 8px; word-break: break-word; }
+
+      .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+      .chip { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe; }
+
+      @media (max-width: 640px) {
+        .kv { grid-template-columns: 1fr; }
+        .kv dt { background: transparent; padding: 0; }
+        .kv dd { padding: 10px 12px; }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pre Fire Plans</h1>
+
+    <table id="example" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>Business Name:</th>
+          <th>Address:</th>
+          <th>Photo:</th>
+          <th>Knox Box Location:</th>
+          <th>Other Key Box Location:.</th>
+          <th>Contact Name (1):</th>
+          <th>Contact Number (1)</th>
+          <th>Contact Name (2):</th>
+          <th>Contact Number (2)</th>
+          <th>Number of Stories:</th>
+          <th>Occupancy:</th>
+          <th>Occupancy Notes:</th>
+          <th>Construction Type:</th>
+          <th>Construction Type Notes:</th>
+          <th>Roof Type:</th>
+          <th>Basement:</th>
+          <th>Roof Access Location:</th>
+          <th>Number of Elevators:</th>
+          <th>Elevator Locations:</th>
+          <th>Elevator Type:</th>
+          <th>Elevator Notes:</th>
+          <th>Alarm Type:</th>
+          <th>Alarm Location:</th>
+          <th>Remote Alarm Location:</th>
+          <th>Alarm Notes:</th>
+          <th>Elevator Shutoff Location:</th>
+          <th>Gas Shutoff Location:</th>
+          <th>Electrical Shutoff Location:</th>
+          <th>Water Shutoff Location:</th>
+          <th>Sprinkler Main Shutoff Location:</th>
+          <th>Fire Pump Location:</th>
+          <th>Tanks:</th>
+          <th>Combustibles:</th>
+          <th>Gas:</th>
+          <th>Haz-Mat:</th>
+          <th>Other:</th>
+        </tr>
+      </thead>
+    </table>
+
+    <!-- Modal -->
+    <dialog id="rowModal" class="modal" aria-labelledby="modalTitle" aria-modal="true">
+      <div class="modal__header">
+        <h2 id="modalTitle" class="modal__title">Details</h2>
+        <button class="modal__close" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal__body">
+        <figure class="hero" id="hero" hidden>
+          <div class="hero-box" id="heroBox"></div>
+          <figcaption class="hero__caption" id="heroCaption"></figcaption>
+        </figure>
+        <div class="chips" id="chips"></div>
+        <dl class="kv" id="kv"></dl>
+      </div>
+    </dialog>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+      const columnDefs = [
+        { key: 'Business Name:', label: 'Business Name' },
+        { key: 'Address:', label: 'Address' },
+        { key: 'Photo:', label: 'Photo' },
+        { key: 'Knox Box Location:', label: 'Knox Box Location' },
+        { key: 'Other Key Box Location:.', label: 'Other Key Box Location' },
+        { key: 'Contact Name (1):', label: 'Contact Name (1)' },
+        { key: 'Contact Number (1):', label: 'Contact Number (1)' },
+        { key: 'Contact Name (2):', label: 'Contact Name (2)' },
+        { key: 'Contact Number (2):', label: 'Contact Number (2)' },
+        { key: 'Number of Stories:', label: 'Number of Stories' },
+        { key: 'Occupancy', label: 'Occupancy' },
+        { key: 'Occupancy Notes:', label: 'Occupancy Notes' },
+        { key: 'Construction Type', label: 'Construction Type' },
+        { key: 'Construction Type Notes:', label: 'Construction Type Notes' },
+        { key: 'Roof Type:', label: 'Roof Type' },
+        { key: 'Basement:', label: 'Basement' },
+        { key: 'Roof Access Location:', label: 'Roof Access Location' },
+        { key: 'Number of Elevators:', label: 'Number of Elevators' },
+        { key: 'Elevator Locations:', label: 'Elevator Locations' },
+        { key: 'Elevator Type:', label: 'Elevator Type' },
+        { key: 'Elevator Notes:', label: 'Elevator Notes' },
+        { key: 'Alarm Type', label: 'Alarm Type' },
+        { key: 'Alarm Location:', label: 'Alarm Location' },
+        { key: 'Remote Alarm Location:', label: 'Remote Alarm Location' },
+        { key: 'Alarm Notes:', label: 'Alarm Notes' },
+        { key: 'Elevator Shutoff Location:', label: 'Elevator Shutoff Location' },
+        { key: 'Gas Shutoff Location:', label: 'Gas Shutoff Location' },
+        { key: 'Electrical Shutoff Location:', label: 'Electrical Shutoff Location' },
+        { key: 'Water Shutoff Location:', label: 'Water Shutoff Location' },
+        { key: 'Sprinkler Main Shutoff Location:', label: 'Sprinkler Main Shutoff Location' },
+        { key: 'Fire Pump Location:', label: 'Fire Pump Location' },
+        { key: 'Tanks:', label: 'Tanks' },
+        { key: 'Combustibles:', label: 'Combustibles' },
+        { key: 'Gas:', label: 'Gas' },
+        { key: 'Haz-Mat:', label: 'Haz-Mat' },
+        { key: 'Other:', label: 'Other' }
+      ];
+
+      // Build DataTables columns; Photo shows a small inline preview for non-Drive URLs,
+      // and a "Preview" pill for Drive (click row for hero).
+      const columns = columnDefs.map(c => {
+        if (c.key === 'Photo:') {
+          return {
+            data: null,
+            orderable: false,
+            render: (data, type, row) => {
+              const raw = extractPhotoUrl(row['PhotoURL'], row['Photo:']);
+              if (!raw) return '';
+              if (type !== 'display') return raw;
+              if (isDriveLink(raw)) {
+                return '<span style="display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2ff;border:1px solid #c7d2fe;font-size:12px;color:#3730a3;">Preview</span>';
+              }
+              // Non-Drive direct images
+              return '<img src="' + raw + '" alt="photo" style="height:48px;max-width:120px;object-fit:cover;border-radius:6px" onerror="this.replaceWith(document.createTextNode(\'Open photo\'))" />';
+            }
+          };
+        }
+        return { data: c.key };
+      });
+
+      const table = new DataTable('#example', {
+        ajax: 'https://script.google.com/macros/s/AKfycbw03c7Rrm_7oweQJUiprYdF5FXDzRRiYO3WjI97Nezq-D1GOQ69UPzRZNibGai7WL52Rg/exec',
+        columns,
+        pageLength: 25,
+        deferRender: true
+      });
+
+      const modal = document.getElementById('rowModal');
+      const kv = document.getElementById('kv');
+      const chips = document.getElementById('chips');
+      const closeBtn = modal.querySelector('.modal__close');
+      const hero = document.getElementById('hero');
+      const heroBox = document.getElementById('heroBox');
+      const heroCaption = document.getElementById('heroCaption');
+
+      function isDriveLink(url) { return /drive\.google\.com/i.test(url); }
+      function getDriveId(url) {
+        if (!url) return '';
+        let m = url.match(/drive\.google\.com\/file\/d\/([^/]+)\//i);
+        if (m && m[1]) return m[1];
+        m = url.match(/[?&]id=([^&]+)/i);
+        if (m && m[1]) return m[1];
+        return '';
+      }
+
+      function extractPhotoUrl(photoURL, photoCellText) {
+        if (photoURL && /^https?:\/\//i.test(photoURL)) return photoURL;
+        if (!photoCellText) return '';
+        const s = String(photoCellText).trim();
+        let m = s.match(/HYPERLINK\(\s*"([^"]+)"/i);
+        if (m && m[1]) return m[1];
+        if (/^https?:\/\//i.test(s)) return s;
+        m = s.match(/href=\"([^\"]+)\"/i);
+        if (m && m[1]) return m[1];
+        return '';
+      }
+
+      function openModalForRow(rowData) {
+        const title = (rowData['Business Name:'] || rowData['Address:'] || 'Details').toString().trim();
+        document.getElementById('modalTitle').textContent = title;
+
+        // Clear hero box
+        heroBox.innerHTML = '';
+        heroCaption.textContent = '';
+
+        const raw = extractPhotoUrl(rowData['PhotoURL'], rowData['Photo:']);
+        if (raw) {
+          hero.hidden = false;
+          if (isDriveLink(raw)) {
+            // Use Drive preview iframe – works with public "Anyone with link" files
+            const id = getDriveId(raw);
+            const iframe = document.createElement('iframe');
+            iframe.className = 'drive-frame';
+            iframe.loading = 'lazy';
+            iframe.referrerPolicy = 'no-referrer';
+            iframe.src = 'https://drive.google.com/file/d/' + id + '/preview';
+            heroBox.appendChild(iframe);
+          } else {
+            const img = document.createElement('img');
+            img.alt = 'Photo';
+            img.src = raw;
+            img.onerror = () => {
+              heroCaption.textContent = 'Could not inline image. Open original in a new tab.';
+            };
+            heroBox.appendChild(img);
+          }
+        } else {
+          hero.hidden = true;
+        }
+
+        chips.innerHTML = '';
+        ['Occupancy', 'Construction Type', 'Alarm Type', 'Basement:'].forEach(k => {
+          const v = rowData[k];
+          if (v && String(v).trim()) {
+            const span = document.createElement('span');
+            span.className = 'chip';
+            span.textContent = ((k || '').replace(/:?$/, '')) + ': ' + v;
+            chips.appendChild(span);
+          }
+        });
+
+        kv.innerHTML = '';
+        columnDefs.forEach(({ key, label }) => {
+          const value = rowData[key];
+          if (value != null && String(value).trim() !== '') {
+            const dt = document.createElement('dt');
+            dt.textContent = label;
+            const dd = document.createElement('dd');
+            dd.textContent = value;
+            kv.appendChild(dt);
+            kv.appendChild(dd);
+          }
+        });
+
+        if (typeof modal.showModal === 'function') modal.showModal(); else modal.setAttribute('open', '');
+      }
+
+      $('#example tbody').on('click', 'tr', function () {
+        const row = table.row(this);
+        if (!row) return;
+        const data = row.data();
+        if (data) openModalForRow(data);
+      });
+
+      const modalEl = document.getElementById('rowModal');
+      closeBtn.addEventListener('click', () => modalEl.close());
+      modalEl.addEventListener('click', (e) => {
+        const rect = modalEl.getBoundingClientRect();
+        const inside = e.clientX >= rect.left && e.clientX <= rect.right &&
+                       e.clientY >= rect.top  && e.clientY <= rect.bottom;
+        if (!inside) modalEl.close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalEl.open) modalEl.close();
+      });
+    </script>
+  </body>
+</html>
