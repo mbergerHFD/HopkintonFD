@@ -7,86 +7,94 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"/>
 
     <style>
-      body { padding: 20px 40px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      :root { --pad-x: 40px; }
+      body { padding: 20px var(--pad-x); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+      h1 { text-align: center; margin: 0 0 10px; line-height: 1.2; }
+
+      /* Red error banner (shown only on failure) */
+      #dataError { display:none; margin:8px 0 12px; padding:10px 12px; border-radius:8px;
+                   background:#fef2f2; color:#991b1b; border:1px solid #fecaca; text-align:center; }
+
+      /* Center the DataTables search bar */
+      .dataTables_wrapper .dataTables_filter { text-align: center !important; float: none !important; margin: 8px 0 16px !important; }
+      .dataTables_wrapper .dataTables_filter label { width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; }
+      .dataTables_wrapper .dataTables_filter input[type="search"] {
+        width: 100%; min-width: 320px; max-width: 720px; padding: 10px 12px;
+        border-radius: 999px; border: 1px solid #d1d5db; outline: none;
+      }
+      .dataTables_wrapper .dataTables_filter input[type="search"]:focus {
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.25); border-color: #93c5fd;
+      }
+
+      /* Keep all columns: enable horizontal scrolling */
+      .dataTables_wrapper .dataTables_scroll { overflow: auto; }
+      .dataTables_wrapper .dataTables_scrollBody { overflow-x: auto !important; }
+      table.dataTable.nowrap th, table.dataTable.nowrap td { white-space: nowrap; }
+
       #example tbody tr { cursor: pointer; }
       #example tbody tr:hover { background: #f4f6f8; }
 
-      dialog.modal {
-        width: min(960px, 92vw);
-        border: none; border-radius: 14px; padding: 0;
-        box-shadow: 0 24px 72px rgba(0,0,0,.35);
-      }
+      dialog.modal { width: min(960px, 92vw); border: none; border-radius: 14px; padding: 0; box-shadow: 0 24px 72px rgba(0,0,0,.35); }
       dialog::backdrop { background: rgba(0,0,0,.55); }
-
-      .modal__header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 16px 20px; border-bottom: 1px solid #e5e7eb;
-      }
+      .modal__header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #e5e7eb; }
       .modal__title { margin: 0; font-size: 18px; font-weight: 700; }
       .modal__body { padding: 16px 20px 20px; max-height: min(70vh, 70svh); overflow: auto; }
 
+      .chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; justify-content: center; }
+      .chip { font-size: 14px; padding: 8px 12px; border-radius: 999px; background: #eef2ff; color: #1d4ed8; border: 2px solid #c7d2fe; }
+
       .hero { margin: 0 0 12px; }
-      .hero-box {
-        width: 50%;
-        margin: 0 auto;
-        background: #f8fafc;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        overflow: hidden;
-        max-height: 150px;
-      }
+      .hero-box { width: 50%; margin: 0 auto; background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; max-height: 150px; }
       .hero-box img { display: block; width: 100%; height: auto; max-height: 150px; object-fit: contain; }
       .hero-box .drive-frame { width: 100%; height: 150px; border: 0; }
-      .hero__caption { margin-top: 6px; font-size: 12px; color: #6b7280; }
+      .hero__caption { margin-top: 6px; font-size: 12px; color: #6b7280; text-align: center; }
 
-      .kv {
-        display: grid;
-        grid-template-columns: 240px 1fr;
-        gap: 8px 16px;
-        align-items: start;
-      }
+      .kv { display: grid; grid-template-columns: 240px 1fr; gap: 8px 16px; align-items: start; }
       .kv dt { font-weight: 600; color: #374151; background: #f8fafc; padding: 8px 10px; border-radius: 8px; }
       .kv dd { margin: 0; background: #fff; border: 1px solid #e5e7eb; padding: 8px 12px; border-radius: 8px; word-break: break-word; }
 
-      .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-      .chip {
-        font-size: 14px; padding: 8px 12px; border-radius: 999px;
-        background: #eef2ff; color: #1d4ed8; border: 2px solid #c7d2fe;
-      }
+      img.thumb { height: 48px; max-width: 160px; object-fit: cover; border-radius: 6px; background: #f1f5f9; border: 1px solid #e5e7eb; }
+
+      /* Inline photo previews in modal for * Photo: fields */
+      .photo-dd { display: block; border: 0; padding: 0; background: transparent; }
+      .photo-wrap { display: inline-block; max-width: 100%; border: 1px solid #e5e7eb; border-radius: 10px; background: #f8fafc; overflow: hidden; }
+      .mini-photo { display: block; width: 100%; height: auto; max-height: 150px; object-fit: contain; }
+      .photo-caption { font-size: 12px; color: #6b7280; margin-top: 4px; text-align: left; }
 
       @media (max-width: 640px) {
+        :root { --pad-x: 14px; }
+        .hero-box { width: 100%; }
         .kv { grid-template-columns: 1fr; }
         .kv dt { background: transparent; padding: 0; }
         .kv dd { padding: 10px 12px; }
-      }
-
-      /* Thumbs */
-      img.thumb {
-        height: 48px; max-width: 160px; object-fit: cover; border-radius: 6px;
-        background: #f1f5f9; border: 1px solid #e5e7eb;
+        .chip { font-size: 12px; padding: 6px 10px; }
+        table.dataTable { width: 100% !important; }
       }
     </style>
   </head>
   <body>
     <h1>Pre Fire Plans</h1>
+    <div id="dataError"></div>
 
-    <table id="example" class="display" style="width:100%">
-      <thead>
-        <tr>
-          <th>Photo:</th>
-          <th>Business Name:</th>
-          <th>Address:</th>
-          <th>Closest Hydrant:</th>
-          <th>Knox Box Location:</th>
-          <th>Other Key Box Location:.</th>
-          <th>Contact Name:</th>
-          <th>Contact Number:</th>
-          <th>Number of Stories:</th>
-          <th>Occupancy</th>
-          <th>Occupancy Notes:</th>
-        </tr>
-      </thead>
-    </table>
+    <div class="table-container">
+      <table id="example" class="display nowrap" style="width:100%">
+        <thead>
+          <tr>
+            <th>Photo:</th>
+            <th>Business Name:</th>
+            <th>Address:</th>
+            <th>Closest Hydrant:</th>
+            <th>Knox Box Location:</th>
+            <th>Other Key Box Location:</th>
+            <th>Contact Name (1):</th>
+            <th>Contact Number (1):</th>
+            <th>Number of Stories:</th>
+            <th>Occupancy</th>
+            <th>Occupancy Notes:</th>
+          </tr>
+        </thead>
+      </table>
+    </div>
 
     <!-- Modal -->
     <dialog id="rowModal" class="modal" aria-labelledby="modalTitle" aria-modal="true">
@@ -107,32 +115,12 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
-      const VISIBLE_COLUMNS = [
-        { key: 'Photo:' },
-        { key: 'Business Name:' },
-        { key: 'Address:' },
-        { key: 'Closest Hydrant:' },
-        { key: 'Knox Box Location:' },
-        { key: 'Other Key Box Location:.' },
-        { key: 'Contact Name (1):' },
-        { key: 'Contact Number (1):' },
-        { key: 'Number of Stories:' },
-        { key: 'Occupancy' },
-        { key: 'Occupancy Notes:' }
-      ];
-
-      const MODAL_KEYS = [
-        'Business Name:','Address:','Closest Hydrant:','Photo:','Knox Box Location:','Other Key Box Location:.',
-        'Contact Name (1):','Contact Number (1):','Contact Name (2):','Contact Number (2):',
-        'Number of Stories:','Occupancy:','Occupancy Notes:','Construction Type:','Construction Type Notes:',
-        'Roof Type:','Basement:','Roof Access Location:','Number of Elevators:','Elevator Locations:',
-        'Elevator Type:','Elevator Notes:','Alarm Type:','Alarm Location:','Remote Alarm Location:',
-        'Alarm Notes:','Elevator Shutoff Location:','Gas Shutoff Location:','Electrical Shutoff Location:',
-        'Water Shutoff Location:','Sprinkler Main Shutoff Location:','Fire Pump Location:','Tanks:',
-        'Combustibles:','Gas:','Haz-Mat:','Other:'
-      ];
-
-      const TRANSPARENT_SVG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="48"></svg>');
+      // Helpers
+      function showError(msg) {
+        const b = document.getElementById('dataError');
+        b.style.display = 'block';
+        b.textContent = msg;
+      }
 
       function isDriveLink(url) { return /drive\.google\.com/i.test(url); }
       function getDriveId(url) {
@@ -148,7 +136,7 @@
         if (photoURL && /^https?:\/\//i.test(photoURL)) return photoURL;
         if (!photoCellText) return '';
         const s = String(photoCellText).trim();
-        let m = s.match(/HYPERLINK\(\s*"([^"]+)"\s*,?\s*"(?:[^"]+)"\)/i); // Excel HYPERLINK("url","text")
+        let m = s.match(/HYPERLINK\(\s*"([^"]+)"\s*,?\s*"(?:[^"]+)"\)/i);
         if (m && m[1]) return m[1];
         if (/^https?:\/\//i.test(s)) return s;
         m = s.match(/href="([^"]+)"/i);
@@ -157,10 +145,50 @@
       }
 
       function getValue(row, keyWithColon) {
-        const noColon = keyWithColon.replace(/:$/, '');
-        return row[keyWithColon] ?? row[noColon] ?? '';
+        const candidates = [
+          keyWithColon,
+          keyWithColon.replace(/:$/, ''),
+          keyWithColon.replace(/:$/, ':.')
+        ];
+        if (/^Haz-?Mat:$/i.test(keyWithColon)) {
+          candidates.push('Haz-Mat:');
+          candidates.push('Hazmat:');
+        }
+        for (const k of candidates) {
+          if (Object.prototype.hasOwnProperty.call(row, k) && String(row[k]).trim() !== '') return row[k];
+        }
+        return '';
       }
 
+      // Visible columns on main page
+      const VISIBLE_COLUMNS = [
+        { key: 'Photo:' },
+        { key: 'Business Name:' },
+        { key: 'Address:' },
+        { key: 'Closest Hydrant:' },
+        { key: 'Knox Box Location:' },
+        { key: 'Other Key Box Location:' },
+        { key: 'Contact Name (1):' },
+        { key: 'Contact Number (1):' },
+        { key: 'Number of Stories:' },
+        { key: 'Occupancy' },
+        { key: 'Occupancy Notes:' }
+      ];
+
+      // Popup fields (full set)
+      const MODAL_KEYS = [
+        'Business Name:','Address:','Knox Box Location:','Other Key Box Location:','Closest Hydrant:',
+        'Contact Name (1):','Contact Number (1):','Contact Name (2):','Contact Number (2):','Number of Stories:',
+        'Occupancy:','Occupancy Notes:','Construction Type:','Construction Type Notes:','Roof Type:','Basement:',
+        'Roof Access Location:','Roof Access Photo:','Number of Elevators:','Elevator Locations:','Elevator Type:','Elevator Notes:',
+        'Alarm Type:','Alarm Location:','Alarm Photo:','Remote Alarm Location:','Alarm Notes:',
+        'Elevator Shutoff Location:','Elevator Shutoff Photo:','Gas Shutoff Location:','Gas Shutoff Photo:',
+        'Electrical Shutoff Location:','Electrical Shutoff Photo:','Water Shutoff Location:','Water Shutoff Photo:',
+        'Sprinkler Main Shutoff Location:','Sprinkler Shutoff Photo:','Fire Pump Location:','Fire Pump Photo:',
+        'Tanks:','Tanks Photo:','Combustibles:','Combustibles Photo:','Gas:','Gas Photo:','Haz-Mat:','Hazmat Photo:','Other:','Other Notes:'
+      ];
+
+      // Build DataTables column map
       const columns = VISIBLE_COLUMNS.map(c => {
         if (c.key === 'Photo:') {
           return {
@@ -175,69 +203,81 @@
                 const id = getDriveId(raw);
                 if (!id) return '';
                 const thumb = 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w180';
-                return '<img class="thumb lazy" alt="photo" src="' + TRANSPARENT_SVG + '" data-src="' + thumb + '" />';
+                return '<img class="thumb" alt="photo" loading="lazy" src="' + thumb + '" />';
               }
-              return '<img class="thumb lazy" alt="photo" src="' + TRANSPARENT_SVG + '" data-src="' + raw + '" onerror="this.closest(\'td\').textContent=\'Open photo\'" />';
+              return '<img class="thumb" alt="photo" loading="lazy" src="' + raw + '" onerror="this.closest(\'td\').textContent=\'Open photo\'" />';
             }
           };
         }
         if (c.key === 'Contact Number (1):') {
           return {
-            data: function (row, type) {
-              return row['Contact Number (1):'] ?? row['Contact Number (1)'] ?? '';
-            },
+            data: function (row) { return row['Contact Number (1):'] ?? row['Contact Number (1)'] ?? ''; },
             title: 'Contact Number (1):'
+          };
+        }
+        if (c.key === 'Other Key Box Location:') {
+          return {
+            data: function (row) { return row['Other Key Box Location:'] ?? row['Other Key Box Location:.'] ?? ''; },
+            title: 'Other Key Box Location:'
+          };
+        }
+        if (c.key === 'Occupancy') {
+          return {
+            data: function (row) { return row['Occupancy'] ?? row['Occupancy:'] ?? ''; },
+            title: 'Occupancy'
           };
         }
         return { data: c.key, title: c.key };
       });
 
+      // Create table with horizontal scroll
       const table = new DataTable('#example', {
-        ajax: 'https://script.google.com/macros/s/AKfycbw03c7Rrm_7oweQJUiprYdF5FXDzRRiYO3WjI97Nezq-D1GOQ69UPzRZNibGai7WL52Rg/exec',
         columns,
         pageLength: 15,
         deferRender: true,
         autoWidth: false,
         processing: true,
-        dom: 'ftip' // include Filter (search), Table, Info, Pagination
+        scrollX: true,
+        dom: 'ftip'
       });
 
-      // Set placeholder on search box once table is initialized
+      // Improve search input placeholder
       $(table.table().node()).on('init.dt', function () {
         const input = document.querySelector('div.dataTables_filter input[type="search"]');
-        if (input) {
-          input.placeholder = 'Search name, address, hydrant, occupancy...';
-          input.setAttribute('aria-label', 'Search table');
-          input.style.minWidth = '320px';
-        }
+        if (input) { input.placeholder = 'Search name, address, hydrant, occupancy...'; input.setAttribute('aria-label','Search table'); }
       });
 
-      // Lazy loader for thumbnails (runs after each draw)
-      const io = ('IntersectionObserver' in window) ? new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            const img = e.target;
-            if (img.dataset.src) {
-              img.src = img.dataset.src;
-              img.removeAttribute('data-src');
+      // Robust fetch (accepts many possible JSON shapes)
+      const DATA_URL = 'https://script.google.com/macros/s/AKfycbw03c7Rrm_7oweQJUiprYdF5FXDzRRiYO3WjI97Nezq-D1GOQ69UPzRZNibGai7WL52Rg/exec';
+      function normalizeRows(json) {
+        if (!json) return [];
+        if (Array.isArray(json)) return json;
+        const keys = ['data','records','items','rows','result','values'];
+        for (const k of keys) { if (Array.isArray(json[k])) return json[k]; }
+        for (const k of Object.keys(json)) {
+          const v = json[k];
+          if (v && typeof v === 'object') {
+            for (const kk of ['data','records','items','rows','result','values']) {
+              if (Array.isArray(v[kk])) return v[kk];
             }
-            io.unobserve(img);
           }
-        });
-      }, { root: null, rootMargin: '200px' }) : null;
+        }
+        return [];
+      }
 
-      $('#example').on('draw.dt', function () {
-        document.querySelectorAll('img.lazy[data-src]').forEach(img => {
-          if (io) io.observe(img);
-          else { img.src = img.dataset.src; img.removeAttribute('data-src'); }
-        });
-      });
+      fetch(DATA_URL, { credentials: 'omit' })
+        .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(json => {
+          const rows = normalizeRows(json);
+          if (!rows.length) showError('No rows returned from data source.');
+          table.clear().rows.add(rows).draw();
+        })
+        .catch(err => { console.error(err); showError('Could not load data: ' + err.message); });
 
-      // Modal behavior
+      // Modal
       const modal = document.getElementById('rowModal');
       const kv = document.getElementById('kv');
       const chips = document.getElementById('chips');
-      const closeBtn = modal.querySelector('.modal__close');
       const hero = document.getElementById('hero');
       const heroBox = document.getElementById('heroBox');
       const heroCaption = document.getElementById('heroCaption');
@@ -246,63 +286,72 @@
         const title = (getValue(rowData,'Business Name:') || getValue(rowData,'Address:') || 'Details').toString().trim();
         document.getElementById('modalTitle').textContent = title;
 
-        // Chips (top): Closest Hydrant, Knox Box, Occupancy, Construction Type, Roof Type
         chips.innerHTML = '';
-        const chipPairs = [
-          ['Closest Hydrant:', getValue(rowData,'Closest Hydrant:')],
-          ['Knox Box Location:', getValue(rowData,'Knox Box Location:')],
-          ['Occupancy', rowData['Occupancy'] ?? rowData['Occupancy:']],
-          ['Construction Type:', getValue(rowData,'Construction Type:')],
-          ['Roof Type:', getValue(rowData,'Roof Type:')]
-        ];
-        chipPairs.forEach(([label, value]) => {
+        [['Closest Hydrant:', getValue(rowData,'Closest Hydrant:')],
+         ['Knox Box Location:', getValue(rowData,'Knox Box Location:')],
+         ['Occupancy', getValue(rowData,'Occupancy:') || rowData['Occupancy']],
+         ['Construction Type:', getValue(rowData,'Construction Type:')],
+         ['Roof Type:', getValue(rowData,'Roof Type:')]
+        ].forEach(([label, value]) => {
           if (value && String(value).trim()) {
-            const chip = document.createElement('span');
-            chip.className = 'chip';
-            chip.textContent = label.replace(/:?$/, '') + ': ' + value;
-            chips.appendChild(chip);
+            const chip = document.createElement('span'); chip.className = 'chip';
+            chip.textContent = label.replace(/:?$/,'') + ': ' + value; chips.appendChild(chip);
           }
         });
 
-        // Hero (photo) preview
-        heroBox.innerHTML = '';
-        heroCaption.textContent = '';
+        heroBox.innerHTML = ''; heroCaption.textContent = '';
         const raw = extractPhotoUrl(rowData['PhotoURL'], rowData['Photo:']);
         if (raw) {
           hero.hidden = false;
           if (isDriveLink(raw)) {
             const id = getDriveId(raw);
             const iframe = document.createElement('iframe');
-            iframe.className = 'drive-frame';
-            iframe.loading = 'lazy';
-            iframe.referrerPolicy = 'no-referrer';
-            iframe.src = 'https://drive.google.com/file/d/' + id + '/preview';
-            heroBox.appendChild(iframe);
+            iframe.className = 'drive-frame'; iframe.loading = 'lazy'; iframe.referrerPolicy = 'no-referrer';
+            iframe.src = 'https://drive.google.com/file/d/' + id + '/preview'; heroBox.appendChild(iframe);
           } else {
-            const img = document.createElement('img');
-            img.alt = 'Photo';
-            img.loading = 'lazy';
-            img.src = raw;
+            const img = document.createElement('img'); img.alt = 'Photo'; img.loading = 'lazy'; img.src = raw;
             img.onerror = () => { heroCaption.textContent = 'Could not inline image. Open original in a new tab.'; };
             heroBox.appendChild(img);
           }
-        } else {
-          hero.hidden = true;
-        }
+        } else { hero.hidden = true; }
 
-        // Details list (full order)
         kv.innerHTML = '';
         MODAL_KEYS.forEach(k => {
           const v = getValue(rowData, k);
           if (v == null || String(v).trim() === '') return;
-          const dt = document.createElement('dt'); dt.textContent = k.replace(/:$/, '');
-          const dd = document.createElement('dd'); dd.textContent = v;
+          const isPhotoField = /Photo:$/i.test(k);
+          const dt = document.createElement('dt'); dt.textContent = k.replace(/:$/,'');
+          const dd = document.createElement('dd');
+          if (isPhotoField) {
+            const rawUrl = extractPhotoUrl(rowData[k + 'URL'], v) || extractPhotoUrl('', v);
+            if (rawUrl) {
+              dd.className = 'photo-dd';
+              const wrap = document.createElement('div'); wrap.className = 'photo-wrap';
+              let inner;
+              if (isDriveLink(rawUrl)) {
+                const id = getDriveId(rawUrl);
+                const thumb = id ? ('https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w640') : '';
+                if (thumb) { inner = document.createElement('img'); inner.className='mini-photo'; inner.loading='lazy'; inner.alt=dt.textContent; inner.src=thumb; }
+              } else {
+                inner = document.createElement('img'); inner.className='mini-photo'; inner.loading='lazy'; inner.alt=dt.textContent; inner.src=rawUrl;
+                inner.onerror = () => { dd.textContent = v; };
+              }
+              if (inner) {
+                const link = document.createElement('a'); link.href = rawUrl; link.target='_blank'; link.rel='noopener'; link.appendChild(inner);
+                wrap.appendChild(link); dd.appendChild(wrap);
+                const cap = document.createElement('div'); cap.className='photo-caption'; cap.textContent='Open full image in new tab'; dd.appendChild(cap);
+              } else { dd.textContent = v; }
+            } else { dd.textContent = v; }
+          } else {
+            dd.textContent = v;
+          }
           kv.appendChild(dt); kv.appendChild(dd);
         });
 
-        if (typeof modal.showModal === 'function') modal.showModal(); else modal.setAttribute('open', '');
+        modal.showModal();
       }
 
+      // Row click → open modal
       $('#example tbody').on('click', 'tr', function () {
         const r = table.row(this);
         if (!r) return;
@@ -310,17 +359,16 @@
         if (data) openModalForRow(data);
       });
 
+      // Close modal
       const modalEl = document.getElementById('rowModal');
-      closeBtn.addEventListener('click', () => modalEl.close());
+      modalEl.querySelector('.modal__close').addEventListener('click', () => modalEl.close());
       modalEl.addEventListener('click', (e) => {
         const rect = modalEl.getBoundingClientRect();
         const inside = e.clientX >= rect.left && e.clientX <= rect.right &&
                        e.clientY >= rect.top  && e.clientY <= rect.bottom;
         if (!inside) modalEl.close();
       });
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modalEl.open) modalEl.close();
-      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modalEl.open) modalEl.close(); });
     </script>
   </body>
 </html>
