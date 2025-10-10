@@ -11,11 +11,11 @@
       body { padding: 20px var(--pad-x); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; }
       h1 { text-align: center; margin: 0 0 10px; line-height: 1.2; }
 
-      /* Red error banner (shown only on failure) */
+      /* Red error banner (only shows on failure) */
       #dataError { display:none; margin:8px 0 12px; padding:10px 12px; border-radius:8px;
                    background:#fef2f2; color:#991b1b; border:1px solid #fecaca; text-align:center; }
 
-      /* Center the DataTables search bar */
+      /* Centered search bar */
       .dataTables_wrapper .dataTables_filter { text-align: center !important; float: none !important; margin: 8px 0 16px !important; }
       .dataTables_wrapper .dataTables_filter label { width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px; }
       .dataTables_wrapper .dataTables_filter input[type="search"] {
@@ -26,7 +26,7 @@
         box-shadow: 0 0 0 3px rgba(59,130,246,0.25); border-color: #93c5fd;
       }
 
-      /* Keep all columns: enable horizontal scrolling */
+      /* Keep all columns visible: allow horizontal scroll */
       .dataTables_wrapper .dataTables_scroll { overflow: auto; }
       .dataTables_wrapper .dataTables_scrollBody { overflow-x: auto !important; }
       table.dataTable.nowrap th, table.dataTable.nowrap td { white-space: nowrap; }
@@ -34,7 +34,15 @@
       #example tbody tr { cursor: pointer; }
       #example tbody tr:hover { background: #f4f6f8; }
 
-      dialog.modal { width: min(960px, 92vw); border: none; border-radius: 14px; padding: 0; box-shadow: 0 24px 72px rgba(0,0,0,.35); }
+      /* Modal pinned near top */
+      dialog.modal {
+        position: fixed;
+        inset: 5vh 0 auto 0;   /* top:5vh; centered horizontally via margin */
+        margin: 0 auto;
+        width: min(960px, 92vw);
+        border: none; border-radius: 14px; padding: 0;
+        box-shadow: 0 24px 72px rgba(0,0,0,.35);
+      }
       dialog::backdrop { background: rgba(0,0,0,.55); }
       .modal__header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid #e5e7eb; }
       .modal__title { margin: 0; font-size: 18px; font-weight: 700; }
@@ -85,12 +93,6 @@
             <th>Address:</th>
             <th>Closest Hydrant:</th>
             <th>Knox Box Location:</th>
-            <th>Other Key Box Location:</th>
-            <th>Contact Name (1):</th>
-            <th>Contact Number (1):</th>
-            <th>Number of Stories:</th>
-            <th>Occupancy</th>
-            <th>Occupancy Notes:</th>
           </tr>
         </thead>
       </table>
@@ -115,7 +117,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
-      // Helpers
       function showError(msg) {
         const b = document.getElementById('dataError');
         b.style.display = 'block';
@@ -160,19 +161,13 @@
         return '';
       }
 
-      // Visible columns on main page
+      // Visible columns
       const VISIBLE_COLUMNS = [
         { key: 'Photo:' },
         { key: 'Business Name:' },
         { key: 'Address:' },
         { key: 'Closest Hydrant:' },
-        { key: 'Knox Box Location:' },
-        { key: 'Other Key Box Location:' },
-        { key: 'Contact Name (1):' },
-        { key: 'Contact Number (1):' },
-        { key: 'Number of Stories:' },
-        { key: 'Occupancy' },
-        { key: 'Occupancy Notes:' }
+        { key: 'Knox Box Location:' }
       ];
 
       // Popup fields (full set)
@@ -188,7 +183,7 @@
         'Tanks:','Tanks Photo:','Combustibles:','Combustibles Photo:','Gas:','Gas Photo:','Haz-Mat:','Hazmat Photo:','Other:','Other Notes:'
       ];
 
-      // Build DataTables column map
+      // DataTables columns mapping
       const columns = VISIBLE_COLUMNS.map(c => {
         if (c.key === 'Photo:') {
           return {
@@ -230,7 +225,7 @@
         return { data: c.key, title: c.key };
       });
 
-      // Create table with horizontal scroll
+      // Create DataTable with horizontal scroll (no column hiding)
       const table = new DataTable('#example', {
         columns,
         pageLength: 15,
@@ -241,13 +236,13 @@
         dom: 'ftip'
       });
 
-      // Improve search input placeholder
+      // Search placeholder
       $(table.table().node()).on('init.dt', function () {
         const input = document.querySelector('div.dataTables_filter input[type="search"]');
         if (input) { input.placeholder = 'Search name, address, hydrant, occupancy...'; input.setAttribute('aria-label','Search table'); }
       });
 
-      // Robust fetch (accepts many possible JSON shapes)
+      // Fetch and normalize data
       const DATA_URL = 'https://script.google.com/macros/s/AKfycbw03c7Rrm_7oweQJUiprYdF5FXDzRRiYO3WjI97Nezq-D1GOQ69UPzRZNibGai7WL52Rg/exec';
       function normalizeRows(json) {
         if (!json) return [];
@@ -274,7 +269,7 @@
         })
         .catch(err => { console.error(err); showError('Could not load data: ' + err.message); });
 
-      // Modal
+      // Modal behavior
       const modal = document.getElementById('rowModal');
       const kv = document.getElementById('kv');
       const chips = document.getElementById('chips');
@@ -283,6 +278,9 @@
       const heroCaption = document.getElementById('heroCaption');
 
       function openModalForRow(rowData) {
+        // Reset scroll to top of page to avoid perceived offset
+        window.scrollTo({ top: 0, behavior: 'instant' });
+
         const title = (getValue(rowData,'Business Name:') || getValue(rowData,'Address:') || 'Details').toString().trim();
         document.getElementById('modalTitle').textContent = title;
 
@@ -348,7 +346,10 @@
           kv.appendChild(dt); kv.appendChild(dd);
         });
 
+        // Open pinned near top and ensure the dialog itself is scrolled to top
         modal.showModal();
+        modal.scrollTop = 0;
+        const mb = modal.querySelector('.modal__body'); if (mb) mb.scrollTop = 0;
       }
 
       // Row click → open modal
