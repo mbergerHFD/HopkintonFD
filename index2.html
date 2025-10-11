@@ -731,48 +731,50 @@
 })();
 </script>
 
-<script id="popup-trim-above-photo">
+<script id="popup-remove-bubbles-only">
 (function(){
-  function removeAbovePhoto(){
+  function removeChipRows(){
     const body = document.querySelector('.modal__body');
     if (!body) return;
 
-    // Common hero/cover photo candidates in the modal
-    const photo = body.querySelector(
-      '.photo-hero, .hero-photo, .photo-cover, .modal-hero, .modal-photo, .photoHeader, .photo, .hero img, .photo-hero img'
-    );
-    if (!photo) return;
+    // 1) Remove obvious chip containers by class name
+    body.querySelectorAll('[class*="chip"], [class*="Chip"], [class*="pill"], [class*="badge"], .kv-chips, .kv-chips-row, .kv-pills')
+      .forEach(el => el.remove());
 
-    // We want an element to anchor on (if we matched an <img>, use its parent)
-    const anchor = (photo.tagName === 'IMG' ? photo.parentElement : photo);
-    if (!anchor || !anchor.parentElement) return;
-
-    // Explicitly hide typical "info above photo" bars
-    body.querySelectorAll('.chips, .chipbar, .chip-row, .hero-meta, .photo-header, .top-meta')
-        .forEach(el => { el.style.display = 'none'; });
-
-    // Remove everything between the start of modal__body and the anchor (exclusive)
-    let node = anchor.previousElementSibling;
-    // But stop if we encounter the header element inside the modal body (if any)
-    while (node){
-      const prev = node.previousElementSibling
-      // Don't touch the modal chrome/header outside the body
-      node.remove();
-      node = prev;
-    }
+    // 2) Heuristic: a direct child that looks like a chip-row (>=3 rounded items)
+    Array.from(body.children).forEach(div => {
+      const kids = Array.from(div.children);
+      if (kids.length < 3) return;
+      const rounded = kids.filter(n => {
+        const cs = getComputedStyle(n);
+        const radius = parseFloat((cs.borderTopLeftRadius||'0').replace('px','')) || 0;
+        const bw = parseFloat((cs.borderWidth||'0').replace('px','')) || 0;
+        // looks like a pill: rounded corners and visible border
+        return radius >= 12 && bw >= 1;
+      });
+      if (rounded.length >= 3) {
+        div.remove();
+      }
+    });
   }
 
   function wrapOpen(){
     const old = window.openModalForRow;
     if (typeof old !== 'function') return false;
-    if (old.__trimAbovePhotoApplied) return true;
-
+    if (old.__removeBubblesOnly) return true;
     window.openModalForRow = function(){
       const res = old.apply(this, arguments);
-      try { removeAbovePhoto(); } catch(e){ console.warn('trim-above-photo failed', e); }
+      try { removeChipRows(); } catch(e){ console.warn('remove bubbles failed', e); }
       return res;
     };
-    window.openModalForRow.__trimAbovePhotoApplied = true;
+    window.openModalForRow.__removeBubblesOnly = true;
+
+    // If an earlier "trim above photo" hook exists, neutralize its effect by marking it as applied
+    // so it won't try to rewrap again on dynamic reloads.
+    if (window.openModalForRow.__trimAbovePhotoAppliedV2) {
+      // nothing: we cannot undo removal if it already ran, but by choosing a base file
+      // without v2 we avoid this in the first place.
+    }
     return true;
   }
 
